@@ -1,7 +1,6 @@
 ## Overview
 
 - Note: This sample code project is associated with WWDC 2019 session [714: Network Extensions for Modern macOS](https://developer.apple.com/videos/play/wwdc19/714/)
-- main branch contains the Content Filter Apple example, <b>use the app_proxy branch!</b>
 
 ## Building
 
