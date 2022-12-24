@@ -56,10 +56,10 @@ class STProxyProvider : NETransparentProxyProvider {
         
         // Also these settings are available, check if they could
         // be useful
-        let dnsSettings = NEDNSSettings()
-        settings.dnsSettings = dnsSettings
-        let proxySettings = NEProxySettings()
-        settings.proxySettings = proxySettings
+//        let dnsSettings = NEDNSSettings()
+//        settings.dnsSettings = dnsSettings
+//        let proxySettings = NEProxySettings()
+//        settings.proxySettings = proxySettings
         
         // sending the desired settings to the NE framework
         // if they are wrong, an error will be thrown here
@@ -121,11 +121,6 @@ class STProxyProvider : NETransparentProxyProvider {
                 remote = TCPFlow.remoteEndpoint.description
                 
                 
-                
-                
-                // !!!
-                // CONTINUE HERE WITH THE HANDLING OF A FIREFOX FLOW
-                // !!!
                 
                 // localEndpoint The address and port that should be used as the local
                 // endpoint of the socket associated with this flow.

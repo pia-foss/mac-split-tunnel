@@ -48,7 +48,6 @@
 
 /* Begin PBXFileReference section */
 		03411C5003411ED000000001 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		6ED8E4306ED7A1A000000001 /* LICENSE.txt */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		C40A5C45229DD6A500627D50 /* com.privateinternetaccess.splittunnel.poc.extension.systemextension */ = {isa = PBXFileReference; explicitFileType = "wrapper.system-extension"; includeInIndex = 0; path = com.privateinternetaccess.splittunnel.poc.extension.systemextension; sourceTree = BUILT_PRODUCTS_DIR; };
 		C40A5C4A229DD6A500627D50 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		C40A5C4C229DD6A500627D50 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -65,7 +64,6 @@
 		C4E0DBB42273BEA0005B02F4 /* FilterDataProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterDataProvider.swift; sourceTree = "<group>"; };
 		D17F5D19293E1DC300FB8DAF /* ManagingExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagingExtension.swift; sourceTree = "<group>"; };
 		D17F5D1B293E701D00FB8DAF /* STProxyProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STProxyProvider.swift; sourceTree = "<group>"; };
-		D188C095292587D400FB1A94 /* Notes.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Notes.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,14 +86,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		6ED7B3006ED7B69000000001 /* LICENSE */ = {
-			isa = PBXGroup;
-			children = (
-				6ED8E4306ED7A1A000000001 /* LICENSE.txt */,
-			);
-			path = LICENSE;
-			sourceTree = "<group>";
-		};
 		C40A5C47229DD6A500627D50 /* SimpleFirewallExtension */ = {
 			isa = PBXGroup;
 			children = (
@@ -112,13 +102,11 @@
 		C4B45DAC22739FFF0050C59B = {
 			isa = PBXGroup;
 			children = (
-				D188C095292587D400FB1A94 /* Notes.txt */,
 				03411C5003411ED000000001 /* README.md */,
 				C4B45DB722739FFF0050C59B /* SimpleFirewall */,
 				C40A5C47229DD6A500627D50 /* SimpleFirewallExtension */,
 				C4B45DB622739FFF0050C59B /* Products */,
 				C4B45DDC2273A3450050C59B /* Frameworks */,
-				6ED7B3006ED7B69000000001 /* LICENSE */,
 			);
 			sourceTree = "<group>";
 		};
