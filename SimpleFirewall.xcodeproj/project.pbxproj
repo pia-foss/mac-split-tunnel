@@ -20,6 +20,7 @@
 		C4B45DDE2273A3450050C59B /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4B45DDD2273A3450050C59B /* NetworkExtension.framework */; };
 		D17F5D1A293E1DC300FB8DAF /* ManagingExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D19293E1DC300FB8DAF /* ManagingExtension.swift */; };
 		D17F5D1C293E701D00FB8DAF /* STProxyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D1B293E701D00FB8DAF /* STProxyProvider.swift */; };
+		D1FE4FB9295A1EA3002BBA20 /* SimpleFirewallTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1FE4FB8295A1EA3002BBA20 /* SimpleFirewallTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +30,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = C40A5C44229DD6A500627D50;
 			remoteInfo = SimpleFirewallExtension;
+		};
+		D1FE4FBA295A1EA3002BBA20 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C4B45DAD22739FFF0050C59B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C4B45DB422739FFF0050C59B;
+			remoteInfo = SimpleFirewall;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -64,6 +72,8 @@
 		C4E0DBB42273BEA0005B02F4 /* FilterDataProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterDataProvider.swift; sourceTree = "<group>"; };
 		D17F5D19293E1DC300FB8DAF /* ManagingExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagingExtension.swift; sourceTree = "<group>"; };
 		D17F5D1B293E701D00FB8DAF /* STProxyProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STProxyProvider.swift; sourceTree = "<group>"; };
+		D1FE4FB6295A1EA3002BBA20 /* SimpleFirewallTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimpleFirewallTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D1FE4FB8295A1EA3002BBA20 /* SimpleFirewallTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleFirewallTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +90,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				C4B45DDE2273A3450050C59B /* NetworkExtension.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D1FE4FB3295A1EA3002BBA20 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -105,6 +122,7 @@
 				03411C5003411ED000000001 /* README.md */,
 				C4B45DB722739FFF0050C59B /* SimpleFirewall */,
 				C40A5C47229DD6A500627D50 /* SimpleFirewallExtension */,
+				D1FE4FB7295A1EA3002BBA20 /* SimpleFirewallTests */,
 				C4B45DB622739FFF0050C59B /* Products */,
 				C4B45DDC2273A3450050C59B /* Frameworks */,
 			);
@@ -115,6 +133,7 @@
 			children = (
 				C4B45DB522739FFF0050C59B /* SimpleFirewall.app */,
 				C40A5C45229DD6A500627D50 /* com.privateinternetaccess.splittunnel.poc.extension.systemextension */,
+				D1FE4FB6295A1EA3002BBA20 /* SimpleFirewallTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -139,6 +158,14 @@
 				C4B45DDD2273A3450050C59B /* NetworkExtension.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D1FE4FB7295A1EA3002BBA20 /* SimpleFirewallTests */ = {
+			isa = PBXGroup;
+			children = (
+				D1FE4FB8295A1EA3002BBA20 /* SimpleFirewallTests.swift */,
+			);
+			path = SimpleFirewallTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -180,6 +207,24 @@
 			productReference = C4B45DB522739FFF0050C59B /* SimpleFirewall.app */;
 			productType = "com.apple.product-type.application";
 		};
+		D1FE4FB5295A1EA3002BBA20 /* SimpleFirewallTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D1FE4FBC295A1EA3002BBA20 /* Build configuration list for PBXNativeTarget "SimpleFirewallTests" */;
+			buildPhases = (
+				D1FE4FB2295A1EA3002BBA20 /* Sources */,
+				D1FE4FB3295A1EA3002BBA20 /* Frameworks */,
+				D1FE4FB4295A1EA3002BBA20 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D1FE4FBB295A1EA3002BBA20 /* PBXTargetDependency */,
+			);
+			name = SimpleFirewallTests;
+			productName = SimpleFirewallTests;
+			productReference = D1FE4FB6295A1EA3002BBA20 /* SimpleFirewallTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -187,7 +232,7 @@
 			isa = PBXProject;
 			attributes = {
 				DefaultBuildSystemTypeForWorkspace = Latest;
-				LastSwiftUpdateCheck = 1100;
+				LastSwiftUpdateCheck = 1420;
 				LastUpgradeCheck = 1410;
 				ORGANIZATIONNAME = Apple;
 				TargetAttributes = {
@@ -196,6 +241,10 @@
 					};
 					C4B45DB422739FFF0050C59B = {
 						CreatedOnToolsVersion = 11.0;
+					};
+					D1FE4FB5295A1EA3002BBA20 = {
+						CreatedOnToolsVersion = 14.2;
+						TestTargetID = C4B45DB422739FFF0050C59B;
 					};
 				};
 			};
@@ -214,6 +263,7 @@
 			targets = (
 				C4B45DB422739FFF0050C59B /* SimpleFirewall */,
 				C40A5C44229DD6A500627D50 /* SimpleFirewallExtension */,
+				D1FE4FB5295A1EA3002BBA20 /* SimpleFirewallTests */,
 			);
 		};
 /* End PBXProject section */
@@ -232,6 +282,13 @@
 			files = (
 				C4B45DBD2273A0020050C59B /* Assets.xcassets in Resources */,
 				C4B45DC02273A0020050C59B /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D1FE4FB4295A1EA3002BBA20 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,6 +317,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D1FE4FB2295A1EA3002BBA20 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D1FE4FB9295A1EA3002BBA20 /* SimpleFirewallTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -267,6 +332,11 @@
 			isa = PBXTargetDependency;
 			target = C40A5C44229DD6A500627D50 /* SimpleFirewallExtension */;
 			targetProxy = C40A5C4E229DD6A500627D50 /* PBXContainerItemProxy */;
+		};
+		D1FE4FBB295A1EA3002BBA20 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C4B45DB422739FFF0050C59B /* SimpleFirewall */;
+			targetProxy = D1FE4FBA295A1EA3002BBA20 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -501,6 +571,44 @@
 			};
 			name = Release;
 		};
+		D1FE4FBD295A1EA3002BBA20 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5357M5NW9W;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.privateinternetaccess.SimpleFirewallTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimpleFirewall.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SimpleFirewall";
+			};
+			name = Debug;
+		};
+		D1FE4FBE295A1EA3002BBA20 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5357M5NW9W;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.privateinternetaccess.SimpleFirewallTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimpleFirewall.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SimpleFirewall";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -527,6 +635,15 @@
 			buildConfigurations = (
 				C4B45DC62273A0020050C59B /* Debug */,
 				C4B45DC72273A0020050C59B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D1FE4FBC295A1EA3002BBA20 /* Build configuration list for PBXNativeTarget "SimpleFirewallTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D1FE4FBD295A1EA3002BBA20 /* Debug */,
+				D1FE4FBE295A1EA3002BBA20 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
