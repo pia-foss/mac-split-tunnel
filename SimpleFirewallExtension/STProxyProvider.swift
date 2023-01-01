@@ -16,13 +16,15 @@ import os.log
 //       - Returning NO from handleNewFlow: and handleNewUDPFlow:initialRemoteEndpoint: causes the flow to proceed to communicate directly with the flow's ultimate destination, instead of closing the flow with a "Connection Refused" error.
 //         - NEDNSSettings and NEProxySettings specified within NETransparentProxyNetworkSettings are ignored. Flows that match the includedNetworkRules within NETransparentProxyNetworkSettings will use the same DNS and proxy settings that other flows on the system are currently using.
 //         - Flows that are created using a "connect by name" API (such as Network.framework or NSURLSession) that match the includedNetworkRules will not bypass DNS resolution.
-//
-// To test that all the flows get captured by the rules, change the class to
-// a NEAppProxyProvider and return false in handleNewFlow,
-// then verify that no app can connect to the internet in any way.
+
+
+// To test that all the flows get captured by the rules, change the
+//  STProxyProvider class to a NEAppProxyProvider and return false
+// in handleNewFlow, then verify that no app can connect to the internet.
 @available(macOS 11.0, *)
 class STProxyProvider : NETransparentProxyProvider {
-//class STProxyProvider : NEAppProxyProvider {
+    
+    var localTunnelAddress: [Substring] = []
 
     // this function is called when the application calls the
     // manager.connection.startTunnel function
@@ -35,6 +37,7 @@ class STProxyProvider : NETransparentProxyProvider {
         guard serverAddressParts.count == 2 else {
             return
         }
+        self.localTunnelAddress = serverAddressParts
         let tunnelRemoteAddress: String = String(serverAddressParts[0])
         
         // settings the rules
@@ -82,7 +85,6 @@ class STProxyProvider : NETransparentProxyProvider {
     // this function is called when the application calls the
     // manager.connection.stopTunnel function
     override func stopProxy(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
-        // stopping the proxy
         os_log(.debug, "proxy stopped!")
     }
     
@@ -96,14 +98,36 @@ class STProxyProvider : NETransparentProxyProvider {
     //   false -> (for NEAppProxyProvider or NEDNSProxyProvider)
     //            the flow is discarded by the system
     //
-    //  The proxy provider implementation indicates that the proxy is ready to handle flow data by calling -[NEAppProxyFlow openWithLocalEndpoint:completionHandler:] on the flow.
-    // the provider handles the remote side of the connection using an API such as NWConnection or nw_connection_t
-    // In order to forward packets to the proxy, you must directly connect to the proxy from handleNewFlow and directly transfer the flow of parameters to the corresponding socket.
+    //
+    // the provider handles the remote side of the connection using
+    // an API such as NWConnection or nw_connection_t
+    // In order to forward packets to the proxy, you must directly
+    // connect to the proxy from handleNewFlow and directly transfer
+    // the flow of parameters to the corresponding socket.
     override func handleNewFlow(_ flow: NEAppProxyFlow) -> Bool {
         os_log("handling new flow!")
         
         // the name of the application
         let appID = flow.metaData.sourceAppSigningIdentifier
+        
+        // apps IDs:
+        // "com.google.Chrome.helper"
+        // "org.mozilla.firefox"
+        let flowToHandle = ["org.mozilla.firefox"]
+        
+        if flowToHandle.contains(appID) {
+            managingFlow(flow)
+            
+            // returning true means wanting to handle the flow
+            return true
+        }
+        
+        // letting all other flows go through the default system routing
+        return false
+    }
+    
+    private func managingFlow(_ flow: NEAppProxyFlow) -> Void {
+        
         // same as appID
         let description = flow.metaData.debugDescription
         // the PID of the process can be extracted from the sourceAppAuditToken
@@ -114,41 +138,49 @@ class STProxyProvider : NETransparentProxyProvider {
         let nwInterface = flow.networkInterface?.description
         var remote: String
         var local: String?
-//        if appID == "com.google.Chrome.helper" {
-        if appID == "org.mozilla.firefox" {
-            if let TCPFlow = flow as? NEAppProxyTCPFlow {
-                // An NWEndpoint object containing information about the intended remote endpoint of the flow.
-                remote = TCPFlow.remoteEndpoint.description
-                
-                
-                
-                // localEndpoint The address and port that should be used as the local
-                // endpoint of the socket associated with this flow.
-                // If the source application already specifed a local endpoint by
-                // binding the socket then this parameter is ignored.
-                //
-                
-                let host = NWHostEndpoint(hostname: remote, port: "443")
-                TCPFlow.open(withLocalEndpoint: host) { error in
-                    if (error != nil) {
-                        os_log("error during flow open!")
-                    }
-                    //callback code here
-                }
-                
-                
-                
-                
-                
-            }
-            else if let UDPFlow = flow as? NEAppProxyUDPFlow {
-                local = UDPFlow.localEndpoint?.description
-            }
-            // returning true means wanting to handle the flow
-            return true
-        }
         
-        // letting all other flows go through the default system routing
-        return false
+        // NEAppProxyFlow: An object for reading and writing data to and from
+        // a TCP connection being proxied by the provider
+        if let TCPFlow = flow as? NEAppProxyTCPFlow {
+            // An NWEndpoint object containing information about the intended remote endpoint of the flow.
+            remote = TCPFlow.remoteEndpoint.description
+            
+            
+            
+            // localEndpoint The address and port that should be used as the local
+            // endpoint of the socket associated with this flow.
+            // If the source application already specifed a local endpoint by
+            // binding the socket then this parameter is ignored.
+            //
+            
+            let host = NWHostEndpoint(hostname: String(localTunnelAddress[0]), port: String(localTunnelAddress[1]))
+            // This function is used by an NEProvider implementation
+            // to indicate that it is ready to handle flow data.
+            //
+            // localEndpoint:
+            // The address and port that should be used as the local
+            // endpoint of the socket associated with this flow.
+            // If the source application already specifed a local
+            // endpoint by binding the socket then this parameter
+            // is ignored.
+            TCPFlow.open(withLocalEndpoint: host) { error in
+                if (error != nil) {
+                    os_log("error during flow open! %s", error.debugDescription)
+                }
+                //callback code here
+            }
+            
+            // closing the flow
+//            TCPFlow.closeReadWithError(nil)
+//            TCPFlow.closeWriteWithError(nil)
+            
+            
+            
+            
+            
+        }
+        else if let UDPFlow = flow as? NEAppProxyUDPFlow {
+            local = UDPFlow.localEndpoint?.description
+        }
     }
 }
