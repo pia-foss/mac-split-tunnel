@@ -1,10 +1,10 @@
 
 //
-//  SimpleFirewallTests.swift
-//  SimpleFirewallTests
+//  ProxyAppTests.swift
+//  ProxyTests
 //
 //  Created by Michele Emiliani on 26/12/22.
-//  Copyright © 2022 Apple. All rights reserved.
+//  Copyright © 2022 PIA. All rights reserved.
 //
 
 import XCTest

@@ -1,9 +1,9 @@
 //
-//  AppProxy.swift
-//  SimpleFirewall
+//  ManagingExtension.swift
+//  ProxyApp
 //
 //  Created by Michele Emiliani on 05/12/22.
-//  Copyright © 2022 Apple. All rights reserved.
+//  Copyright © 2022 PIA. All rights reserved.
 //
 
 import Foundation

@@ -1,6 +1,6 @@
 //
-//  AppProxyProvider.swift
-//  SimpleFirewallExtension
+//  STProxyProvider.swift
+//  ProxyExtension
 //
 //  Created by Michele Emiliani on 05/12/22.
 //  Copyright © 2022 PIA. All rights reserved.
