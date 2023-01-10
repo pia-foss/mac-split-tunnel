@@ -1,3 +1,4 @@
+
 //
 //  SimpleFirewallTests.swift
 //  SimpleFirewallTests
@@ -7,7 +8,7 @@
 //
 
 import XCTest
-@testable import SimpleFirewall
+@testable import SplitTunnelProxy
 import os.log
 
 final class SimpleFirewallTests: XCTestCase {

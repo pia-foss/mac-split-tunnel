@@ -3,7 +3,7 @@
 //  SimpleFirewallExtension
 //
 //  Created by Michele Emiliani on 05/12/22.
-//  Copyright © 2022 Apple. All rights reserved.
+//  Copyright © 2022 PIA. All rights reserved.
 //
 
 import Foundation
@@ -16,6 +16,12 @@ import os.log
 //       - Returning NO from handleNewFlow: and handleNewUDPFlow:initialRemoteEndpoint: causes the flow to proceed to communicate directly with the flow's ultimate destination, instead of closing the flow with a "Connection Refused" error.
 //         - NEDNSSettings and NEProxySettings specified within NETransparentProxyNetworkSettings are ignored. Flows that match the includedNetworkRules within NETransparentProxyNetworkSettings will use the same DNS and proxy settings that other flows on the system are currently using.
 //         - Flows that are created using a "connect by name" API (such as Network.framework or NSURLSession) that match the includedNetworkRules will not bypass DNS resolution.
+//
+// the provider handles the remote side of the connection using
+// an API such as NWConnection or nw_connection_t
+// In order to forward packets to the proxy, you must directly
+// connect to the proxy from handleNewFlow and directly transfer
+// the flow of parameters to the corresponding socket.
 
 
 // To test that all the flows get captured by the rules, change the
@@ -25,6 +31,7 @@ import os.log
 class STProxyProvider : NETransparentProxyProvider {
     
     var localTunnelAddress: [Substring] = []
+    var TCPFlowsToHandle: [NEAppProxyTCPFlow] = []
 
     // this function is called when the application calls the
     // manager.connection.startTunnel function
@@ -90,29 +97,22 @@ class STProxyProvider : NETransparentProxyProvider {
     
     // This method is called by the system whenever an app that
     // matches the current App Proxy configuration’s app rules
-    // opens a new network connection.
+    // creates a socket or sends/receives traffic on it.
     // returns:
     //   true  -> to handle a new flow
     //   false -> (for NETransparentProxyProvider)
     //            to let the system handle the flow
     //   false -> (for NEAppProxyProvider or NEDNSProxyProvider)
     //            the flow is discarded by the system
-    //
-    //
-    // the provider handles the remote side of the connection using
-    // an API such as NWConnection or nw_connection_t
-    // In order to forward packets to the proxy, you must directly
-    // connect to the proxy from handleNewFlow and directly transfer
-    // the flow of parameters to the corresponding socket.
     override func handleNewFlow(_ flow: NEAppProxyFlow) -> Bool {
         os_log("handling new flow!")
         
         // the name of the application
         let appID = flow.metaData.sourceAppSigningIdentifier
-        
+    
+        // flows that I want to handle
         // apps IDs:
-        // "com.google.Chrome.helper"
-        // "org.mozilla.firefox"
+        // ["com.google.Chrome.helper", "org.mozilla.firefox"]
         let flowToHandle = ["org.mozilla.firefox"]
         
         if flowToHandle.contains(appID) {
@@ -123,11 +123,12 @@ class STProxyProvider : NETransparentProxyProvider {
         }
         
         // letting all other flows go through the default system routing
+        // that means they are going through the vpn, when it is active on the system
         return false
     }
     
     private func managingFlow(_ flow: NEAppProxyFlow) -> Void {
-        
+        // info about the flow
         // same as appID
         let description = flow.metaData.debugDescription
         // the PID of the process can be extracted from the sourceAppAuditToken
@@ -142,20 +143,17 @@ class STProxyProvider : NETransparentProxyProvider {
         // NEAppProxyFlow: An object for reading and writing data to and from
         // a TCP connection being proxied by the provider
         if let TCPFlow = flow as? NEAppProxyTCPFlow {
+            // setting up the state necessary to handle the flow’s data
+            
+            TCPFlowsToHandle.append(TCPFlow)
+            
             // An NWEndpoint object containing information about the intended remote endpoint of the flow.
             remote = TCPFlow.remoteEndpoint.description
-            
-            
-            
-            // localEndpoint The address and port that should be used as the local
-            // endpoint of the socket associated with this flow.
-            // If the source application already specifed a local endpoint by
-            // binding the socket then this parameter is ignored.
-            //
-            
             let host = NWHostEndpoint(hostname: String(localTunnelAddress[0]), port: String(localTunnelAddress[1]))
+            
             // This function is used by an NEProvider implementation
-            // to indicate that it is ready to handle flow data.
+            // to indicate to the system that the caller is ready
+            // to start receiving and sending data of this flow.
             //
             // localEndpoint:
             // The address and port that should be used as the local
@@ -163,11 +161,19 @@ class STProxyProvider : NETransparentProxyProvider {
             // If the source application already specifed a local
             // endpoint by binding the socket then this parameter
             // is ignored.
-            TCPFlow.open(withLocalEndpoint: host) { error in
+            // Pass nil to have the system derive a value based on the address
+            // of the current primary physical interface.
+            
+//            var ni: nw_interface_t? = nw_interface_t.self
+//            TCPFlow.networkInterface = ni
+            
+            TCPFlow.open(withLocalEndpoint: nil) { error in
                 if (error != nil) {
                     os_log("error during flow open! %s", error.debugDescription)
                 }
-                //callback code here
+                
+                
+                
             }
             
             // closing the flow
