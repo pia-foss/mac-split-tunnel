@@ -30,10 +30,14 @@ import os.log
 @available(macOS 11.0, *)
 class STProxyProvider : NETransparentProxyProvider {
     
+    // MARK: Proxy Properties
+    
     private var localTunnelAddress: [Substring] = []
     var TCPFlowsToHandle: [NEAppProxyTCPFlow] = []
     var connection: NWTCPConnection?
 
+    // MARK: Proxy Functions
+    
     // this function is called when the application calls the
     // manager.connection.startTunnel function
     override func startProxy(options: [String : Any]?, completionHandler: @escaping (Error?) -> Void) {
@@ -91,20 +95,37 @@ class STProxyProvider : NETransparentProxyProvider {
 
             // Connect to the local server after the extension proxy
             // has started.
-            self.connectToLocalServer(address: "127.0.0.1", port: "9001")
+            self.connection = self.createLocalTCPConnection(address: "127.0.0.1", port: "9001")
+            os_log(.debug, "initiated connection to local server")
         }
-    }
-    
-    private func connectToLocalServer(address: String, port: String) {
-        let endpoint: NWEndpoint
-        endpoint = NWHostEndpoint(hostname: address, port: port)
-        self.connection = self.createTCPConnection(to: endpoint, enableTLS:false, tlsParameters:nil, delegate:nil)
-        let state = self.connection!.state
     }
     
     // this function is called when the application calls the
     // manager.connection.stopTunnel function
     override func stopProxy(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
+        closeLocalTCPConnection(connection: self.connection!)
         os_log(.debug, "proxy stopped!")
+    }
+    
+    // MARK: Managing the connection
+    
+    private func createLocalUDPSession(address: String, port: String) -> NWUDPSession {
+        let endpoint: NWEndpoint
+        endpoint = NWHostEndpoint(hostname: address, port: port)
+        return self.createUDPSession(to: endpoint, from: nil)
+    }
+    
+    private func closeLocalUDPSession(session: NWUDPSession) -> Void {
+        session.cancel()
+    }
+    
+    private func createLocalTCPConnection(address: String, port: String) -> NWTCPConnection {
+        let endpoint: NWEndpoint
+        endpoint = NWHostEndpoint(hostname: address, port: port)
+        return self.createTCPConnection(to: endpoint, enableTLS:false, tlsParameters:nil, delegate:nil)
+    }
+    
+    private func closeLocalTCPConnection(connection: NWTCPConnection) -> Void {
+        connection.cancel()
     }
 }

@@ -94,25 +94,24 @@ extension STProxyProvider {
             self.readTCPFlowData(flow)
         }
         
-        // closing the flow
+        // close the flow when you dont want to read and write to it anymore
         // TCPFlow.closeReadWithError(nil)
         // TCPFlow.closeWriteWithError(nil)
     }
     
     private func readTCPFlowData(_ flow: NEAppProxyTCPFlow) -> Void {
-        flow.readData { (data, error) in
+        flow.readData { data, error in
             if error == nil, let readData = data, !readData.isEmpty {
-                
                 self.connection!.write(readData, completionHandler: { connectionError in
                     if connectionError == nil {
+                        self.writeTCPFlowData(flow)
                         self.readTCPFlowData(flow)
                     } else {
                         os_log("error during connection write! %s", connectionError.debugDescription)
                     }
                 })
-                
             } else {
-                // Handle error case or the read that contains empty data.
+                // Handle an error on the flow read.
                 if error != nil {
                     os_log("error during flow read! %s", error.debugDescription)
                 } else {
@@ -120,6 +119,27 @@ extension STProxyProvider {
                 }
             }
         }
+    }
+    
+    private func writeTCPFlowData(_ flow: NEAppProxyTCPFlow) -> Void {
+        self.connection!.readMinimumLength(1, maximumLength: 2048, completionHandler: { data, error in
+            if error == nil, let writeData = data, !writeData.isEmpty {
+                flow.write(writeData) { flowError in
+                    if flowError == nil {
+                        self.writeTCPFlowData(flow)
+                    } else {
+                        os_log("error during flow write! %s", flowError.debugDescription)
+                    }
+                }
+            } else {
+                // Handle an error on the connection read.
+                if error != nil {
+                    os_log("error during connection read! %s", error.debugDescription)
+                } else {
+                    os_log("read no data during connection read!")
+                }
+            }
+        })
     }
     
     private func manageUDPFlow(_ flow: NEAppProxyUDPFlow) -> Void {
