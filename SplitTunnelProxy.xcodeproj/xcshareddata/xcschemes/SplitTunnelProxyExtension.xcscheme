@@ -16,8 +16,8 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C40A5C44229DD6A500627D50"
                BuildableName = "com.privateinternetaccess.splittunnel.poc.extension.systemextension"
-               BlueprintName = "SimpleFirewallExtension"
-               ReferencedContainer = "container:SimpleFirewall.xcodeproj">
+               BlueprintName = "SplitTunnelProxyExtension"
+               ReferencedContainer = "container:SplitTunnelProxy.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -53,8 +53,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C40A5C44229DD6A500627D50"
             BuildableName = "com.privateinternetaccess.splittunnel.poc.extension.systemextension"
-            BlueprintName = "SimpleFirewallExtension"
-            ReferencedContainer = "container:SimpleFirewall.xcodeproj">
+            BlueprintName = "SplitTunnelProxyExtension"
+            ReferencedContainer = "container:SplitTunnelProxy.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

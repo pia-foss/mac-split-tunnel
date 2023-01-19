@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C4B45DB422739FFF0050C59B"
-               BuildableName = "SimpleFirewall.app"
-               BlueprintName = "SimpleFirewall"
-               ReferencedContainer = "container:SimpleFirewall.xcodeproj">
+               BuildableName = "SplitTunnelProxy.app"
+               BlueprintName = "SplitTunnelProxy"
+               ReferencedContainer = "container:SplitTunnelProxy.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -28,6 +28,17 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "D1FE4FB5295A1EA3002BBA20"
+               BuildableName = "SplitTunnelProxyTests.xctest"
+               BlueprintName = "SplitTunnelProxyTests"
+               ReferencedContainer = "container:SplitTunnelProxy.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -47,14 +58,14 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C4B45DB422739FFF0050C59B"
-            BuildableName = "SimpleFirewall.app"
-            BlueprintName = "SimpleFirewall"
-            ReferencedContainer = "container:SimpleFirewall.xcodeproj">
+            BuildableName = "SplitTunnelProxy.app"
+            BlueprintName = "SplitTunnelProxy"
+            ReferencedContainer = "container:SplitTunnelProxy.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
-      buildConfiguration = "Release"
+      buildConfiguration = "Debug"
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
@@ -64,9 +75,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C4B45DB422739FFF0050C59B"
-            BuildableName = "SimpleFirewall.app"
-            BlueprintName = "SimpleFirewall"
-            ReferencedContainer = "container:SimpleFirewall.xcodeproj">
+            BuildableName = "SplitTunnelProxy.app"
+            BlueprintName = "SplitTunnelProxy"
+            ReferencedContainer = "container:SplitTunnelProxy.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
