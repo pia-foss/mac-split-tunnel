@@ -15,7 +15,6 @@ import os.log
       - Activating the system extension and enabling the content filter configuration when the user clicks on the Start button
       - Disabling the content filter configuration when the user clicks on the Stop button
       - Prompting the user to allow or deny connections at the behest of the system extension
-      - Logging connections in a NSTextView
  */
 class ViewController: NSViewController {
     
@@ -80,8 +79,8 @@ class ViewController: NSViewController {
         let extensionURLs: [URL]
         do {
             extensionURLs = try FileManager.default.contentsOfDirectory(at: extensionsDirectoryURL,
-                                                                        includingPropertiesForKeys: nil,
-                                                                        options: .skipsHiddenFiles)
+                                                includingPropertiesForKeys: nil,
+                                                                   options: .skipsHiddenFiles)
         } catch let error {
             fatalError("Failed to get the contents of \(extensionsDirectoryURL.absoluteString): \(error.localizedDescription)")
         }
@@ -139,24 +138,5 @@ class ViewController: NSViewController {
     @IBAction func stopTunnel(_ sender: Any) {
         stopTunnel(manager: self.manager!)
         status = .stopped
-    }
-    
-    // MARK: Update the UI
-    func logFlow(_ flowInfo: [String: String], at date: Date, userAllowed: Bool) {
-        
-        guard let localPort = flowInfo[FlowInfoKey.localPort.rawValue],
-              let remoteAddress = flowInfo[FlowInfoKey.remoteAddress.rawValue],
-              let font = NSFont.userFixedPitchFont(ofSize: 12.0) else {
-            return
-        }
-        
-        let dateString = dateFormatter.string(from: date)
-        let message = "\(dateString) \(userAllowed ? "ALLOW" : "DENY") \(localPort) <-- \(remoteAddress)\n"
-        
-        os_log("%@", message)
-        
-        let logAttributes: [NSAttributedString.Key: Any] = [ .font: font, .foregroundColor: NSColor.textColor ]
-        let attributedString = NSAttributedString(string: message, attributes: logAttributes)
-        logTextView.textStorage?.append(attributedString)
     }
 }
