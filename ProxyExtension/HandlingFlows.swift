@@ -1,11 +1,3 @@
-//
-//  HandlingFlows.swift
-//  SplitTunnelProxy
-//
-//  Created by Michele Emiliani on 13/01/23.
-//  Copyright © 2023 PIA. All rights reserved.
-//
-
 import Foundation
 import NetworkExtension
 import os.log

@@ -1,10 +1,3 @@
-/*
-See LICENSE folder for this sample’s licensing information.
-
-Abstract:
-This file contains initialization code for the system extension.
-*/
-
 // Change this to run the application
 //DEPLOYMENT_LOCATION = YES
 //DSTROOT = /

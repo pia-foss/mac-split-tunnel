@@ -1,10 +1,3 @@
-/*
-See LICENSE folder for this sample’s licensing information.
-
-Abstract:
-This file contains the implementation of the app <-> provider IPC connection
-*/
-
 // https://developer.apple.com/forums/thread/715338
 // XPC wraps Mach messaging in an API that’s much easier to use
 // An XPC connection represents a communication channel between two processes.
