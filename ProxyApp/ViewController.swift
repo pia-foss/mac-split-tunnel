@@ -1,20 +1,13 @@
-/*
-See LICENSE folder for this sample’s licensing information.
-
-Abstract:
-This file contains the implementation of the primary NSViewController class.
-*/
-
 import Cocoa
 import NetworkExtension
 import SystemExtensions
 import os.log
 
 /**
-    The ViewController class implements the UI functions of the app, including:
-      - Activating the system extension and enabling the content filter configuration when the user clicks on the Start button
-      - Disabling the content filter configuration when the user clicks on the Stop button
-      - Prompting the user to allow or deny connections at the behest of the system extension
+This is the viewController of the GUI controlling the
+ProxyApp, frontend for the system extension background process.
+Ideally this will be abandoned and these functions will be called by the PIA client.
+We will probably need some bindings for that.
  */
 class ViewController: NSViewController {
     
@@ -25,26 +18,16 @@ class ViewController: NSViewController {
     }
     
     // MARK: Properties
-    
     @IBOutlet var statusIndicator: NSImageView!
     @IBOutlet var statusSpinner: NSProgressIndicator!
     @IBOutlet var startButton: NSButton!
     @IBOutlet var stopButton: NSButton!
-    @IBOutlet var logTextView: NSTextView!
     
-    // ? means that manager may contain a NETransparentProxyManager or nil
     var manager: NETransparentProxyManager?
-    var loadedManager: Bool = false
     var serverAddress: String = ""
     var serverPort: String = ""
     var rulesHosts: [String] = []
     var observer: Any?
-    
-    lazy var dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        return formatter
-    }()
     
     var status: Status = .stopped {
         didSet {
@@ -97,14 +80,8 @@ class ViewController: NSViewController {
     }()
     
     override func viewWillAppear() {
-        
         super.viewWillAppear()
         status = .stopped
-    }
-    
-    override func viewWillDisappear() {
-        
-        super.viewWillDisappear()
     }
     
     // MARK: UI BUTTONS
@@ -118,25 +95,25 @@ class ViewController: NSViewController {
     }
     
     @IBAction func loadManager(_ sender: Any) {
-        loadManager()
-        loadedManager = true
-    }
-    
-    @IBAction func makeManager(_ sender: Any) {
-        if loadedManager == true {
-            createManager()
-        } else {
-            os_log("load the manager first!")
+        loadManager() {
+            self.createManager()
         }
     }
     
     @IBAction func startTunnel(_ sender: Any) {
-        startTunnel(manager: self.manager!)
-        status = .running
+        if status != .running {
+            startTunnel(manager: self.manager!)
+            status = .running
+        }
     }
     
+    // Stopping the tunnel is INCREDIBLY slow for some reason
+    // It takes 5 full seconds from when the request is sent from
+    // the app, until the actual MyTransparentProxy stops
     @IBAction func stopTunnel(_ sender: Any) {
-        stopTunnel(manager: self.manager!)
-        status = .stopped
+        if status != .stopped {
+            stopTunnel(manager: self.manager!)
+            status = .stopped
+        }
     }
 }
