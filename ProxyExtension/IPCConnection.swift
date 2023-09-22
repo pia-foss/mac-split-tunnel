@@ -1,3 +1,6 @@
+// The ProxyApp and the ProxyExtension processes comunicate using
+// the IPCConnection class
+
 // https://developer.apple.com/forums/thread/715338
 // XPC wraps Mach messaging in an API that’s much easier to use
 // An XPC connection represents a communication channel between two processes.
@@ -17,10 +20,6 @@ import Network
 }
 
 /// Provider --> App IPC
-// a protocol is an interface
-// a protocol can be adopted by a class, structure, or enumeration
-// to provide an actual implementation of those requirements.
-// it is extended in the ViewController.swift file
 @objc protocol AppCommunication {
 
     func promptUser(aboutFlow flowInfo: [String: String], responseHandler: @escaping (Bool) -> Void)
@@ -36,7 +35,6 @@ class IPCConnection: NSObject {
 
     // MARK: Properties
 
-    // these properties are optionals, they can have a value or be nil
     var listener: NSXPCListener?
     var currentConnection: NSXPCConnection?
     weak var delegate: AppCommunication?
@@ -59,8 +57,6 @@ class IPCConnection: NSObject {
         return machServiceName
     }
 
-    // function called only in the network extension main.swift file
-    // sets the property listener
     func startListener() {
 
         let machServiceName = extensionMachServiceName(from: Bundle.main)
