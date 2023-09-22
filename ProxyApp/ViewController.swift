@@ -24,10 +24,9 @@ class ViewController: NSViewController {
     @IBOutlet var stopButton: NSButton!
     
     var manager: NETransparentProxyManager?
-    var serverAddress: String = ""
-    var serverPort: String = ""
-    var rulesHosts: [String] = []
-    var observer: Any?
+    var localProxyConnectionAddress: String = ""
+    var localProxyConnectionPort: String = ""
+    var appsToManage: [String] = []
     
     var status: Status = .stopped {
         didSet {

@@ -10,13 +10,15 @@ which is the "frontend" for the actual ProxyExtension process
  */
 extension ViewController {
     
-    // all the settings needed for the transparent proxy
+    // all the custom settings that we pass to the ProxyExtension process
     func initSettings() {
         // tunnel server address and port
-        self.serverAddress = "127.0.0.1"
-        self.serverPort = "9000"
-        // not used at the moment
-        self.rulesHosts = ["0.0.0.0"]
+        self.localProxyConnectionAddress = "127.0.0.1"
+        self.localProxyConnectionPort = "9001"
+        // we want to handle the flow of these apps
+        // other IDs:
+        // ["com.google.Chrome.helper", "org.mozilla.firefox"]
+        self.appsToManage = ["org.mozilla.firefox"]
     }
     
     // Start by activating the system extension
@@ -102,8 +104,6 @@ extension ViewController {
         }
     }
     
-    // A NETransparentProxyManager is created if none are present
-    // already in the system
     func createManager() -> Void {
         if self.manager != nil {
             os_log("manager already created!")
@@ -123,12 +123,12 @@ extension ViewController {
             // this is a high level API.
             // The NE framework is providing a (sort of an) interface
             // Traffic is captured using general rules
-            proto.serverAddress = self.serverAddress+":"+self.serverPort
+            proto.serverAddress = self.localProxyConnectionAddress+":"+self.localProxyConnectionPort
             // Pass additional vendor-specific information to the tunnel
             proto.providerConfiguration = [:]
             // proxy settings to use for connections routed through the tunnel
-//                let proxy = NEProxySettings()
-//                proto.proxySettings = proxy
+            // let proxy = NEProxySettings()
+            // proto.proxySettings = proxy
             proto.includeAllNetworks = false
             proto.excludeLocalNetworks = true
             // if YES, route rules for this tunnel will take precendence over
@@ -150,9 +150,9 @@ extension ViewController {
         os_log("starting tunnel!")
 
         // This is needed in order to create the network settings item
-        manager.saveToPreferences { error1 in
-            manager.loadFromPreferences { error2 in
-                if error1 != nil || error2 != nil {
+        manager.saveToPreferences { errorSave in
+            manager.loadFromPreferences { errorLoad in
+                if errorSave != nil || errorLoad != nil {
                     os_log("error while loading preferences!")
                 }
                 os_log("saved and loaded preferences!")
@@ -163,15 +163,14 @@ extension ViewController {
                 // startVPNTunnel.
                 if let session = manager.connection as? NETunnelProviderSession {
                     do {
-//                        try session.sendProviderMessage(Data([1,2,3,4]))
                         // This function is used to start the tunnel using the configuration associated with this connection object. The tunnel connection process is started and this function returns immediately.
                         try session.startTunnel(options: [
-//                            NEVPNConnectionStartOptionUsername: "user",
-//                            NEVPNConnectionStartOptionPassword: "password",
-                            "rulesHosts": self.rulesHosts
-                        ] as [String : NSObject])
+                            "localProxyConnectionAddress" : self.localProxyConnectionAddress,
+                               "localProxyConnectionPort" : self.localProxyConnectionPort,
+                                           "appsToManage" : self.appsToManage
+                        ] as [String : Any])
                     } catch {
-                        os_log("startVPNTunnel error!")
+                        os_log("startTunnel error!")
                         print(error)
                     }
                 }

@@ -2,20 +2,28 @@ import Foundation
 import NetworkExtension
 import os.log
 
-// NETransparentProxyProvider derives from NEAppProxyProvider
-// The NETransparentProxyProvider class has the following behavior
-// differences from its super class NEAppProxyProvider:
-//       - Returning NO from handleNewFlow: and handleNewUDPFlow:initialRemoteEndpoint: causes the flow to proceed to communicate directly with the flow's ultimate destination, instead of closing the flow with a "Connection Refused" error.
-//         - NEDNSSettings and NEProxySettings specified within NETransparentProxyNetworkSettings are ignored. Flows that match the includedNetworkRules within NETransparentProxyNetworkSettings will use the same DNS and proxy settings that other flows on the system are currently using.
-//         - Flows that are created using a "connect by name" API (such as Network.framework or NSURLSession) that match the includedNetworkRules will not bypass DNS resolution.
+// TODO: Handle DNS requests of managed (redirected) flows
+
+// NETransparentProxyProvider is a subclass of NEAppProxyProvider.
+// The behaviour is different compared to its super class:
+// - Returning NO from handleNewFlow: and handleNewUDPFlow:initialRemoteEndpoint:
+//   causes the flow to go to through the default system routing,
+//   instead of being closed with a "Connection Refused" error.
+// - NEDNSSettings and NEProxySettings specified in NETransparentProxyNetworkSettings are ignored.
+//   Flows that match the includedNetworkRules within NETransparentProxyNetworkSettings
+//   will use the system default DNS and proxy settings,
+//   same as unmanaged (not redirected) flows.
+// - Flows that are created using a "connect by name" API
+//   (such as Network.framework or NSURLSession)
+//   that match the includedNetworkRules will not bypass DNS resolution.
 //
-// the provider handles the remote side of the connection using
+// The provider handles the remote side of the connection using
 // an API such as NWConnection or nw_connection_t
 // In order to forward packets to the proxy, you must directly
 // connect to the proxy from handleNewFlow and directly transfer
 // the flow of parameters to the corresponding socket.
-
-
+//
+//
 // To test that all the flows get captured by the rules, change the
 // STProxyProvider class to a NEAppProxyProvider and return false
 // in handleNewFlow, then verify that no app can connect to the internet.
@@ -23,55 +31,104 @@ import os.log
 class STProxyProvider : NETransparentProxyProvider {
     
     // MARK: Proxy Properties
-    
-    private var localTunnelAddress: [Substring] = []
-    var TCPFlowsToHandle: [NEAppProxyTCPFlow] = []
+    var appsToManage: [String]?
+    var address: String?
+    var port: String?
     var connection: NWTCPConnection?
+    // TODO: Check why we save this array
+    // Do we need this?
+    // Maybe map this array in a hash map with the app name as key?
+    var TCPFlowsToHandle: [NEAppProxyTCPFlow] = []
+    var UDPFlowsToHandle: [NEAppProxyUDPFlow] = []
 
     // MARK: Proxy Functions
-    
-    // this function is called when the application calls the
-    // manager.connection.startTunnel function
+    // This function is called when the ProxyApp process calls the
+    // startTunnel() function
     override func startProxy(options: [String : Any]?, completionHandler: @escaping (Error?) -> Void) {
-        os_log(.debug, "proxy started!")
+        os_log(.debug, "proxy extension started!")
         
-        // Using the same server address used in the protocol when creating the
-        // NETransparentProxyManager, without the port
-        let serverAddressParts = self.protocolConfiguration.serverAddress!.split(separator: ":")
-        guard serverAddressParts.count == 2 else {
+        guard let address = options!["localProxyConnectionAddress"] as? String else {
+            os_log(.error, "cannot find localProxyConnectionAddress in options")
             return
         }
-        self.localTunnelAddress = serverAddressParts
-        let tunnelRemoteAddress: String = String(serverAddressParts[0])
-        let tunnelRemotePort: String = String(serverAddressParts[1])
+        self.address = address
+        guard let port = options!["localProxyConnectionPort"] as? String else {
+            os_log(.error, "cannot find localProxyConnectionPort in options")
+            return
+        }
+        self.port = port
+        guard let appsToManage = options!["appsToManage"] as? [String] else {
+            os_log(.error, "cannot find appsToManage in options")
+            return
+        }
+        self.appsToManage = appsToManage
         
-        // settings the rules
-        // Only outbound traffic is supported in NETransparentProxyNetworkSettings.
+        // Initiating the rules.
+        // We want to be "notified" of all flows, so we can decide which to manage,
+        // based on the flow's app name.
+        // We could also be limiting the flows that we get notified of.
+        // Right now it seems best to just include everything.
+        //
+        // Only outbound traffic is supported in NETransparentProxyNetworkSettings
+        // TODO: This needs to be verified
         var rules:[NENetworkRule] = []
         let ruleAllTCP = NENetworkRule(remoteNetwork: nil, remotePrefix: 0, localNetwork: nil, localPrefix: 0, protocol: .TCP, direction: .outbound)
         let ruleAllUDP = NENetworkRule(remoteNetwork: nil, remotePrefix: 0, localNetwork: nil, localPrefix: 0, protocol: .UDP, direction: .outbound)
         rules.append(ruleAllTCP)
         rules.append(ruleAllUDP)
 
-        // NETransparentProxyNetworkSettings is used by
-        // NEAppProxyProviders to communicate the desired network
-        // settings for the proxy to the framework.
-        let settings = NETransparentProxyNetworkSettings(tunnelRemoteAddress: tunnelRemoteAddress)
-        // An array of NENetworkRule objects that collectively specify the traffic
-        // that will be routed through the transparent proxy
+        // Setting the NETransparentProxyNetworkSettings for the extension process
+        // Using the same server address used in NETransparentProxyManager
+        let settings = NETransparentProxyNetworkSettings(tunnelRemoteAddress: address)
         settings.includedNetworkRules = rules
         settings.excludedNetworkRules = nil
         
-        // Also these settings are available, check if they could
-        // be useful
-//        let dnsSettings = NEDNSSettings()
-//        settings.dnsSettings = dnsSettings
-//        let proxySettings = NEProxySettings()
-//        settings.proxySettings = proxySettings
+        // These settings are also available.
+        // Leaving them here just as a note.
+        //
+        // let dnsSettings = NEDNSSettings()
+        // settings.dnsSettings = dnsSettings
+        // let proxySettings = NEProxySettings()
+        // settings.proxySettings = proxySettings
         
-        // sending the desired settings to the NE framework
-        // if they are wrong, an error will be thrown here
-        self.setTunnelNetworkSettings(settings) { [self] error in
+        // TODO: !!!
+        // TODO: This part need heavy changes.
+        // TODO: !!!
+        // This connection must be established with another component.
+        // Let's call it localProxy (for the lack of a better name).
+        // This component will receive, via this connection, all the flows
+        // (UDP and TCP network traffic) of the managed apps.
+        // We could either:
+        //
+        // - Use multiple connections, one for each managed application.
+        //   This will differentiate different apps' flows
+        //   based on the connection port.
+        //
+        // - Use a single connection and send all the flows of
+        //   all the managed apps to it.
+        //   We would need to differentiate between different applications.
+        //   Custom headers can be used to wrap the packages.
+        //   That packages would need to be wrapped
+        //   in the ProxyExtension process
+        //   and then unwrapped in the localProxy process.
+        //
+        // Now are just choosing a random port and listening on that port
+        // using netcat.
+        // Consider using a UDP connection or UNIX socket for better performance.
+        // (This can also be improved at a later stage)
+        self.connection = self.createLocalTCPConnection(address: address, port: port)
+        os_log(.debug, "initiated connection to localProxy")
+        // TODO: Check status of this connection
+        // What happens if no process is listening on that port?
+        // If that is the case, the connection.state will never move to .Connected
+        // We might wanna check if that is the case, using a closure
+        // and also add a timeout to throw an error if that does not happen
+        // Q: Do we need to call this function in the setTunnelNetworkSettings
+        //         closure?
+        
+        // Sending the desired settings to the ProxyExtension process.
+        // If the setting are not correct, an error will be thrown.
+        self.setTunnelNetworkSettings(settings) { [] error in
             if (error != nil) {
                 let errorString = error.debugDescription
                 print(errorString)
@@ -82,13 +139,7 @@ class STProxyProvider : NETransparentProxyProvider {
             
             // This is needed in order to make the proxy connect.
             // If omitted the proxy will hang in the "Connecting..." state.
-            // It will go to "Connected" only if there are no errors.
             completionHandler(nil)
-
-            // Connect to the local server after the extension proxy
-            // has started.
-            self.connection = self.createLocalTCPConnection(address: "127.0.0.1", port: "9001")
-            os_log(.debug, "initiated connection to local server")
         }
     }
     
