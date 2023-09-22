@@ -3,7 +3,7 @@
 - A SplitTunnel POC using Network Extension Transparent Proxy
 - Note: This sample code project is associated with WWDC 2019 session [714: Network Extensions for Modern macOS](https://developer.apple.com/videos/play/wwdc19/714/)
 - Example code from Apple on how to create a packet filter using network extensions: https://developer.apple.com/documentation/networkextension/filtering_network_traffic
-- Notes about the Network Extension API: https://www.notion.so/Network-Extension-API-0a373c27ba304bf6b2ee8bf2b46edbed
+- Check out PIA macOS Split Tunnelling document on Confluence
 
 ## Building
 
