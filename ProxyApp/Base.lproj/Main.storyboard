@@ -269,7 +269,7 @@
                     <window key="window" title="SplitTunnelProxy" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
                         <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-                        <rect key="contentRect" x="196" y="240" width="480" height="270"/>
+                        <rect key="contentRect" x="196" y="240" width="433" height="157"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
                         <connections>
                             <outlet property="delegate" destination="B8D-0N-5wS" id="98r-iN-zZc"/>
@@ -281,14 +281,14 @@
                 </windowController>
                 <customObject id="Oky-zY-oP4" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="250"/>
+            <point key="canvasLocation" x="51.5" y="193.5"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="hIz-AP-VOD">
             <objects>
                 <viewController id="XfG-lQ-9wD" customClass="ViewController" customModule="SplitTunnelProxy" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="m2S-Jp-Qdl">
-                        <rect key="frame" x="0.0" y="0.0" width="616" height="299"/>
+                    <view key="view" misplaced="YES" id="m2S-Jp-Qdl">
+                        <rect key="frame" x="0.0" y="0.0" width="473" height="104"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="RaY-rd-6x1">
@@ -302,37 +302,8 @@
                             <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="Vjd-9s-oAQ">
                                 <rect key="frame" x="50" y="263" width="16" height="16"/>
                             </progressIndicator>
-                            <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3pe-pS-uyB">
-                                <rect key="frame" x="20" y="20" width="576" height="221"/>
-                                <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="bg5-Gq-5kB">
-                                    <rect key="frame" x="0.0" y="0.0" width="576" height="221"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <subviews>
-                                        <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="nEI-c8-wyL">
-                                            <rect key="frame" x="0.0" y="0.0" width="576" height="221"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                            <size key="minSize" width="576" height="221"/>
-                                            <size key="maxSize" width="576" height="10000000"/>
-                                            <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                        </textView>
-                                    </subviews>
-                                </clipView>
-                                <constraints>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="40" id="9t7-A2-8mN"/>
-                                </constraints>
-                                <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="0CM-EK-2ru">
-                                    <rect key="frame" x="-100" y="-100" width="240" height="16"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </scroller>
-                                <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="Cv1-np-YPf">
-                                    <rect key="frame" x="560" y="0.0" width="16" height="221"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </scroller>
-                            </scrollView>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ce5-Zb-HRc" userLabel="Deactivate">
-                                <rect key="frame" x="73" y="254" width="99" height="32"/>
+                                <rect key="frame" x="80" y="19" width="99" height="32"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="push" title="Deactivate" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="W94-oY-sLT" userLabel="Deactivate">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -343,7 +314,7 @@
                                 </buttonCell>
                             </button>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="z6z-8e-Zag" userLabel="Activate">
-                                <rect key="frame" x="177" y="254" width="84" height="32"/>
+                                <rect key="frame" x="87" y="61" width="84" height="32"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="push" title="Activate" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="gyW-Dg-l0S" userLabel="Activate">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -354,7 +325,7 @@
                                 </connections>
                             </button>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NPf-Rx-iIs">
-                                <rect key="frame" x="477" y="240" width="100" height="32"/>
+                                <rect key="frame" x="360" y="13" width="100" height="32"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="push" title="stopTunnel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="qW8-dp-Fj1">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -364,19 +335,8 @@
                                     <action selector="stopTunnel:" target="XfG-lQ-9wD" id="7T4-C0-RKQ"/>
                                 </connections>
                             </button>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hCa-U6-adJ" userLabel="startTunnel">
-                                <rect key="frame" x="475" y="266" width="102" height="32"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="push" title="startTunnel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="qHe-lc-9XF" userLabel="startTunnel">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="startTunnel:" target="XfG-lQ-9wD" id="64g-AP-mV9"/>
-                                </connections>
-                            </button>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="s5P-O9-qAZ">
-                                <rect key="frame" x="252" y="254" width="113" height="32"/>
+                                <rect key="frame" x="208" y="63" width="113" height="32"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="push" title="loadManager" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="rex-m3-y5I">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -386,40 +346,35 @@
                                     <action selector="loadManager:" target="XfG-lQ-9wD" id="rLS-3Z-4xK"/>
                                 </connections>
                             </button>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="r6G-89-Ts4" userLabel="makeManager">
-                                <rect key="frame" x="357" y="254" width="120" height="32"/>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hCa-U6-adJ" userLabel="startTunnel">
+                                <rect key="frame" x="358" y="63" width="102" height="32"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="push" title="makeManager" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="TDc-AB-DYc" userLabel="makeManager">
+                                <buttonCell key="cell" type="push" title="startTunnel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="qHe-lc-9XF" userLabel="startTunnel">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
-                                    <action selector="makeManager:" target="XfG-lQ-9wD" id="eFx-8h-1Ej"/>
+                                    <action selector="startTunnel:" target="XfG-lQ-9wD" id="64g-AP-mV9"/>
                                 </connections>
                             </button>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="3pe-pS-uyB" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" id="1Sk-G4-Rpo"/>
                             <constraint firstItem="Vjd-9s-oAQ" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" id="4Of-Bu-9Xn"/>
-                            <constraint firstAttribute="bottom" secondItem="3pe-pS-uyB" secondAttribute="bottom" constant="20" id="9sB-sM-wi6"/>
                             <constraint firstItem="RaY-rd-6x1" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" symbolic="YES" id="DkZ-vK-dzc"/>
                             <constraint firstItem="Vjd-9s-oAQ" firstAttribute="leading" secondItem="RaY-rd-6x1" secondAttribute="trailing" constant="14" id="Mbq-IY-Dfs"/>
                             <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="RaY-rd-6x1" secondAttribute="bottom" constant="263" id="ROI-GH-dh3"/>
-                            <constraint firstAttribute="trailing" secondItem="3pe-pS-uyB" secondAttribute="trailing" constant="20" id="cCK-nw-6Zx"/>
-                            <constraint firstItem="3pe-pS-uyB" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="58" id="rbF-nP-EeK"/>
                             <constraint firstItem="RaY-rd-6x1" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" symbolic="YES" id="s02-4o-cVb"/>
                             <constraint firstItem="Vjd-9s-oAQ" firstAttribute="centerY" secondItem="RaY-rd-6x1" secondAttribute="centerY" id="zWz-NK-EVW"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="logTextView" destination="nEI-c8-wyL" id="h4r-1A-OTQ"/>
                         <outlet property="statusIndicator" destination="RaY-rd-6x1" id="WOD-XW-yO0"/>
                         <outlet property="statusSpinner" destination="Vjd-9s-oAQ" id="IWF-oD-rLm"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="143" y="669.5"/>
+            <point key="canvasLocation" x="71.5" y="450"/>
         </scene>
     </scenes>
     <resources>

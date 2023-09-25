@@ -1,11 +1,3 @@
-//
-//  HandlingFlows.swift
-//  SplitTunnelProxy
-//
-//  Created by Michele Emiliani on 13/01/23.
-//  Copyright © 2023 PIA. All rights reserved.
-//
-
 import Foundation
 import NetworkExtension
 import os.log
@@ -13,47 +5,56 @@ import os.log
 @available(macOS 11.0, *)
 extension STProxyProvider {
     
-    // This method is called by the system whenever an app that
+    // This method is called whenever an app that
     // matches the current App Proxy configuration’s app rules
-    // creates a socket or sends/receives traffic on it.
+    // sends TCP or UDP network traffic.
     // returns:
     //   true  -> to handle a new flow
     //   false -> (for NETransparentProxyProvider)
     //            to let the system handle the flow
     //   false -> (for NEAppProxyProvider or NEDNSProxyProvider)
-    //            the flow is discarded by the system
+    //            the flow is discarded and the connection is closed
     override func handleNewFlow(_ flow: NEAppProxyFlow) -> Bool {
-        os_log("handling new flow!")
-        
-        // the name of the application
+        // the name of the application to which this flow belongs
         let appID = flow.metaData.sourceAppSigningIdentifier
-    
-        // flows that I want to handle
-        // apps IDs:
-        // ["com.google.Chrome.helper", "org.mozilla.firefox"]
-        let flowToHandle = ["org.mozilla.firefox"]
         
-        if flowToHandle.contains(appID) {
-            manageFlow(flow)
+        os_log("deciding if we need to handle %s flow", appID)
+        
+        // A condition could be added here to achieve inverse split tunnelling.
+        // Given the list of apps, we could either:
+        // - manage the flows of ONLY the apps in the list
+        // - manage the flows of ALL the OTHER apps, EXCEPT the ones in the list.
+        //   (If implemented, this would need to be tested performance-wise)
+        
+        if appsToManage!.contains(appID) {
+            redirectFlow(flow)
             
-            // returning true means wanting to handle the flow
+            // The flow of this app will be managed by the network extension
+            // The objective is that this traffic goes through the physical
+            // network interface.
+            // As if all the sockets of this process were bound to that
+            // interface.
             return true
         }
         
-        // letting all other flows go through the default system routing
-        // that means they are going through the vpn, when it is active on the system
+        // The flow of this app will be routed by the system as if the
+        // transparent proxy was not there.
+        // The idea is to run the extension only when we are connected to the vpn,
+        // so that this traffic goes through the vpn virtual network interface.
         return false
     }
     
-    private func manageFlow(_ flow: NEAppProxyFlow) -> Void {
-        
-        // check if the connection state is not "connected"
+    private func redirectFlow(_ flow: NEAppProxyFlow) -> Void {
+        // Check if the connection state is not "connected".
+        // Ideally we have already checked that during extension init.
+        // It is not bad to always check it here though, since the connection
+        // might have been closed due to the localProxy process crashing or exiting
         if self.connection!.state != .connected {
             os_log("Connection to local server not active!")
             return
         }
         
-        // info about the flow
+        // read-only info about the flow
         // same as appID
         let description = flow.metaData.debugDescription
         // the PID of the process can be extracted from the sourceAppAuditToken
@@ -72,6 +73,7 @@ extension STProxyProvider {
             manageTCPFlow(TCPFlow)
         }
         else if let UDPFlow = flow as? NEAppProxyUDPFlow {
+            UDPFlowsToHandle.append(UDPFlow)
             manageUDPFlow(UDPFlow)
         }
     }
@@ -81,6 +83,7 @@ extension STProxyProvider {
         // set as the local address and local port of the flow.
         // If the source application already specifed a local endpoint by
         // binding the socket, then this parameter is ignored.
+        // TODO: Check why this variable is not used
         let localEndpoint: NWHostEndpoint
         
         // open() is used by an NEProvider implementation
@@ -99,6 +102,7 @@ extension STProxyProvider {
         // TCPFlow.closeWriteWithError(nil)
     }
     
+    // TODO: Check if this is the correct way of reading and writing to a connection.
     private func readTCPFlowData(_ flow: NEAppProxyTCPFlow) -> Void {
         flow.readData { data, error in
             if error == nil, let readData = data, !readData.isEmpty {
@@ -142,6 +146,7 @@ extension STProxyProvider {
         })
     }
     
+    // TODO: This function is missing implementation
     private func manageUDPFlow(_ flow: NEAppProxyUDPFlow) -> Void {
         flow.open(withLocalEndpoint: flow.localEndpoint as? NWHostEndpoint) { error in
             if let error = error {

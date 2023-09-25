@@ -1,20 +1,11 @@
-/*
-See LICENSE folder for this sample’s licensing information.
-
-Abstract:
-This file contains initialization code for the system extension.
-*/
-
-// Change this to run the application
-//DEPLOYMENT_LOCATION = YES
-//DSTROOT = /
-//INSTALL_PATH = $(LOCAL_APPS_DIR)/MyDevelopmentApps
-//SKIP_INSTALL = NO
-
-// The system authorizes apps that a developer notarizes and distributes directly to users.
+// This is the entry point for the network extension process
 
 import Foundation
 import NetworkExtension
+import os.log
+
+// TODO: Ensure that logs from ProxyExtension are accessible and
+//       printed to stdout during debug
 
 // https://betterprogramming.pub/what-is-autorelease-pool-in-swift-c652784f329e
 autoreleasepool {
@@ -24,6 +15,7 @@ autoreleasepool {
     // The system extension must declare a mapping of Network Extension extension points to NEProvider subclass instances in its Info.plist.
     NEProvider.startSystemExtensionMode()
     IPCConnection.shared.startListener()
+    os_log(.debug, "started listening on IPCConnection")
 }
 
 dispatchMain()

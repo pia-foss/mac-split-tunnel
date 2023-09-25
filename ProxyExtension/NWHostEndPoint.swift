@@ -1,11 +1,3 @@
-//
-//  NWHostEndPoint.swift
-//  SplitTunnelProxy
-//
-//  Created by Michele Emiliani on 11/01/23.
-//  Copyright © 2023 PIA. All rights reserved.
-//
-
 import Foundation
 import NetworkExtension
 
