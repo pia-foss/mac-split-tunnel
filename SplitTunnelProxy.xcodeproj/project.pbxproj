@@ -21,6 +21,7 @@
 		D13B634F2970CE9A00839689 /* NWHostEndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = D13B634A296ED21200839689 /* NWHostEndPoint.swift */; };
 		D17F5D1A293E1DC300FB8DAF /* ProxyExtensionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D19293E1DC300FB8DAF /* ProxyExtensionManager.swift */; };
 		D17F5D1C293E701D00FB8DAF /* STProxyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D1B293E701D00FB8DAF /* STProxyProvider.swift */; };
+		D1A80A492AD07CE600FA9456 /* TCPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A80A482AD07CE600FA9456 /* TCPSocket.swift */; };
 		D1D447042ABCE52400A69316 /* SystemExtensionRequestDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D447032ABCE52400A69316 /* SystemExtensionRequestDelegate.swift */; };
 		D1FE4FB9295A1EA3002BBA20 /* ProxyAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1FE4FB8295A1EA3002BBA20 /* ProxyAppTests.swift */; };
 /* End PBXBuildFile section */
@@ -76,6 +77,7 @@
 		D13B634C2970CC6E00839689 /* HandlingFlows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandlingFlows.swift; sourceTree = "<group>"; };
 		D17F5D19293E1DC300FB8DAF /* ProxyExtensionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyExtensionManager.swift; sourceTree = "<group>"; };
 		D17F5D1B293E701D00FB8DAF /* STProxyProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STProxyProvider.swift; sourceTree = "<group>"; };
+		D1A80A482AD07CE600FA9456 /* TCPSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPSocket.swift; sourceTree = "<group>"; };
 		D1D447032ABCE52400A69316 /* SystemExtensionRequestDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemExtensionRequestDelegate.swift; sourceTree = "<group>"; };
 		D1FE4FB6295A1EA3002BBA20 /* SplitTunnelProxyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SplitTunnelProxyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1FE4FB8295A1EA3002BBA20 /* ProxyAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyAppTests.swift; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 				D17F5D1B293E701D00FB8DAF /* STProxyProvider.swift */,
 				D13B634C2970CC6E00839689 /* HandlingFlows.swift */,
 				D13B634A296ED21200839689 /* NWHostEndPoint.swift */,
+				D1A80A482AD07CE600FA9456 /* TCPSocket.swift */,
 			);
 			path = ProxyExtension;
 			sourceTree = "<group>";
@@ -319,6 +322,7 @@
 				C40A5C4B229DD6A500627D50 /* main.swift in Sources */,
 				D13B634F2970CE9A00839689 /* NWHostEndPoint.swift in Sources */,
 				D13B634E2970CE9600839689 /* HandlingFlows.swift in Sources */,
+				D1A80A492AD07CE600FA9456 /* TCPSocket.swift in Sources */,
 				D17F5D1C293E701D00FB8DAF /* STProxyProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
