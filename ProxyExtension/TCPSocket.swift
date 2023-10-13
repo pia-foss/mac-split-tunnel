@@ -52,7 +52,7 @@ class TCPSocket {
     }
     
     // Write data to the socket
-    func writeData(data: Data) {
+    func writeData(_ data: Data, completionHandler completion: @escaping (Error?) -> Void) {
         let bytesWritten = data.withUnsafeBytes {
             send(fileDescriptor, $0.baseAddress, data.count, 0)
         }
@@ -60,17 +60,18 @@ class TCPSocket {
             perror("send")
             exit(-1)
         }
+        completion(nil)
     }
     
     // Read data from the socket
-    func readData() -> Data? {
-        var buffer = [UInt8](repeating: 0, count: 1024) // Adjust buffer size as needed
+    func readData(completionHandler completion: @escaping (Data?, Error?) -> Void) {
+        var buffer = [UInt8](repeating: 0, count: 2048) // Adjust buffer size as needed
         let bytesRead = recv(fileDescriptor, &buffer, buffer.count, 0)
-        if bytesRead <= 0 {
-            // Error or connection closed
-            return nil
+        if bytesRead > 0 {
+            completion(Data(bytes: buffer, count: bytesRead), nil)
+            return
         }
-        return Data(bytes: buffer, count: bytesRead)
+        completion(nil, nil)
     }
     
     func closeConnection() {
