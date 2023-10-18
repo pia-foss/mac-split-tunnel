@@ -35,18 +35,11 @@ class STProxyProvider : NETransparentProxyProvider {
     var address: String?
     var port: String?
     var connection: NWTCPConnection?
-    // TODO: Check why we save this array
-    // Do we need this?
-    // Maybe map this array in a hash map with the app name as key?
-    var TCPFlowsToHandle: [NEAppProxyTCPFlow] = []
-    var UDPFlowsToHandle: [NEAppProxyUDPFlow] = []
 
     // MARK: Proxy Functions
-    // This function is called when the ProxyApp process calls the
-    // startTunnel() function
     override func startProxy(options: [String : Any]?, completionHandler: @escaping (Error?) -> Void) {
         os_log(.debug, "proxy extension started!")
-        
+
         guard let address = options!["localProxyConnectionAddress"] as? String else {
             os_log(.error, "cannot find localProxyConnectionAddress in options")
             return
@@ -66,8 +59,6 @@ class STProxyProvider : NETransparentProxyProvider {
         // Initiating the rules.
         // We want to be "notified" of all flows, so we can decide which to manage,
         // based on the flow's app name.
-        // We could also be limiting the flows that we get notified of.
-        // Right now it seems best to just include everything.
         //
         // Only outbound traffic is supported in NETransparentProxyNetworkSettings
         // TODO: This needs to be verified
@@ -83,48 +74,12 @@ class STProxyProvider : NETransparentProxyProvider {
         settings.includedNetworkRules = rules
         settings.excludedNetworkRules = nil
         
-        // These settings are also available.
-        // Leaving them here just as a note.
-        //
         // let dnsSettings = NEDNSSettings()
         // settings.dnsSettings = dnsSettings
         // let proxySettings = NEProxySettings()
         // settings.proxySettings = proxySettings
-        
-        // TODO: !!!
-        // TODO: This part need heavy changes.
-        // TODO: !!!
-        // This connection must be established with another component.
-        // Let's call it localProxy (for the lack of a better name).
-        // This component will receive, via this connection, all the flows
-        // (UDP and TCP network traffic) of the managed apps.
-        // We could either:
-        //
-        // - Use multiple connections, one for each managed application.
-        //   This will differentiate different apps' flows
-        //   based on the connection port.
-        //
-        // - Use a single connection and send all the flows of
-        //   all the managed apps to it.
-        //   We would need to differentiate between different applications.
-        //   Custom headers can be used to wrap the packages.
-        //   That packages would need to be wrapped
-        //   in the ProxyExtension process
-        //   and then unwrapped in the localProxy process.
-        //
-        // Now are just choosing a random port and listening on that port
-        // using netcat.
-        // Consider using a UDP connection or UNIX socket for better performance.
-        // (This can also be improved at a later stage)
+
         self.connection = self.createLocalTCPConnection(address: address, port: port)
-        os_log(.debug, "initiated connection to localProxy")
-        // TODO: Check status of this connection
-        // What happens if no process is listening on that port?
-        // If that is the case, the connection.state will never move to .Connected
-        // We might wanna check if that is the case, using a closure
-        // and also add a timeout to throw an error if that does not happen
-        // Q: Do we need to call this function in the setTunnelNetworkSettings
-        //         closure?
         
         // Sending the desired settings to the ProxyExtension process.
         // If the setting are not correct, an error will be thrown.
@@ -143,32 +98,8 @@ class STProxyProvider : NETransparentProxyProvider {
         }
     }
     
-    // this function is called when the application calls the
-    // manager.connection.stopTunnel function
     override func stopProxy(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
         closeLocalTCPConnection(connection: self.connection!)
         os_log(.debug, "proxy stopped!")
-    }
-    
-    // MARK: Managing the connection
-    
-    private func createLocalUDPSession(address: String, port: String) -> NWUDPSession {
-        let endpoint: NWEndpoint
-        endpoint = NWHostEndpoint(hostname: address, port: port)
-        return self.createUDPSession(to: endpoint, from: nil)
-    }
-    
-    private func closeLocalUDPSession(session: NWUDPSession) -> Void {
-        session.cancel()
-    }
-    
-    private func createLocalTCPConnection(address: String, port: String) -> NWTCPConnection {
-        let endpoint: NWEndpoint
-        endpoint = NWHostEndpoint(hostname: address, port: port)
-        return self.createTCPConnection(to: endpoint, enableTLS:false, tlsParameters:nil, delegate:nil)
-    }
-    
-    private func closeLocalTCPConnection(connection: NWTCPConnection) -> Void {
-        connection.cancel()
     }
 }

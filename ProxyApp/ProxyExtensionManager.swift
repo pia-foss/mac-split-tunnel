@@ -18,7 +18,10 @@ extension ViewController {
         // we want to handle the flow of these apps
         // other IDs:
         // ["com.google.Chrome.helper", "org.mozilla.firefox"]
-        self.appsToManage = ["org.mozilla.firefox"]
+        //
+        // use this command to get the bundle ID of an app
+        // $ osascript -e 'id of app "Google Chrome"'
+        self.appsToManage = ["com.privateinternetaccess.splittunnel.testapp"]
     }
     
     // Start by activating the system extension
@@ -189,5 +192,3 @@ extension ViewController {
         session.stopTunnel()
     }
 }
-
-
