@@ -70,21 +70,26 @@ extension STProxyProvider {
             let remoteEndpointPort = UInt16(parts[1])!
             
             // Create the socket that will proxy the traffic
-            let socket = TCPSocket(host: remoteEndpointAddress, port: remoteEndpointPort)
+            let socket = TCPSocket(host: remoteEndpointAddress,
+                                   port: remoteEndpointPort,
+                                appName: appName)
             socket.create()
+            socket.bindToNetworkInterface(interfaceName: "en0")
             socket.connectToHost()
             
             // We read from the flow:
             // that means reading the OUTBOUND traffic of the application
+            // TODO: Change this from a recursive function to a while (true) loop
             self.readTCPFlowData(TCPFlow, socket)
         }
-        
+    }
+    
+    private func closeFlow(_ TCPFlow: NEAppProxyTCPFlow) {
         // close the flow when you dont want to read and write to it anymore
         // TODO: is that needed to restore "normal" traffic for the applications that we stop managing?
-        // Yes, probably when we disable split tunnelling.
         // Does the app work properly, or does it have to be restarted?
-        // TCPFlow.closeReadWithError(nil)
-        // TCPFlow.closeWriteWithError(nil)
+        TCPFlow.closeReadWithError(nil)
+        TCPFlow.closeWriteWithError(nil)
     }
     
     private func readTCPFlowData(_ TCPFlow: NEAppProxyTCPFlow, _ socket: TCPSocket) {
@@ -96,51 +101,63 @@ extension STProxyProvider {
         // to schedule another read operation and another execution of the
         // completion handler block.
         // This call is blocking: until some data is read the closure will not be called
-        TCPFlow.readData { data, error in
-            if error == nil, let readData = data, !readData.isEmpty {
+        TCPFlow.readData { dataReadFromFlow, flowError in
+            if flowError == nil, let dataToWriteToSocket = dataReadFromFlow, !dataToWriteToSocket.isEmpty {
                 // writing to the real endpoint (via socket) what we read from the flow.
                 // This is the application OUTBOUND traffic
-                socket.writeData(readData, completionHandler: { writeError in
-                    if writeError == nil {
+                if socket.status == .closed {
+                    self.closeFlow(TCPFlow)
+                    return
+                }
+                socket.writeData(dataToWriteToSocket, completionHandler: { socketError in
+                    if socketError == nil {
                         // wait for answer from the endpoint
                         self.writeTCPFlowData(TCPFlow, socket)
                         self.readTCPFlowData(TCPFlow, socket)
-                    } else {
-                        os_log("error during socket writeData! %s", writeError.debugDescription)
+                    } else { // handling errors for socket send()
+                        os_log("error during socket writeData! %s", socketError.debugDescription)
+                        socket.closeConnection()
+                        self.closeFlow(TCPFlow)
                     }
                 })
-            } else {
-                // Handle an error on the flow read.
-                if error != nil {
-                    os_log("error during flow read! %s", error.debugDescription)
-                } else {
-                    // TCPFlow.readData returned 0 data, so no data can be read from the flow.
-                    // We try calling TCPFlow.readData anyway
-                    //self.readTCPFlowData(TCPFlow, socket)
+            } else { // handling errors for flow readData()
+                if flowError != nil {
+                    os_log("error during flow read! %s", flowError.debugDescription)
+                } else { // is reading 0 data from a flow different than getting an error? (verify this!)
+                    os_log("read no data from flow readData()")
                 }
+                // no op: We stop calling readTCPFlowData(), ending the recursive loop
+                socket.closeConnection()
+                self.closeFlow(TCPFlow)
             }
         }
     }
     
     private func writeTCPFlowData(_ TCPFlow: NEAppProxyTCPFlow, _ socket: TCPSocket) {
+        if socket.status == .closed {
+            self.closeFlow(TCPFlow)
+            return
+        }
         // This call is blocking: until some data is read the closure will not be called
-        socket.readData(completionHandler: { data, error in
-            if error == nil, let writeData = data, !writeData.isEmpty {
-                TCPFlow.write(writeData) { flowError in
+        socket.readData(completionHandler: { dataReadFromSocket, socketError in
+            if socketError == nil, let dataToWriteToFlow = dataReadFromSocket, !dataToWriteToFlow.isEmpty {
+                TCPFlow.write(dataToWriteToFlow) { flowError in
                     if flowError == nil {
-                        //self.readTCPFlowData(TCPFlow, socket)
-                        os_log("no op")
+                        // no op, if write executed correctly
                     } else {
                         os_log("error during flow write! %s", flowError.debugDescription)
+                        socket.closeConnection()
+                        self.closeFlow(TCPFlow)
                     }
                 }
-            } else {
-                // Handle an error on the connection read.
-                if error != nil {
-                    os_log("error during connection read! %s", error.debugDescription)
+            } else { // handling socket readData() errors or read 0 data from socket
+                if socketError == nil {
+                    os_log("read no data from socket readData()") // is this error different from the other one? (verify this!)
                 } else {
-                    os_log("read no data from socket read!")
+                    os_log("error during connection read! %s", socketError.debugDescription)
                 }
+                socket.closeConnection()
+                self.closeFlow(TCPFlow)
             }
         })
     }

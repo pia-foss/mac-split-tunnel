@@ -2,15 +2,29 @@ import Foundation
 import Darwin
 import os.log
 
+enum SocketStatus {
+    case empty
+    case created
+    case connected
+    case closed
+}
+
+enum SocketError: Error {
+    case readError
+    case writeError
+}
+
 @available(macOS 11.0, *)
 class TCPSocket {
     var fileDescriptor: Int32
+    var status: SocketStatus
     let host: String
     let port: UInt16
     let appName: String
     
     init(host: String, port: UInt16, appName: String) {
         fileDescriptor = -1
+        status = .empty
         self.host = host
         self.port = port
         self.appName = appName
@@ -23,6 +37,7 @@ class TCPSocket {
             perror("socket")
             return false
         }
+        status = .created
         return true
     }
     
@@ -54,6 +69,7 @@ class TCPSocket {
             closeConnection() // is this needed if the attemp to connect() failed?
             return false
         }
+        status = .connected
         return true
     }
     
@@ -64,7 +80,7 @@ class TCPSocket {
         if bytesWritten == -1 {
             os_log("Error when writing data to the socket!")
             perror("send")
-            closeConnection()
+            completion(SocketError.writeError)
         } else {
             completion(nil)
         }
@@ -73,17 +89,22 @@ class TCPSocket {
     func readData(completionHandler completion: @escaping (Data?, Error?) -> Void) {
         var buffer = [UInt8](repeating: 0, count: 2048) // Adjust buffer size as needed
         let bytesRead = recv(fileDescriptor, &buffer, buffer.count, 0)
-        if bytesRead > 0 {
+        if bytesRead == -1 {
+            os_log("Error when reading data from the socket!")
+            perror("recv")
+            completion(nil, SocketError.readError)
+        } else if bytesRead > 0 {
             completion(Data(bytes: buffer, count: bytesRead), nil)
-            return
+        } else { // is reading 0 bytes from a socket an error? (verify this!)
+            completion(nil, nil)
         }
-        completion(nil, nil)
     }
     
     func closeConnection() {
         if fileDescriptor != -1 {
             close(fileDescriptor)
             fileDescriptor = -1
+            status = .closed
         }
     }
     
