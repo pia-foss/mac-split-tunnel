@@ -42,16 +42,6 @@ class TCPSocket {
         return true
     }
     
-    func setOptions () -> Bool {
-        var reuse: Int32 = 1
-        if setsockopt(fileDescriptor, SOL_SOCKET, SO_REUSEADDR, &reuse, socklen_t(MemoryLayout<Int32>.size)) == -1 {
-            os_log("Error when setting the socket options!")
-            perror("setsockopt")
-            return false
-        }
-        return true
-    }
-    
     func connectToHost() -> Bool {
         var serverAddress = sockaddr_in()
         serverAddress.sin_len = __uint8_t(MemoryLayout<sockaddr_in>.size)
@@ -65,9 +55,9 @@ class TCPSocket {
             }
         }
         if connectResult == -1 {
-            os_log("Error when setting the socket options!")
+            os_log("Error when calling connect()")
             perror("connect")
-            closeConnection() // is this needed if the attemp to connect() failed?
+            closeConnection()
             return false
         }
         status = .connected
@@ -78,26 +68,34 @@ class TCPSocket {
         let bytesWritten = data.withUnsafeBytes {
             send(fileDescriptor, $0.baseAddress, data.count, 0)
         }
-        if bytesWritten == -1 {
-            os_log("Error when writing data to the socket!")
-            perror("send")
+        if bytesWritten > 0 {
+            completion(nil)
+        // We do not really care if send() returned 0 or -1
+        // We can no longer read or write to the socket so we return an error
+        } else if bytesWritten == 0 {
+            os_log("send(): The connection was gracefully closed by the peer")
             completion(SocketError.writeError)
         } else {
-            completion(nil)
+            os_log("Error when calling send()")
+            perror("send")
+            completion(SocketError.writeError)
         }
     }
     
     func readData(completionHandler completion: @escaping (Data?, Error?) -> Void) {
         var buffer = [UInt8](repeating: 0, count: 2048) // Adjust buffer size as needed
         let bytesRead = recv(fileDescriptor, &buffer, buffer.count, 0)
-        if bytesRead == -1 {
-            os_log("Error when reading data from the socket!")
+        if bytesRead > 0 {
+            completion(Data(bytes: buffer, count: bytesRead), nil)
+        // We do not really care if recv() returned 0 or -1
+        // We can no longer read or write to the socket so we return an error
+        } else if bytesRead == 0 {
+            os_log("recv(): The connection was gracefully closed by the peer")
+            completion(nil, SocketError.readError)
+        } else {
+            os_log("Error when calling recv()")
             perror("recv")
             completion(nil, SocketError.readError)
-        } else if bytesRead > 0 {
-            completion(Data(bytes: buffer, count: bytesRead), nil)
-        } else { // is reading 0 bytes from a socket an error? (verify this!)
-            completion(nil, nil)
         }
     }
     
@@ -107,30 +105,6 @@ class TCPSocket {
             fileDescriptor = -1
             status = .closed
         }
-    }
-
-    func getNetworkInterfaceIP(interfaceName: String) -> String? {
-        var address: String?
-        var ifaddr: UnsafeMutablePointer<ifaddrs>? = nil
-        if getifaddrs(&ifaddr) == 0 {
-            var ptr = ifaddr
-            while ptr != nil {
-                defer { ptr = ptr?.pointee.ifa_next }
-
-                guard let interface = ptr?.pointee else { return nil }
-                let addrFamily = interface.ifa_addr.pointee.sa_family
-                if addrFamily == UInt8(AF_INET) || addrFamily == UInt8(AF_INET6) {
-                    let name: String = String(cString: (interface.ifa_name))
-                    if  name == interfaceName {
-                        var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
-                        getnameinfo(interface.ifa_addr, socklen_t((interface.ifa_addr.pointee.sa_len)), &hostname, socklen_t(hostname.count), nil, socklen_t(0), NI_NUMERICHOST)
-                        address = String(cString: hostname)
-                    }
-                }
-            }
-            freeifaddrs(ifaddr)
-        }
-        return address
     }
     
     func bindToNetworkInterface(interfaceName: String) -> Bool {
@@ -147,7 +121,7 @@ class TCPSocket {
             }
         }
         if bindResult == -1 {
-            os_log("Error when binding to physical interface!")
+            os_log("Error when when calling bind()")
             perror("bind")
             return false
         }
