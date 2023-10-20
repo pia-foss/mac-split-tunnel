@@ -2,7 +2,9 @@ import Foundation
 import NetworkExtension
 import os.log
 
-// TODO: Handle DNS requests of managed (redirected) flows
+// TODO: Handle DNS requests of managed flows
+//  Be aware that returning false in NEDNSProxyProvider handleNewFlow(),
+//  the flow is discarded and the connection is closed
 
 // NETransparentProxyProvider is a subclass of NEAppProxyProvider.
 // The behaviour is different compared to its super class:
@@ -27,6 +29,8 @@ import os.log
 // To test that all the flows get captured by the rules, change the
 // STProxyProvider class to a NEAppProxyProvider and return false
 // in handleNewFlow, then verify that no app can connect to the internet.
+
+
 @available(macOS 11.0, *)
 class STProxyProvider : NETransparentProxyProvider {
     

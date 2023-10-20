@@ -3,6 +3,11 @@ import Darwin
 import os.log
 import Network
 
+enum TransportProtocol {
+    case UDP
+    case TCP
+}
+
 enum SocketStatus {
     case empty
     case created
@@ -16,23 +21,30 @@ enum SocketError: Error {
 }
 
 @available(macOS 11.0, *)
-class TCPSocket {
+class Socket {
     var fileDescriptor: Int32
     var status: SocketStatus
+    let transportProtocol: TransportProtocol
     let host: String
     let port: UInt16
     let appName: String
     
-    init(host: String, port: UInt16, appName: String) {
+    init(transportProtocol: TransportProtocol, host: String, port: UInt16, appName: String) {
         fileDescriptor = -1
         status = .empty
+        self.transportProtocol = transportProtocol
         self.host = host
         self.port = port
         self.appName = appName
     }
     
     func create() -> Bool {
-        fileDescriptor = socket(AF_INET, SOCK_STREAM, 0)
+        switch transportProtocol {
+        case .UDP:
+            fileDescriptor = socket(AF_INET, SOCK_DGRAM, 0)
+        case .TCP:
+            fileDescriptor = socket(AF_INET, SOCK_STREAM, 0)
+        }
         if fileDescriptor == -1 {
             os_log("Error when creating the socket!")
             perror("socket")
@@ -70,9 +82,9 @@ class TCPSocket {
         }
         if bytesWritten > 0 {
             completion(nil)
-        // We do not really care if send() returned 0 or -1
-        // We can no longer read or write to the socket so we return an error
         } else if bytesWritten == 0 {
+            // We do not really care if send() returned 0 or -1
+            // We can no longer read or write to the socket so we return an error
             os_log("send(): The connection was gracefully closed by the peer")
             completion(SocketError.writeError)
         } else {
@@ -87,9 +99,9 @@ class TCPSocket {
         let bytesRead = recv(fileDescriptor, &buffer, buffer.count, 0)
         if bytesRead > 0 {
             completion(Data(bytes: buffer, count: bytesRead), nil)
-        // We do not really care if recv() returned 0 or -1
-        // We can no longer read or write to the socket so we return an error
         } else if bytesRead == 0 {
+            // We do not really care if recv() returned 0 or -1
+            // We can no longer read or write to the socket so we return an error
             os_log("recv(): The connection was gracefully closed by the peer")
             completion(nil, SocketError.readError)
         } else {
