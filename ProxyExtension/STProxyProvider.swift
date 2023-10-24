@@ -19,13 +19,6 @@ import os.log
 //   (such as Network.framework or NSURLSession)
 //   that match the includedNetworkRules will not bypass DNS resolution.
 //
-// The provider handles the remote side of the connection using
-// an API such as NWConnection or nw_connection_t
-// In order to forward packets to the proxy, you must directly
-// connect to the proxy from handleNewFlow and directly transfer
-// the flow of parameters to the corresponding socket.
-//
-//
 // To test that all the flows get captured by the rules, change the
 // STProxyProvider class to a NEAppProxyProvider and return false
 // in handleNewFlow, then verify that no app can connect to the internet.
@@ -36,24 +29,11 @@ class STProxyProvider : NETransparentProxyProvider {
     
     // MARK: Proxy Properties
     var appsToManage: [String]?
-    var address: String?
-    var port: String?
-    var connection: NWTCPConnection?
 
     // MARK: Proxy Functions
     override func startProxy(options: [String : Any]?, completionHandler: @escaping (Error?) -> Void) {
         os_log(.debug, "proxy extension started!")
 
-        guard let address = options!["localProxyConnectionAddress"] as? String else {
-            os_log(.error, "cannot find localProxyConnectionAddress in options")
-            return
-        }
-        self.address = address
-        guard let port = options!["localProxyConnectionPort"] as? String else {
-            os_log(.error, "cannot find localProxyConnectionPort in options")
-            return
-        }
-        self.port = port
         guard let appsToManage = options!["appsToManage"] as? [String] else {
             os_log(.error, "cannot find appsToManage in options")
             return
@@ -65,26 +45,24 @@ class STProxyProvider : NETransparentProxyProvider {
         // based on the flow's app name.
         //
         // Only outbound traffic is supported in NETransparentProxyNetworkSettings
-        // TODO: This needs to be verified
         var rules:[NENetworkRule] = []
         let ruleAllTCP = NENetworkRule(remoteNetwork: nil, remotePrefix: 0, localNetwork: nil, localPrefix: 0, protocol: .TCP, direction: .outbound)
         let ruleAllUDP = NENetworkRule(remoteNetwork: nil, remotePrefix: 0, localNetwork: nil, localPrefix: 0, protocol: .UDP, direction: .outbound)
         rules.append(ruleAllTCP)
         rules.append(ruleAllUDP)
 
-        // Setting the NETransparentProxyNetworkSettings for the extension process
-        // Using the same server address used in NETransparentProxyManager
-        let settings = NETransparentProxyNetworkSettings(tunnelRemoteAddress: address)
+        // It is unclear what tunnelRemoteAddress means in the case of
+        // NETransparentProxy.
+        // header file says: NETransparentProxyNetworkSettings are used
+        // to communicate the desired network settings for the proxy.
+        // Official docs do not know as well:
+        // https://developer.apple.com/documentation/networkextension/netunnelnetworksettings/1406032-init
+        //
+        // Setting it to localhost for now, until a 'proper' solution is found
+        let settings = NETransparentProxyNetworkSettings(tunnelRemoteAddress: "127.0.0.1")
         settings.includedNetworkRules = rules
         settings.excludedNetworkRules = nil
-        
-        // let dnsSettings = NEDNSSettings()
-        // settings.dnsSettings = dnsSettings
-        // let proxySettings = NEProxySettings()
-        // settings.proxySettings = proxySettings
 
-        self.connection = self.createLocalTCPConnection(address: address, port: port)
-        
         // Sending the desired settings to the ProxyExtension process.
         // If the setting are not correct, an error will be thrown.
         self.setTunnelNetworkSettings(settings) { [] error in
@@ -103,7 +81,6 @@ class STProxyProvider : NETransparentProxyProvider {
     }
     
     override func stopProxy(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
-        closeLocalTCPConnection(connection: self.connection!)
         os_log(.debug, "proxy stopped!")
     }
 }

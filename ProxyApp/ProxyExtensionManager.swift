@@ -12,14 +12,9 @@ extension ViewController {
     
     // all the custom settings that we pass to the ProxyExtension process
     func initSettings() {
-        // tunnel server address and port
-        self.localProxyConnectionAddress = "127.0.0.1"
-        self.localProxyConnectionPort = "9001"
-        // we want to handle the flow of these apps
-        // other IDs:
-        // ["com.google.Chrome.helper", "org.mozilla.firefox"]
+        // We want to handle the flow of these apps
         //
-        // use this command to get the bundle ID of an app
+        // Use this command to get the bundle ID of an app
         // $ osascript -e 'id of app "Google Chrome"'
         self.appsToManage = ["com.privateinternetaccess.splittunnel.testapp"]
     }
@@ -46,7 +41,7 @@ extension ViewController {
     // Deactivates the extension, effectively uninstalling it.
     // The extension no longer is listed in
     // `systemextensionsctl list`.
-    // Make sure that this also removes "MyTransparentProxy" from
+    // This also removes "MyTransparentProxy" from
     // the networks in system settings.
     // There is no need to do this every time, calling activate
     // replaces the old extension with the new one,
@@ -70,10 +65,9 @@ extension ViewController {
     // VPN configuration stored in the Network Extension preferences.
     // Multiple VPN configurations can be created and managed by
     // creating multiple NETunnelProviderManager instances.
-    func loadManager(completion: @escaping () -> Void) {
+    func loadManager() -> Void {
         os_log("loading the extension manager!")
         
-        // TODO: Check this function
         initSettings()
 
         NETransparentProxyManager.loadAllFromPreferences() { loadedManagers, error in
@@ -96,13 +90,13 @@ extension ViewController {
                 }
             } else {
                 os_log("ERROR: no managers found, creating one!")
-                // The completion function is called if no previous extension
+                // The create function is called if no previous extension
                 // managers can be found.
                 // Unless the extension is deactivated, creating it once and
                 // loading all the following times is correct.
                 // Upon an update of the app, it would be best to deactivate the
                 // extension as a good practice.
-                completion()
+               self.createManager()
             }
         }
     }
@@ -118,27 +112,17 @@ extension ViewController {
         newManager.localizedDescription = "MyTransparentProxy"
         
         // Configure a VPN protocol to use a Packet Tunnel Provider
-        let proto = NETunnelProviderProtocol()
-            // This must match the app extension bundle identifier
-            proto.providerBundleIdentifier = "com.privateinternetaccess.splittunnel.poc.extension"
-            // In a classic VPN, this would be the IP address/url of the VPN server.
-            // There is probably no concept here of a network interface since
-            // this is a high level API.
-            // The NE framework is providing a (sort of an) interface
-            // Traffic is captured using general rules
-            proto.serverAddress = self.localProxyConnectionAddress+":"+self.localProxyConnectionPort
-            // Pass additional vendor-specific information to the tunnel
-            proto.providerConfiguration = [:]
-            // proxy settings to use for connections routed through the tunnel
-            // let proxy = NEProxySettings()
-            // proto.proxySettings = proxy
-            proto.includeAllNetworks = false
-            proto.excludeLocalNetworks = true
-            // if YES, route rules for this tunnel will take precendence over
-            // any locally-defined routes
-            proto.enforceRoutes = false
-        
-        newManager.protocolConfiguration = proto
+        let tunnelProtocol = NETunnelProviderProtocol()
+        // This must match the app extension bundle identifier
+        tunnelProtocol.providerBundleIdentifier =
+            "com.privateinternetaccess.splittunnel.poc.extension"
+        // As for NETransparentProxyNetworkSettings unsure about the meaning of
+        // this setting in the context of a NETransparentProxy.
+        // Docs say it should be the VPN address
+        //
+        // Setting it to localhost for now, until a 'proper' solution is found
+        tunnelProtocol.serverAddress = "127.0.0.1"
+        newManager.protocolConfiguration = tunnelProtocol
         
         // Enable the manager by default
         newManager.isEnabled = true
@@ -152,7 +136,11 @@ extension ViewController {
     func startTunnel(manager: NETransparentProxyManager) {
         os_log("starting tunnel!")
 
-        // This is needed in order to create the network settings item
+        // A popup will be triggered the first time this is run
+        // after activating the extension.
+        // It will ask to Add "SimpleFirewall" to Proxy configurations.
+        // After clicking "Allow" an entry will be added in
+        // settings/Network/VPN & Filters under Filters & Proxies
         manager.saveToPreferences { errorSave in
             manager.loadFromPreferences { errorLoad in
                 if errorSave != nil || errorLoad != nil {
@@ -162,15 +150,12 @@ extension ViewController {
                 
                 // The NETunnelProviderSession API is used to control network tunnel
                 // services provided by NETunnelProvider implementations.
-                // It is a subclass of NEVPNConnection, which implements the method
-                // startVPNTunnel.
                 if let session = manager.connection as? NETunnelProviderSession {
                     do {
-                        // This function is used to start the tunnel using the configuration associated with this connection object. The tunnel connection process is started and this function returns immediately.
+                        // This function is used to start the tunnel (the proxy)
+                        // passing it the following settings
                         try session.startTunnel(options: [
-                            "localProxyConnectionAddress" : self.localProxyConnectionAddress,
-                               "localProxyConnectionPort" : self.localProxyConnectionPort,
-                                           "appsToManage" : self.appsToManage
+                            "appsToManage" : self.appsToManage
                         ] as [String : Any])
                     } catch {
                         os_log("startTunnel error!")
