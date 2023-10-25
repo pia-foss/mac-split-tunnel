@@ -24,8 +24,6 @@ class ViewController: NSViewController {
     @IBOutlet var stopButton: NSButton!
     
     var manager: NETransparentProxyManager?
-    var localProxyConnectionAddress: String = ""
-    var localProxyConnectionPort: String = ""
     var appsToManage: [String] = []
     
     var status: Status = .stopped {
@@ -94,9 +92,7 @@ class ViewController: NSViewController {
     }
     
     @IBAction func loadManager(_ sender: Any) {
-        loadManager() {
-            self.createManager()
-        }
+        loadManager()
     }
     
     @IBAction func startTunnel(_ sender: Any) {
