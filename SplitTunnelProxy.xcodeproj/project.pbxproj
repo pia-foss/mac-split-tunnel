@@ -17,6 +17,7 @@
 		C4B45DBD2273A0020050C59B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C4B45DBC2273A0020050C59B /* Assets.xcassets */; };
 		C4B45DC02273A0020050C59B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C4B45DBE2273A0020050C59B /* Main.storyboard */; };
 		C4B45DDE2273A3450050C59B /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4B45DDD2273A3450050C59B /* NetworkExtension.framework */; };
+		D12A9EA02AE98D880009BA23 /* ProxyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D12A9E9F2AE98D870009BA23 /* ProxyApp.swift */; };
 		D13B634E2970CE9600839689 /* HandlingFlows.swift in Sources */ = {isa = PBXBuildFile; fileRef = D13B634C2970CC6E00839689 /* HandlingFlows.swift */; };
 		D13B634F2970CE9A00839689 /* NWHostEndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = D13B634A296ED21200839689 /* NWHostEndPoint.swift */; };
 		D17F5D1A293E1DC300FB8DAF /* ProxyExtensionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D19293E1DC300FB8DAF /* ProxyExtensionManager.swift */; };
@@ -74,6 +75,7 @@
 		C4B45DC12273A0020050C59B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C4B45DC22273A0020050C59B /* ProxyApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ProxyApp.entitlements; sourceTree = "<group>"; };
 		C4B45DDD2273A3450050C59B /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
+		D12A9E9F2AE98D870009BA23 /* ProxyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyApp.swift; sourceTree = "<group>"; };
 		D13B634A296ED21200839689 /* NWHostEndPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NWHostEndPoint.swift; sourceTree = "<group>"; };
 		D13B634C2970CC6E00839689 /* HandlingFlows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandlingFlows.swift; sourceTree = "<group>"; };
 		D17F5D19293E1DC300FB8DAF /* ProxyExtensionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyExtensionManager.swift; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 				C4B45DC22273A0020050C59B /* ProxyApp.entitlements */,
 				D17F5D19293E1DC300FB8DAF /* ProxyExtensionManager.swift */,
 				D1D447032ABCE52400A69316 /* SystemExtensionRequestDelegate.swift */,
+				D12A9E9F2AE98D870009BA23 /* ProxyApp.swift */,
 			);
 			path = ProxyApp;
 			sourceTree = "<group>";
@@ -329,6 +332,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D12A9EA02AE98D880009BA23 /* ProxyApp.swift in Sources */,
 				D17F5D1A293E1DC300FB8DAF /* ProxyExtensionManager.swift in Sources */,
 				D1D447042ABCE52400A69316 /* SystemExtensionRequestDelegate.swift in Sources */,
 				C4B1415C227BBC0200B26560 /* IPCConnection.swift in Sources */,
