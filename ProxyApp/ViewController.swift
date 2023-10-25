@@ -11,6 +11,8 @@ We will probably need some bindings for that.
  */
 class ViewController: NSViewController {
     
+    var proxyApp = ProxyAppDefault()
+    
     enum Status {
         case stopped
         case indeterminate
@@ -22,9 +24,6 @@ class ViewController: NSViewController {
     @IBOutlet var statusSpinner: NSProgressIndicator!
     @IBOutlet var startButton: NSButton!
     @IBOutlet var stopButton: NSButton!
-    
-    var manager: NETransparentProxyManager?
-    var appsToManage: [String] = []
     
     var status: Status = .stopped {
         didSet {
@@ -52,30 +51,6 @@ class ViewController: NSViewController {
         }
     }
     
-    // Get the Bundle of the system extension.
-    lazy var extensionBundle: Bundle = {
-        
-        let extensionsDirectoryURL = URL(fileURLWithPath: "Contents/Library/SystemExtensions", relativeTo: Bundle.main.bundleURL)
-        let extensionURLs: [URL]
-        do {
-            extensionURLs = try FileManager.default.contentsOfDirectory(at: extensionsDirectoryURL,
-                                                includingPropertiesForKeys: nil,
-                                                                   options: .skipsHiddenFiles)
-        } catch let error {
-            fatalError("Failed to get the contents of \(extensionsDirectoryURL.absoluteString): \(error.localizedDescription)")
-        }
-        
-        guard let extensionURL = extensionURLs.first else {
-            fatalError("Failed to find any system extensions")
-        }
-        
-        guard let extensionBundle = Bundle(url: extensionURL) else {
-            fatalError("Failed to create a bundle with URL \(extensionURL.absoluteString)")
-        }
-        
-        return extensionBundle
-    }()
-    
     override func viewWillAppear() {
         super.viewWillAppear()
         status = .stopped
@@ -83,31 +58,39 @@ class ViewController: NSViewController {
     
     // MARK: UI BUTTONS
     @IBAction func activate(_ sender: Any) {
-        activateExtension()
+        proxyApp.setManagedApps(apps: ["com.privateinternetaccess.splittunnel.testapp"])
+        guard proxyApp.activateExtension() else {
+            fatalError("Failed to activate the extension")
+        }
     }
     
     @IBAction func deactivate(_ sender: Any) {
-        deactivateExtension()
+        guard proxyApp.deactivateExtension() else {
+            fatalError("Failed to deactivate the extension")
+        }
         status = .stopped
     }
     
     @IBAction func loadManager(_ sender: Any) {
-        loadManager()
+        guard proxyApp.loadOrInstallProxyManager() else {
+            fatalError("Failed to load or install the proxy manager")
+        }
     }
     
     @IBAction func startTunnel(_ sender: Any) {
         if status != .running {
-            startTunnel(manager: self.manager!)
+            guard proxyApp.startProxy() else {
+                fatalError("Failed to start the proxy")
+            }
             status = .running
         }
     }
     
-    // Stopping the tunnel is INCREDIBLY slow for some reason
-    // It takes 5 full seconds from when the request is sent from
-    // the app, until the actual MyTransparentProxy stops
     @IBAction func stopTunnel(_ sender: Any) {
         if status != .stopped {
-            stopTunnel(manager: self.manager!)
+            guard proxyApp.stopProxy() else {
+                fatalError("Failed to stop the proxy")
+            }
             status = .stopped
         }
     }
