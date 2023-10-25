@@ -19,11 +19,6 @@ extension ViewController {
         self.appsToManage = ["com.privateinternetaccess.splittunnel.testapp"]
     }
     
-    // Start by activating the system extension
-    // OSSystemExtensionRequest
-    // A request to activate or deactivate a system extension.
-    // Prompts user password and allow in system settings.
-    // This needs to be called everytime the extension is modified
     func activateExtension() -> Void {
         os_log("activating extension!")
         
@@ -38,14 +33,6 @@ extension ViewController {
         os_log("extension activation request sent!")
     }
     
-    // Deactivates the extension, effectively uninstalling it.
-    // The extension no longer is listed in
-    // `systemextensionsctl list`.
-    // This also removes "MyTransparentProxy" from
-    // the networks in system settings.
-    // There is no need to do this every time, calling activate
-    // replaces the old extension with the new one,
-    // if it has been modified
     func deactivateExtension() -> Void {
         os_log("deactivating extension!")
         
@@ -59,12 +46,6 @@ extension ViewController {
         os_log("extension deactivation request sent!")
     }
     
-    // This can load the existing "MyTrasparentProxy", if present
-    // in system settings/network.
-    // Each NETunnelProviderManager instance corresponds to a single
-    // VPN configuration stored in the Network Extension preferences.
-    // Multiple VPN configurations can be created and managed by
-    // creating multiple NETunnelProviderManager instances.
     func loadManager() -> Void {
         os_log("loading the extension manager!")
         
@@ -90,12 +71,6 @@ extension ViewController {
                 }
             } else {
                 os_log("ERROR: no managers found, creating one!")
-                // The create function is called if no previous extension
-                // managers can be found.
-                // Unless the extension is deactivated, creating it once and
-                // loading all the following times is correct.
-                // Upon an update of the app, it would be best to deactivate the
-                // extension as a good practice.
                self.createManager()
             }
         }
@@ -131,16 +106,9 @@ extension ViewController {
         os_log("manager created!")
     }
         
-    // This function starts the the process
-    // "com.privateinternetaccess.splittunnel.poc.extension"
     func startTunnel(manager: NETransparentProxyManager) {
         os_log("starting tunnel!")
 
-        // A popup will be triggered the first time this is run
-        // after activating the extension.
-        // It will ask to Add "SimpleFirewall" to Proxy configurations.
-        // After clicking "Allow" an entry will be added in
-        // settings/Network/VPN & Filters under Filters & Proxies
         manager.saveToPreferences { errorSave in
             manager.loadFromPreferences { errorLoad in
                 if errorSave != nil || errorLoad != nil {
@@ -166,10 +134,6 @@ extension ViewController {
         }
     }
     
-    // Disconnection can be quite slow, taking >5 seconds.
-    // While disconnecting, the traffic acts as the proxy was active.
-    // After the disconnection is completed, the process
-    // "com.privateinternetaccess.splittunnel.poc.extension" is killed.
     func stopTunnel(manager: NETransparentProxyManager) {
         os_log("stopping tunnel!")
         
