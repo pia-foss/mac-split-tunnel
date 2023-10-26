@@ -138,6 +138,7 @@
 			isa = PBXGroup;
 			children = (
 				03411C5003411ED000000001 /* README.md */,
+				D16DF7772AEAC7340082B58C /* UI */,
 				C4B45DB722739FFF0050C59B /* ProxyApp */,
 				C40A5C47229DD6A500627D50 /* ProxyExtension */,
 				D1FE4FB7295A1EA3002BBA20 /* ProxyTests */,
@@ -160,9 +161,6 @@
 			isa = PBXGroup;
 			children = (
 				C4B45DB822739FFF0050C59B /* AppDelegate.swift */,
-				C4B45DBA22739FFF0050C59B /* ViewController.swift */,
-				C4B45DBC2273A0020050C59B /* Assets.xcassets */,
-				C4B45DBE2273A0020050C59B /* Main.storyboard */,
 				C4B45DC12273A0020050C59B /* Info.plist */,
 				C4B45DC22273A0020050C59B /* ProxyApp.entitlements */,
 				D17F5D19293E1DC300FB8DAF /* ProxyAppDefault.swift */,
@@ -179,6 +177,16 @@
 				C4B45DDD2273A3450050C59B /* NetworkExtension.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D16DF7772AEAC7340082B58C /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				C4B45DBA22739FFF0050C59B /* ViewController.swift */,
+				C4B45DBC2273A0020050C59B /* Assets.xcassets */,
+				C4B45DBE2273A0020050C59B /* Main.storyboard */,
+			);
+			path = UI;
 			sourceTree = "<group>";
 		};
 		D1FE4FB7295A1EA3002BBA20 /* ProxyTests */ = {
