@@ -36,14 +36,14 @@
 			containerPortal = C4B45DAD22739FFF0050C59B /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = C40A5C44229DD6A500627D50;
-			remoteInfo = SimpleFirewallExtension;
+			remoteInfo = SplitTunnelProxyExtension;
 		};
 		D1FE4FBA295A1EA3002BBA20 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C4B45DAD22739FFF0050C59B /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = C4B45DB422739FFF0050C59B;
-			remoteInfo = SimpleFirewall;
+			remoteInfo = SplitTunnelProxy;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -213,7 +213,7 @@
 			dependencies = (
 			);
 			name = SplitTunnelProxyExtension;
-			productName = SimpleFirewallExtension;
+			productName = SplitTunnelProxyExtension;
 			productReference = C40A5C45229DD6A500627D50 /* com.privateinternetaccess.splittunnel.poc.extension.systemextension */;
 			productType = "com.apple.product-type.system-extension";
 		};
@@ -232,7 +232,7 @@
 				C40A5C4F229DD6A500627D50 /* PBXTargetDependency */,
 			);
 			name = SplitTunnelProxy;
-			productName = SimpleFirewall;
+			productName = SplitTunnelProxy;
 			productReference = C4B45DB522739FFF0050C59B /* SplitTunnelProxy.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -250,7 +250,7 @@
 				D1FE4FBB295A1EA3002BBA20 /* PBXTargetDependency */,
 			);
 			name = SplitTunnelProxyTests;
-			productName = SimpleFirewallTests;
+			productName = SplitTunnelProxyTests;
 			productReference = D1FE4FB6295A1EA3002BBA20 /* SplitTunnelProxyTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
@@ -618,7 +618,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 12.6;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.privateinternetaccess.SimpleFirewallTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.privateinternetaccess.splittunnel.poc.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
@@ -637,7 +637,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 12.6;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.privateinternetaccess.SimpleFirewallTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.privateinternetaccess.splittunnel.poc.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
