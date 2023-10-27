@@ -5,10 +5,7 @@ import os.log
 
 // Callbacks invoked when a OSSystemExtensionRequest is completed.
 // These functions must be implemented in order to respect the protocol
-extension ViewController: OSSystemExtensionRequestDelegate {
-
-    // MARK: OSSystemExtensionActivationRequestDelegate
-
+class ExtensionRequestDelegate: NSObject, OSSystemExtensionRequestDelegate {
     // this is executed when a request to a system (network) extension finished with a valid result
     func request(_ request: OSSystemExtensionRequest, didFinishWithResult result: OSSystemExtensionRequest.Result) {
         
@@ -16,7 +13,6 @@ extension ViewController: OSSystemExtensionRequestDelegate {
 
         guard result == .completed else {
             os_log("Unexpected result %d for system extension request", result.rawValue)
-            status = .stopped
             return
         }
     }
@@ -25,7 +21,6 @@ extension ViewController: OSSystemExtensionRequestDelegate {
     func request(_ request: OSSystemExtensionRequest, didFailWithError error: Error) {
 
         os_log("System extension request failed: %@", error.localizedDescription)
-        status = .stopped
     }
 
     func requestNeedsUserApproval(_ request: OSSystemExtensionRequest) {
