@@ -52,7 +52,7 @@ class ProxyAppDefault : ProxyApp {
     }
 
     func loadOrInstallProxyManager() -> Bool {
-        loadProxyManager() {
+        tryLoadProxyManager() {
             if self.proxyManager == nil {
                 self.createManager()
             }
@@ -60,18 +60,15 @@ class ProxyAppDefault : ProxyApp {
         return true
     }
 
-    private func loadProxyManager(completion: @escaping () -> Void) {
+    private func tryLoadProxyManager(completion: @escaping () -> Void) {
         os_log("trying to load an existing proxy manager!")
         
         NETransparentProxyManager.loadAllFromPreferences() { loadedManagers, error in
-            if error != nil || loadedManagers == nil {
+            if error != nil {
                 os_log("error while loading manager!")
-            }
-            if loadedManagers!.isEmpty {
+            } else if loadedManagers!.isEmpty {
                 os_log("no managers found")
-            }
-            
-            if loadedManagers!.count == 1 {
+            } else if loadedManagers!.count == 1 {
                 self.proxyManager = loadedManagers!.first
                 os_log("manager loaded!")
             } else {
