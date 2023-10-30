@@ -12,11 +12,16 @@ class ProxyAppDefault : ProxyApp {
     var proxyManager: NETransparentProxyManager?
     var extensionRequestDelegate = ExtensionRequestDelegate()
     var appsToManage: [String] = []
+    var networkInterface: String = ""
     static let proxyManagerName = "PIA Split Tunnel Proxy"
     static let serverAddress = "127.0.0.1"
 
     func setManagedApps(apps: [String]) -> Void {
         self.appsToManage = apps
+    }
+    
+    func setNetworkInterface(interface: String) -> Void {
+        self.networkInterface = interface
     }
 
     func activateExtension() -> Bool {
@@ -124,7 +129,9 @@ class ProxyAppDefault : ProxyApp {
                         // This function is used to start the tunnel (the proxy)
                         // passing it the following settings
                         try session.startTunnel(options: [
-                            "appsToManage" : self.appsToManage
+                            "appsToManage" : self.appsToManage,
+                            "networkInterface" : self.networkInterface,
+                            "serverAddress" : ProxyAppDefault.serverAddress
                         ] as [String : Any])
                     } catch {
                         os_log("startProxy error!")

@@ -61,7 +61,7 @@ extension STProxyProvider {
                                              port: remoteEndpointPort,
                                           appName: appName)
             socket.create()
-            socket.bindToNetworkInterface(interfaceName: "en0")
+            socket.bindToNetworkInterface(interfaceName: self.networkInterface!)
             socket.connectToHost()
             
             // We read from the flow:
