@@ -5,8 +5,8 @@ import os.log
 @available(macOS 11.0, *)
 extension STProxyProvider {
     
-    // handleNewFlow is called whenever an application
-    // creates a new TCP/UDP socket.
+    // handleNewFlow() is called whenever an application
+    // creates a new TCP socket.
     //
     //   return true  ->
     //     The flow of this app will be managed by the network extension
@@ -15,7 +15,6 @@ extension STProxyProvider {
     //     It will be routed using the system's routing tables
     override func handleNewFlow(_ flow: NEAppProxyFlow) -> Bool {
         let appID = flow.metaData.sourceAppSigningIdentifier
-        os_log("deciding if we need to handle %s flow", appID)
                 
         // A condition could be added here to achieve inverse split tunnelling.
         // Given the list of apps, we could either:
@@ -23,19 +22,31 @@ extension STProxyProvider {
         // - manage the flows of ALL the OTHER apps, EXCEPT the ones in the list.
         if appsToManage!.contains(appID) {
             // flow.open() must be called before returning true in handleNewFlow
-            manageFlow(flow)
-            return true
+            if let tcpFlow = flow as? NEAppProxyTCPFlow {
+                os_log("managing %s TCP flow", appID)
+                manageTCPFlow(tcpFlow)
+                return true
+            } else {
+                os_log("error: UDP flow caught by handleNewFlow()")
+            }
         }
         return false
     }
     
-    private func manageFlow(_ flow: NEAppProxyFlow) {
-        if let tcpFlow = flow as? NEAppProxyTCPFlow {
-            manageTCPFlow(tcpFlow)
+    // handleNewUDPFlow() is called whenever an application
+    // creates a new UDP socket.
+    //
+    // By overriding this method, all UDP flows will be
+    // caught by this function instead of handleNewFlow()
+    override func handleNewUDPFlow(_ flow: NEAppProxyUDPFlow, initialRemoteEndpoint remoteEndpoint: NWEndpoint) -> Bool {
+        let appID = flow.metaData.sourceAppSigningIdentifier
+        
+        if appsToManage!.contains(appID) {
+            os_log("managing %s UDP flow", appID)
+            manageUDPFlow(flow, remoteEndpoint)
+            return true
         }
-        else if let udpFlow = flow as? NEAppProxyUDPFlow {
-            manageUDPFlow(udpFlow)
-        }
+        return false
     }
     
     // MARK: Managing TCP flows
@@ -154,7 +165,7 @@ extension STProxyProvider {
     
     // MARK: Managing UDP flows
     // TODO: This function is missing implementation
-    private func manageUDPFlow(_ udpFlow: NEAppProxyUDPFlow) {
+    private func manageUDPFlow(_ udpFlow: NEAppProxyUDPFlow, _ endpoint: NWEndpoint) {
         udpFlow.open(withLocalEndpoint: udpFlow.localEndpoint as? NWHostEndpoint) { error in
             if let error = error {
                 os_log("Failed to open udpFlow: \(error)")
