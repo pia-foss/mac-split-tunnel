@@ -1,4 +1,5 @@
 import Foundation
+import NetworkExtension
 
 func getNetworkInterfaceIP(interfaceName: String) -> String? {
     var address: String?
@@ -22,4 +23,14 @@ func getNetworkInterfaceIP(interfaceName: String) -> String? {
         freeifaddrs(ifaddr)
     }
     return address
+}
+
+func getAddressAndPort(endpoint: NWEndpoint) -> (String?, UInt16?) {
+    let parts = endpoint.description.split(separator: ":", maxSplits: 1)
+    guard parts.count == 2 else {
+        return (nil, nil)
+    }
+    let address = String(parts[0])
+    let port = UInt16(parts[1])
+    return (address, port)
 }

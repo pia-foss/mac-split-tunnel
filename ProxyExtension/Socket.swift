@@ -18,15 +18,15 @@ enum SocketStatus {
 enum SocketError: Error {
     case readError
     case writeError
-}
+    }
 
 @available(macOS 11.0, *)
 class Socket {
     var fileDescriptor: Int32
     var status: SocketStatus
     let transportProtocol: TransportProtocol
-    let host: String
-    let port: UInt16
+    let host: String?
+    let port: UInt16?
     let appName: String
     
     init(transportProtocol: TransportProtocol, host: String, port: UInt16, appName: String) {
@@ -35,6 +35,15 @@ class Socket {
         self.transportProtocol = transportProtocol
         self.host = host
         self.port = port
+        self.appName = appName
+    }
+    
+    init(transportProtocol: TransportProtocol, appName: String) {
+        fileDescriptor = -1
+        status = .empty
+        self.transportProtocol = transportProtocol
+        self.host = nil
+        self.port = nil
         self.appName = appName
     }
     
@@ -58,8 +67,8 @@ class Socket {
         var serverAddress = sockaddr_in()
         serverAddress.sin_len = __uint8_t(MemoryLayout<sockaddr_in>.size)
         serverAddress.sin_family = sa_family_t(AF_INET)
-        serverAddress.sin_port = port.bigEndian // Specify the port in network byte order
-        serverAddress.sin_addr.s_addr = inet_addr(host)
+        serverAddress.sin_port = port!.bigEndian // Specify the port in network byte order
+        serverAddress.sin_addr.s_addr = inet_addr(host!)
 
         let connectResult = withUnsafePointer(to: &serverAddress) {
             $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
@@ -110,7 +119,7 @@ class Socket {
             completion(nil, SocketError.readError)
         }
     }
-    
+        
     func closeConnection() {
         if fileDescriptor != -1 {
             close(fileDescriptor)

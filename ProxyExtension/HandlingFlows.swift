@@ -4,7 +4,6 @@ import os.log
 
 @available(macOS 11.0, *)
 extension STProxyProvider {
-    
     // MARK: Managing TCP flows
     // handleNewFlow() is called whenever an application
     // creates a new TCP socket.
@@ -16,7 +15,7 @@ extension STProxyProvider {
     //     It will be routed using the system's routing tables
     override func handleNewFlow(_ flow: NEAppProxyFlow) -> Bool {
         let appID = flow.metaData.sourceAppSigningIdentifier
-                
+        
         // A condition could be added here to achieve inverse split tunnelling.
         // Given the list of apps, we could either:
         // - manage the flows of ONLY the apps in the list
@@ -47,18 +46,12 @@ extension STProxyProvider {
             
             // read-only info about the flow
             let appName = tcpFlow.metaData.sourceAppSigningIdentifier
-            let remoteEndpoint = tcpFlow.remoteEndpoint.description
-            let parts = remoteEndpoint.split(separator: ":", maxSplits: 1)
-            guard parts.count == 2 else {
-                return
-            }
-            let remoteEndpointAddress = String(parts[0])
-            let remoteEndpointPort = UInt16(parts[1])!
+            let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: tcpFlow.remoteEndpoint)
             
             // Create the socket that will proxy the traffic
             let socket = Socket(transportProtocol: TransportProtocol.TCP,
-                                             host: remoteEndpointAddress,
-                                             port: remoteEndpointPort,
+                                host: endpointAddress!,
+                                port: endpointPort!,
                                           appName: appName)
             socket.create()
             socket.bindToNetworkInterface(interfaceName: self.networkInterface!)
@@ -89,13 +82,21 @@ extension STProxyProvider {
     }
     
     private func manageUDPFlow(_ udpFlow: NEAppProxyUDPFlow, _ endpoint: NWEndpoint) {
-        udpFlow.open(withLocalEndpoint: udpFlow.localEndpoint as? NWHostEndpoint) { error in
-            if let error = error {
-                os_log("Failed to open udpFlow: \(error)")
-                // close flow here
-                return
+        udpFlow.open(withLocalEndpoint: nil) { error in
+            if (error != nil) {
+                os_log("error during flow open! %s", error.debugDescription)
             }
-        // continue by calling open() on udpFlow
+            
+            let appName = udpFlow.metaData.sourceAppSigningIdentifier
+            
+            let socket = Socket(transportProtocol: TransportProtocol.UDP,
+                                          appName: appName)
+            socket.create()
+            socket.bindToNetworkInterface(interfaceName: self.networkInterface!)
+            // Not calling connect() on a UDP socket since the application might
+            // want to receive and send data to different endpoints
+            
+            self.readUDPFlowData(udpFlow, socket)
         }
     }
     
