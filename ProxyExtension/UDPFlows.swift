@@ -18,10 +18,10 @@ extension STProxyProvider {
                     self.closeFlow(udpFlow)
                     return
                 }
-                socket.writeData(dataToWriteToSocket[0], completionHandler: { socketError in
+                socket.writeDataUDP(dataToWriteToSocket, destinationEndpoints, completionHandler: { socketError in
                     if socketError == nil {
                         // wait for an answer from the endpoint
-                        self.writeUDPFlowData(udpFlow, destinationEndpoints[0], socket)
+                        self.writeUDPFlowData(udpFlow, socket)
                         self.readUDPFlowData(udpFlow, socket)
                     } else { // handling errors for socket send()
                         os_log("error during socket writeData! %s", socketError.debugDescription)
@@ -44,28 +44,28 @@ extension STProxyProvider {
         }
     }
     
-    func writeUDPFlowData(_ udpFlow: NEAppProxyUDPFlow, _ sourceEndpoint: NWEndpoint, _ socket: Socket) {
+    func writeUDPFlowData(_ udpFlow: NEAppProxyUDPFlow, _ socket: Socket) {
         if socket.status == .closed {
             self.closeFlow(udpFlow)
             return
         }
         // This call is blocking: until some data is read the closure will not be called
-        socket.readData(completionHandler: { dataReadFromSocket, socketError in
-            if socketError == nil, let dataToWriteToFlow = dataReadFromSocket, !dataToWriteToFlow.isEmpty {
-                udpFlow.writeDatagrams([dataToWriteToFlow], sentBy: [sourceEndpoint]) { flowError in
+        socket.readDataUDP(completionHandler: { dataReadFromSocket, endpoint, socketError in
+            if socketError == nil, let dataToWriteToFlow = dataReadFromSocket, !dataToWriteToFlow.isEmpty, let destinationEndpoint = endpoint {
+                udpFlow.writeDatagrams([dataToWriteToFlow], sentBy: [destinationEndpoint]) { flowError in
                     if flowError == nil {
-                        // no op, if write executed correctly
+                        // no op, write executed correctly
                     } else {
-                        os_log("error during flow write! %s", flowError.debugDescription)
+                        os_log("error during UDP flow write! %s", flowError.debugDescription)
                         socket.closeConnection()
                         self.closeFlow(udpFlow)
                     }
                 }
             } else { // handling socket readData() errors or read 0 data from socket
                 if socketError == nil {
-                    os_log("read no data from socket readData()")
+                    os_log("read no data from socket readDataUDP()")
                 } else {
-                    os_log("error during connection read! %s", socketError.debugDescription)
+                    os_log("error during udp stream read! %s", socketError.debugDescription)
                 }
                 socket.closeConnection()
                 self.closeFlow(udpFlow)

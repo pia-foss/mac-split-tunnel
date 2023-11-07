@@ -34,3 +34,8 @@ func getAddressAndPort(endpoint: NWEndpoint) -> (String?, UInt16?) {
     let port = UInt16(parts[1])
     return (address, port)
 }
+
+
+func createNWEndpoint(fromSockAddr addr: sockaddr) -> NWEndpoint? {
+    
+}

@@ -2,6 +2,7 @@ import Foundation
 import Darwin
 import os.log
 import Network
+import NetworkExtension
 
 enum TransportProtocol {
     case UDP
@@ -18,7 +19,9 @@ enum SocketStatus {
 enum SocketError: Error {
     case readError
     case writeError
-    }
+    case dataEndpointMismatchUDP
+    case wrongAddressFamily
+}
 
 @available(macOS 11.0, *)
 class Socket {
@@ -119,7 +122,71 @@ class Socket {
             completion(nil, SocketError.readError)
         }
     }
+    
+    func writeDataUDP(_ dataArray: [Data], _ endpoints: [NetworkExtension.NWEndpoint], completionHandler completion: @escaping (Error?) -> Void) {
+        var error: SocketError? = nil
+        if dataArray.count != endpoints.count {
+            os_log("number of data packets do not match number of endpoints")
+            completion(SocketError.dataEndpointMismatchUDP)
+        } else {
+            for (data, endpoint) in zip(dataArray, endpoints) {
+                let endpointParts = getAddressAndPort(endpoint: endpoint)
+                var endpointAddress = sockaddr_in()
+                endpointAddress.sin_len = __uint8_t(MemoryLayout<sockaddr_in>.size)
+                endpointAddress.sin_family = sa_family_t(AF_INET)
+                endpointAddress.sin_port = endpointParts.1!.bigEndian
+                endpointAddress.sin_addr.s_addr = inet_addr(endpointParts.0!)
+                let serverSocketAddress = withUnsafePointer(to: &endpointAddress) {
+                    $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
+                        $0
+                    }
+                }
+                
+                let bytesWritten = data.withUnsafeBytes { dataBuffer in
+                    sendto(fileDescriptor, dataBuffer.baseAddress, data.count, 0, serverSocketAddress, socklen_t(MemoryLayout<sockaddr>.size))
+                }
+                if bytesWritten == 0 {
+                    // We do not really care if sendto() returned 0 or -1
+                    // We can no longer read or write to the socket so we return an error
+                    os_log("sendto(): The connection was gracefully closed by the peer")
+                    error = SocketError.writeError
+                } else if bytesWritten < 0 {
+                    os_log("Error when calling sendto()")
+                    perror("sendto")
+                    error = SocketError.writeError
+                }
+            }
+            completion(error)
+        }
+    }
+    
+    func readDataUDP(completionHandler completion: @escaping (Data?, NetworkExtension.NWEndpoint?, Error?) -> Void) {
+        var buffer = [UInt8](repeating: 0, count: 2048) // Adjust buffer size as needed
+        var sourceAddress = sockaddr_in()
+        let sourceAddressPointer = withUnsafeMutablePointer(to: &sourceAddress) {
+            $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
+                $0
+            }
+        }
+        var sourceAddressLength = socklen_t(MemoryLayout<sockaddr_in>.size)
         
+        let bytesRead = recvfrom(fileDescriptor, &buffer, buffer.count, 0, sourceAddressPointer, &sourceAddressLength)
+        if bytesRead > 0 {
+            let endpoint = createNWEndpoint(fromSockAddr: sourceAddress)
+            let data = Data(bytes: buffer, count: bytesRead)
+            completion(data, endpoint, nil)
+        } else if bytesRead == 0 {
+            // We do not really care if recvfrom() returned 0 or -1
+            // We can no longer read or write to the socket so we return an error
+            os_log("recvfrom(): The connection was gracefully closed by the peer")
+            completion(nil, nil, SocketError.readError)
+        } else {
+            os_log("Error when calling recvfrom()")
+            perror("recvfrom")
+            completion(nil, nil, SocketError.readError)
+        }
+    }
+    
     func closeConnection() {
         if fileDescriptor != -1 {
             close(fileDescriptor)
