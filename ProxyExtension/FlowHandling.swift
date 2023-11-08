@@ -24,7 +24,9 @@ extension STProxyProvider {
             // flow.open() must be called before returning true in handleNewFlow
             if let tcpFlow = flow as? NEAppProxyTCPFlow {
                 os_log("managing %s TCP flow", appID)
-                manageTCPFlow(tcpFlow)
+                Task.detached(priority: .background) {
+                    self.manageTCPFlow(tcpFlow)
+                }
                 return true
             } else {
                 os_log("error: UDP flow caught by handleNewFlow()")
@@ -59,7 +61,6 @@ extension STProxyProvider {
             
             // We read from the flow:
             // that means reading the OUTBOUND traffic of the application
-            // TODO: Possible rework, change this from a recursive function to a while (true) loop
             self.readTCPFlowData(tcpFlow, socket)
         }
     }

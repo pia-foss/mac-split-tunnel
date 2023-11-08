@@ -51,26 +51,28 @@ extension STProxyProvider {
             return
         }
         // This call is blocking: until some data is read the closure will not be called
-        socket.readData(completionHandler: { dataReadFromSocket, socketError in
-            if socketError == nil, let dataToWriteToFlow = dataReadFromSocket, !dataToWriteToFlow.isEmpty {
-                tcpFlow.write(dataToWriteToFlow) { flowError in
-                    if flowError == nil {
-                        // no op, if write executed correctly
-                    } else {
-                        os_log("error during flow write! %s", flowError.debugDescription)
-                        socket.closeConnection()
-                        self.closeFlow(tcpFlow)
+        Task.detached(priority: .background) {
+            socket.readData(completionHandler: { dataReadFromSocket, socketError in
+                if socketError == nil, let dataToWriteToFlow = dataReadFromSocket, !dataToWriteToFlow.isEmpty {
+                    tcpFlow.write(dataToWriteToFlow) { flowError in
+                        if flowError == nil {
+                            // no op, if write executed correctly
+                        } else {
+                            os_log("error during flow write! %s", flowError.debugDescription)
+                            socket.closeConnection()
+                            self.closeFlow(tcpFlow)
+                        }
                     }
+                } else { // handling socket readData() errors or read 0 data from socket
+                    if socketError == nil {
+                        os_log("read no data from socket readData()") // is this error different from the other one? (verify this!)
+                    } else {
+                        os_log("error during connection read! %s", socketError.debugDescription)
+                    }
+                    socket.closeConnection()
+                    self.closeFlow(tcpFlow)
                 }
-            } else { // handling socket readData() errors or read 0 data from socket
-                if socketError == nil {
-                    os_log("read no data from socket readData()") // is this error different from the other one? (verify this!)
-                } else {
-                    os_log("error during connection read! %s", socketError.debugDescription)
-                }
-                socket.closeConnection()
-                self.closeFlow(tcpFlow)
-            }
-        })
+            })
+        }
     }
 }
