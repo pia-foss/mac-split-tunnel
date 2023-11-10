@@ -12,11 +12,16 @@ class ProxyAppDefault : ProxyApp {
     var proxyManager: NETransparentProxyManager?
     var extensionRequestDelegate = ExtensionRequestDelegate()
     var appsToManage: [String] = []
+    var networkInterface: String = ""
     static let proxyManagerName = "PIA Split Tunnel Proxy"
     static let serverAddress = "127.0.0.1"
 
     func setManagedApps(apps: [String]) -> Void {
         self.appsToManage = apps
+    }
+    
+    func setNetworkInterface(interface: String) -> Void {
+        self.networkInterface = interface
     }
 
     func activateExtension() -> Bool {
@@ -52,7 +57,7 @@ class ProxyAppDefault : ProxyApp {
     }
 
     func loadOrInstallProxyManager() -> Bool {
-        loadProxyManager() {
+        tryLoadProxyManager() {
             if self.proxyManager == nil {
                 self.createManager()
             }
@@ -60,18 +65,15 @@ class ProxyAppDefault : ProxyApp {
         return true
     }
 
-    private func loadProxyManager(completion: @escaping () -> Void) {
+    private func tryLoadProxyManager(completion: @escaping () -> Void) {
         os_log("trying to load an existing proxy manager!")
         
         NETransparentProxyManager.loadAllFromPreferences() { loadedManagers, error in
-            if error != nil || loadedManagers == nil {
+            if error != nil {
                 os_log("error while loading manager!")
-            }
-            if loadedManagers!.isEmpty {
+            } else if loadedManagers!.isEmpty {
                 os_log("no managers found")
-            }
-            
-            if loadedManagers!.count == 1 {
+            } else if loadedManagers!.count == 1 {
                 self.proxyManager = loadedManagers!.first
                 os_log("manager loaded!")
             } else {
@@ -127,7 +129,9 @@ class ProxyAppDefault : ProxyApp {
                         // This function is used to start the tunnel (the proxy)
                         // passing it the following settings
                         try session.startTunnel(options: [
-                            "appsToManage" : self.appsToManage
+                            "appsToManage" : self.appsToManage,
+                            "networkInterface" : self.networkInterface,
+                            "serverAddress" : ProxyAppDefault.serverAddress
                         ] as [String : Any])
                     } catch {
                         os_log("startProxy error!")

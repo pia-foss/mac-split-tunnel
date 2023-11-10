@@ -29,16 +29,30 @@ class STProxyProvider : NETransparentProxyProvider {
     
     // MARK: Proxy Properties
     var appsToManage: [String]?
+    var networkInterface: String?
+    var serverAddress: String?
 
     // MARK: Proxy Functions
     override func startProxy(options: [String : Any]?, completionHandler: @escaping (Error?) -> Void) {
         os_log(.debug, "proxy extension started!")
 
+        // Checking that all the required settings have been passed to the
+        // extension by the ProxyApp
         guard let appsToManage = options!["appsToManage"] as? [String] else {
             os_log(.error, "cannot find appsToManage in options")
             return
         }
+        guard let networkInterface = options!["networkInterface"] as? String else {
+            os_log(.error, "cannot find networkInterface in options")
+            return
+        }
+        guard let serverAddress = options!["serverAddress"] as? String else {
+            os_log(.error, "cannot find serverAddress in options")
+            return
+        }
         self.appsToManage = appsToManage
+        self.networkInterface = networkInterface
+        self.serverAddress = serverAddress
         
         // Initiating the rules.
         // We want to be "notified" of all flows, so we can decide which to manage,
@@ -59,7 +73,7 @@ class STProxyProvider : NETransparentProxyProvider {
         // https://developer.apple.com/documentation/networkextension/netunnelnetworksettings/1406032-init
         //
         // Setting it to localhost for now, until a 'proper' solution is found
-        let settings = NETransparentProxyNetworkSettings(tunnelRemoteAddress: "127.0.0.1")
+        let settings = NETransparentProxyNetworkSettings(tunnelRemoteAddress: serverAddress)
         settings.includedNetworkRules = rules
         settings.excludedNetworkRules = nil
 

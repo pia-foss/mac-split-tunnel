@@ -8,8 +8,7 @@
 ## Building
 
 - Open xv_mac_split_tunnelling_poc/SplitTunnelProxy.xcodeproj using XCode.
-- Inside XCode click on SplitTunnelProxy (left bar with the app icon), SplitTunnelProxy.xcodeproj file will open in the editor.
-- Check both targets Signing & Capabilities settings, make sure that:
+- Check both targets Signing & Capabilities settings, making sure that:
 	1. for both targets team is "Private Internet Access, Inc." (check Apple account certificates)
 	2. target SplitTunnelProxy bundle identifier is "com.privateinternetaccess.splittunnel.poc"
 	3. target SplitTunnelProxyExtension bundle identifier is "com.privateinternetaccess.splittunnel.poc.extension"
@@ -17,38 +16,65 @@
 
 ## Debugging
 
-- To debug the SplitTunnelProxy application select the SplitTunnelProxy scheme in the top center bar and click the play button at the top of the left bar.
+- To debug the SplitTunnelProxy application select the  
+  SplitTunnelProxy scheme and run it
 - A UI will appear, click buttons to perform actions.
-- Don't use the SplitTunnelProxyExtension scheme to launch the project, the extension will be launched automatically by the app.
-- To debug the extension, before launching the app click Debug/Attach to process by PID or name... enter this name "com.privateinter", select Debug as: Root and click Attach. The debugger will attach to the extension as soon as it starts. Repeat everytime for every new debug session. 
-- You can also attach the debugger to the extension by its PID, Open the activity monitor, a process named "com.privateinternetaccess.splittunnel.poc.extension" owned by user root should be present. Check its PID, in XCode select "Debug" and "Attach to process by PID or name...".
+- Don't use the SplitTunnelProxyExtension scheme to launch  
+  the project, the extension will be controlled by the app.
+- To debug the extension, before launching the app click  
+  Debug/Attach to process by PID or name...  
+  enter this name "com.privateinter", select Debug as: Root  
+  and click Attach.  
+  The debugger will attach to the extension as soon as it starts.  
+  Repeat this step for every debug session. 
+- You can also attach the debugger to the extension using its PID.  
+  Open the activity monitor, a process named  
+  "com.privateinternetaccess.splittunnel.poc.extension" owned by root  
+  should be present.  
+  Check its PID, in XCode select "Debug" and "Attach to process  
+  by PID or name...".
 
 ## Starting the proxy
 
-- Click in this sequence: "Activate", "loadManager", "makeManager", "startTunnel".
+Click the buttons in this sequence:  
+"Activate", "loadOrInstallManager", "startProxy".
 
-- "Activate"
-  This will activate the network extension. A system popup will appear saying "System Extension Blocked". Open system settings/Security & Privacy, unlock at the left bottom and click Allow on "System software from application "SplitTunnelProxy.app" was blocked from loading.".
-  Using the command "systemextensionsctl list" you can check the status of the extension: in the group --- com.apple.system_extension.network_extension the SplitTunnelProxyExtension should be present with the status [activated waiting for user] before allowing and [activated enabled] after allowing.
-  Use this when extension has been modified since last execution (?)
+## Commands explanation
 
-- "loadManager"
-  This will load any existing manager "MyTrasparentProxy" in system settings/Network.
-  After this you can start the tunnel.
+### activate
+This will activate the network extension.  
+A system popup will appear saying "System Extension Blocked".  
+Open system settings/Security & Privacy and allow.  
+Using the command `systemextensionsctl list` you can check the  
+status of the extension:  
+in the group --- com.apple.system_extension.network_extension  
+the SplitTunnelProxyExtension should be present with the status: 
+- [activated waiting for user] before allowing 
+- [activated enabled] after allowing
 
-- "makeManager"
-  This will trigger a system popup with this message "“SplitTunnelProxy” Would Like to Add Proxy Configurations".
-  Open system settings/Network, click Allow and check that "MyTransparentProxy" vpn item is added and appear as Connected.
-  This creates the NETransparentProxyManager object, saves the settings and call the startVPNTunnel function on the app side (ManagingExtension.swift), which triggers the startProxy function on the extension side (STProxyProvider.swift).
-  Clicking this before activating the extension will result in an error.
+This needs to run if the extension code has been modified  
+since the last execution
 
-- "startTunnel"
-  calls the startVPNTunnel function, the vpn will appear as "Connected" again. 
-  Will result in an error if called before loading or creating a new Manager.
+### loadOrInstallManager
+This will either load any existing configuration or create a new one. 
 
-- "stopTunnel"
-  stops the tunnel, the vpn will appear as "Not Connected".
+### startProxy
+When the configuration has been created for the first time and the  
+proxy is started, a system popup will be triggered with the message  
+"“SplitTunnelProxy” Would Like to Add Proxy Configurations".  
+Click Allow and check that "PIA Split Tunnel Proxy" vpn item is added  
+in system settings/Network/VPN & Filters/Filters & Proxies  
+and that the status is "Enabled".  
+The root extension will be started and it possible to verify this  
+using Activity monitor.  
+Clicking this before activating the extension or loading the manager  
+will result in an error.
 
-- "Deactivate"
-  This will deactivate the network extension (not needed if it is the first time running the application), a system popup will be triggered asking for the user password. 
-  This will reset the state of the extension, check also that no interfaces are present in system settings/Network, if there are click on them, click - and apply to remove them.
+### stopProxy
+Stops the proxy extension, the root extension process will be killed.  
+Bear in mind that this takes ~5 seconds.
+
+### deactivate
+This will uninstall the proxy configuration from the system.  
+This is required only if the proxy configuration name has changed,  
+otherwise calling activate again will be enough.

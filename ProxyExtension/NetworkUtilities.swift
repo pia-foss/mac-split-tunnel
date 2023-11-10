@@ -1,4 +1,5 @@
 import Foundation
+import NetworkExtension
 
 func getNetworkInterfaceIP(interfaceName: String) -> String? {
     var address: String?
@@ -22,4 +23,32 @@ func getNetworkInterfaceIP(interfaceName: String) -> String? {
         freeifaddrs(ifaddr)
     }
     return address
+}
+
+func getAddressAndPort(endpoint: NWEndpoint) -> (String?, UInt16?) {
+    let parts = endpoint.description.split(separator: ":", maxSplits: 1)
+    guard parts.count == 2 else {
+        return (nil, nil)
+    }
+    let address = String(parts[0])
+    let port = UInt16(parts[1])
+    return (address, port)
+}
+
+func createNWEndpoint(fromSockAddr addr: sockaddr_in) -> NWHostEndpoint {
+    // Convert IPv4 address to string
+    var ipAddr = addr.sin_addr
+    var address = withUnsafePointer(to: &ipAddr) { ipPtr -> String in
+        var buffer = [CChar](repeating: 0, count: Int(INET_ADDRSTRLEN))
+        inet_ntop(AF_INET, ipPtr, &buffer, socklen_t(INET_ADDRSTRLEN))
+        return String(cString: buffer)
+    }
+
+    // Convert port number to string
+    let port = String(UInt16(addr.sin_port).byteSwapped) // ntohs(addr.sin_port) in C
+
+    // Create NWHostEndpoint with the address and port
+    let endpoint = NWHostEndpoint(hostname: address, port: port)
+
+    return endpoint
 }
