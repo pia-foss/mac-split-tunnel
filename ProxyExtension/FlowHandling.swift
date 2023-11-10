@@ -59,9 +59,15 @@ extension STProxyProvider {
             socket.bindToNetworkInterface(interfaceName: self.networkInterface!)
             socket.connectToHost()
             
-            // We read from the flow:
-            // that means reading the OUTBOUND traffic of the application
+            // These two functions are async using escaping completion handler
+            // They are also recursive, whenever a read is completed succesfully
+            // another read is called. Same for the write.
+            // Whenever any error is detected in both these functions, the flow is
+            // closed as suggested by mother Apple (the application will likely deal
+            // with the dropped connection.
+            // Both functions are not blocking
             self.readTCPFlowData(tcpFlow, socket)
+            self.writeTCPFlowData(tcpFlow, socket)
         }
     }
     
