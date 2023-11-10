@@ -35,11 +35,11 @@ extension STProxyProvider {
         return false
     }
     
-    private func manageTCPFlow(_ tcpFlow: NEAppProxyTCPFlow) {
+    private func manageTCPFlow(_ flow: NEAppProxyTCPFlow) {
         // open() is used by an NEProvider implementation
         // to indicate to the system that the caller is ready
         // to start reading and writing to this flow.
-        tcpFlow.open(withLocalEndpoint: nil) { error in
+        flow.open(withLocalEndpoint: nil) { error in
             // this is an escaping closure, therefore it is async
             // and can outlive the manageTCPFlow function
             if (error != nil) {
@@ -47,8 +47,8 @@ extension STProxyProvider {
             }
             
             // read-only info about the flow
-            let appName = tcpFlow.metaData.sourceAppSigningIdentifier
-            let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: tcpFlow.remoteEndpoint)
+            let appName = flow.metaData.sourceAppSigningIdentifier
+            let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: flow.remoteEndpoint)
             
             // Create the socket that will proxy the traffic
             let socket = Socket(transportProtocol: TransportProtocol.TCP,
@@ -60,14 +60,14 @@ extension STProxyProvider {
             socket.connectToHost()
             
             // These two functions are async using escaping completion handler
-            // They are also recursive, whenever a read is completed succesfully
-            // another read is called. Same for the write.
+            // They are also recursive: if they complete successfully they call
+            // themselves again.
             // Whenever any error is detected in both these functions, the flow is
             // closed as suggested by mother Apple (the application will likely deal
-            // with the dropped connection.
-            // Both functions are not blocking
-            self.readTCPFlowData(tcpFlow, socket)
-            self.writeTCPFlowData(tcpFlow, socket)
+            // with the dropped connection).
+            // Both functions are non-blocking
+            TCPIO.readOutboundTraffic(flow, socket)
+            TCPIO.readInboundTraffic(flow, socket)
         }
     }
     
@@ -105,11 +105,5 @@ extension STProxyProvider {
             
             self.readUDPFlowData(udpFlow, socket)
         }
-    }
-    
-    func closeFlow(_ flow: NEAppProxyFlow) {
-        // close the flow when you dont want to read and write to it anymore
-        flow.closeReadWithError(nil)
-        flow.closeWriteWithError(nil)
     }
 }

@@ -52,3 +52,9 @@ func createNWEndpoint(fromSockAddr addr: sockaddr_in) -> NWHostEndpoint {
 
     return endpoint
 }
+
+func closeFlow(_ flow: NEAppProxyFlow) {
+    // close the flow when you dont want to read and write to it anymore
+    flow.closeReadWithError(nil)
+    flow.closeWriteWithError(nil)
+}
