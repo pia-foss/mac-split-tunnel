@@ -40,10 +40,9 @@ extension STProxyProvider {
         // to indicate to the system that the caller is ready
         // to start reading and writing to this flow.
         flow.open(withLocalEndpoint: nil) { error in
-            // this is an escaping closure, therefore it is async
-            // and can outlive the manageTCPFlow function
             if (error != nil) {
                 os_log("error during flow open! %s", error.debugDescription)
+                return
             }
             
             // read-only info about the flow
@@ -52,12 +51,28 @@ extension STProxyProvider {
             
             // Create the socket that will proxy the traffic
             let socket = Socket(transportProtocol: TransportProtocol.TCP,
-                                host: endpointAddress!,
-                                port: endpointPort!,
+                                             host: endpointAddress!,
+                                             port: endpointPort!,
                                           appName: appName)
-            socket.create()
-            socket.bindToNetworkInterface(interfaceName: self.networkInterface!)
-            socket.connectToHost()
+            var result = true
+            if !socket.create() {
+                os_log("Error creating TCP socket")
+                result = false
+            }
+            if !socket.bindToNetworkInterface(interfaceName: self.networkInterface!) {
+                os_log("Error binding TCP socket")
+                result = false
+            }
+            if !socket.connectToHost() {
+                os_log("Error connecting TCP socket")
+                result = false
+            }
+            
+            if !result {
+                socket.closeConnection()
+                closeFlow(flow)
+                return
+            }
             
             // These two functions are async using escaping completion handler
             // They are also recursive: if they complete successfully they call
