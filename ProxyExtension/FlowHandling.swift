@@ -69,7 +69,7 @@ extension STProxyProvider {
             }
             
             if !result {
-                socket.closeConnection()
+                socket.close()
                 closeFlow(flow)
                 return
             }

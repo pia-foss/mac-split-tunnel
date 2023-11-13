@@ -44,7 +44,7 @@ class TCPIO {
             socket.readData(completionHandler: { dataReadFromSocket, socketError in
                 if socketError == nil, let data = dataReadFromSocket, !data.isEmpty {
                     writeInboundTraffic(flow, socket, data)
-                } else { 
+                } else {
                     handleError(socketError, "socket readData()", flow, socket)
                 }
             })
@@ -72,7 +72,7 @@ class TCPIO {
         } else {
             os_log("read no data from %s", operation)
         }
-        socket.closeConnection()
+        socket.close()
         closeFlow(flow)
     }
 }

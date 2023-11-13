@@ -25,7 +25,7 @@ extension STProxyProvider {
                         self.readUDPFlowData(udpFlow, socket)
                     } else { // handling errors for socket send()
                         os_log("error during socket writeData! %s", socketError.debugDescription)
-                        socket.closeConnection()
+                        socket.close()
                         closeFlow(udpFlow)
                     }
                 })
@@ -38,7 +38,7 @@ extension STProxyProvider {
                     os_log("read no data from flow readDatagrams()")
                 }
                 // no op: We stop calling readTCPFlowData(), ending the recursive loop
-                socket.closeConnection()
+                socket.close()
                 closeFlow(udpFlow)
             }
         }
@@ -57,7 +57,7 @@ extension STProxyProvider {
                         // no op, write executed correctly
                     } else {
                         os_log("error during UDP flow write! %s", flowError.debugDescription)
-                        socket.closeConnection()
+                        socket.close()
                         closeFlow(udpFlow)
                     }
                 }
@@ -67,7 +67,7 @@ extension STProxyProvider {
                 } else {
                     os_log("error during udp stream read! %s", socketError.debugDescription)
                 }
-                socket.closeConnection()
+                socket.close()
                 closeFlow(udpFlow)
             }
         })

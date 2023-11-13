@@ -83,7 +83,7 @@ class Socket {
         if connectResult == -1 {
             os_log("Error when calling connect()")
             perror("connect")
-            closeConnection()
+            close()
             return false
         }
         status = .connected
@@ -189,12 +189,12 @@ class Socket {
         }
     }
     
-    func closeConnection() {
+    func close() {
         if fileDescriptor != -1 {
-            close(fileDescriptor)
+            Darwin.close(fileDescriptor)
             fileDescriptor = -1
-            status = .closed
         }
+        status = .closed
     }
     
     func bindToNetworkInterface(interfaceName: String) -> Bool {
