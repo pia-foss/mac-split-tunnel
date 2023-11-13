@@ -17,7 +17,9 @@ enum SocketStatus {
 }
 
 enum SocketError: Error {
+    case readNoData
     case readError
+    case writeNoData
     case writeError
     case dataEndpointMismatchUDP
     case wrongAddressFamily
@@ -95,10 +97,10 @@ class Socket {
         if bytesWritten > 0 {
             completion(nil)
         } else if bytesWritten == 0 {
-            // We do not really care if send() returned 0 or -1
-            // We can no longer read or write to the socket so we return an error
+            // When send() returns 0 or -1, it is no longer possible to
+            // read or write to the socket
             os_log("send(): The connection was gracefully closed by the peer")
-            completion(SocketError.writeError)
+            completion(SocketError.writeNoData)
         } else {
             os_log("Error when calling send()")
             perror("send")
@@ -112,10 +114,10 @@ class Socket {
         if bytesRead > 0 {
             completion(Data(bytes: buffer, count: bytesRead), nil)
         } else if bytesRead == 0 {
-            // We do not really care if recv() returned 0 or -1
-            // We can no longer read or write to the socket so we return an error
+            // When recv() returns 0 or -1, it is no longer possible to
+            // read or write to the socket
             os_log("recv(): The connection was gracefully closed by the peer")
-            completion(nil, SocketError.readError)
+            completion(nil, SocketError.readNoData)
         } else {
             os_log("Error when calling recv()")
             perror("recv")
@@ -146,10 +148,10 @@ class Socket {
                     sendto(fileDescriptor, dataBuffer.baseAddress, data.count, 0, serverSocketAddress, socklen_t(MemoryLayout<sockaddr>.size))
                 }
                 if bytesWritten == 0 {
-                    // We do not really care if sendto() returned 0 or -1
-                    // We can no longer read or write to the socket so we return an error
+                    // When sendto() returns 0 or -1, it is no longer
+                    // possible to read or write to the socket
                     os_log("sendto(): The connection was gracefully closed by the peer")
-                    error = SocketError.writeError
+                    error = SocketError.writeNoData
                 } else if bytesWritten < 0 {
                     os_log("Error when calling sendto()")
                     perror("sendto")
@@ -176,10 +178,10 @@ class Socket {
             let data = Data(bytes: buffer, count: bytesRead)
             completion(data, endpoint, nil)
         } else if bytesRead == 0 {
-            // We do not really care if recvfrom() returned 0 or -1
-            // We can no longer read or write to the socket so we return an error
+            // When recvfrom() returns 0 or -1, it is no longer possible 
+            // to read or write to the socket
             os_log("recvfrom(): The connection was gracefully closed by the peer")
-            completion(nil, nil, SocketError.readError)
+            completion(nil, nil, SocketError.readNoData)
         } else {
             os_log("Error when calling recvfrom()")
             perror("recvfrom")
