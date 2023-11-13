@@ -26,12 +26,8 @@ func getNetworkInterfaceIP(interfaceName: String) -> String? {
 }
 
 func getAddressAndPort(endpoint: NWEndpoint) -> (String?, UInt16?) {
-    let parts = endpoint.description.split(separator: ":", maxSplits: 1)
-    guard parts.count == 2 else {
-        return (nil, nil)
-    }
-    let address = String(parts[0])
-    let port = UInt16(parts[1])
+    let address = (endpoint as! NWHostEndpoint).hostname
+    let port = UInt16((endpoint as! NWHostEndpoint).port)
     return (address, port)
 }
 
