@@ -8,6 +8,7 @@ class TCPIO {
         flow.readData { dataReadFromFlow, flowError in
             if flowError == nil, let data = dataReadFromFlow, !data.isEmpty {
                 writeOutboundTraffic(flow, socket, data)
+                Logger.log.info("\(data)")
             } else {
                 handleError(flowError, "flow readData()", flow, socket)
             }
@@ -16,7 +17,7 @@ class TCPIO {
 
     private static func writeOutboundTraffic(_ flow: NEAppProxyTCPFlow, _ socket: Socket, _ data: Data) {
         if socket.status == .closed {
-            os_log("error: local socket is closed, aborting read")
+            Logger.log.error("error: local socket is closed, aborting read")
             closeFlow(flow)
             return
         }
@@ -35,7 +36,7 @@ class TCPIO {
         // because it contains a blocking function: recv().
         Task.detached(priority: .background) {
             if socket.status == .closed {
-                os_log("error: local socket is closed, aborting read")
+                Logger.log.error("error: local socket is closed, aborting read")
                 closeFlow(flow)
                 return
             }

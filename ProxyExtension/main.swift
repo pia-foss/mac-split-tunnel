@@ -15,7 +15,6 @@ autoreleasepool {
     // The system extension must declare a mapping of Network Extension extension points to NEProvider subclass instances in its Info.plist.
     NEProvider.startSystemExtensionMode()
     IPCConnection.shared.startListener()
-    os_log(.debug, "started listening on IPCConnection")
 }
 
 dispatchMain()

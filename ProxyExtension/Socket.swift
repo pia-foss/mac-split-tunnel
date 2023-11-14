@@ -1,8 +1,8 @@
 import Foundation
 import Darwin
 import os.log
-import Network
 import NetworkExtension
+import Puppy
 
 enum TransportProtocol {
     case UDP
@@ -59,7 +59,7 @@ class Socket {
             fileDescriptor = socket(AF_INET, SOCK_STREAM, 0)
         }
         if fileDescriptor == -1 {
-            os_log("Error when creating the socket!")
+            Logger.log.info("Error when creating the socket!")
             perror("socket")
             return false
         }
@@ -80,7 +80,7 @@ class Socket {
             }
         }
         if connectResult == -1 {
-            os_log("Error when calling connect()")
+            Logger.log.info("Error when calling connect()")
             perror("connect")
             close()
             return false
@@ -98,10 +98,10 @@ class Socket {
         } else if bytesWritten == 0 {
             // When send() returns 0 or -1, it is no longer possible to
             // read or write to the socket
-            os_log("send(): The connection was gracefully closed by the peer")
+            Logger.log.info("send(): The connection was gracefully closed by the peer")
             completion(SocketError.writeNoData)
         } else {
-            os_log("Error when calling send()")
+            Logger.log.info("Error when calling send()")
             perror("send")
             completion(SocketError.writeError)
         }
@@ -115,19 +115,19 @@ class Socket {
         } else if bytesRead == 0 {
             // When recv() returns 0 or -1, it is no longer possible to
             // read or write to the socket
-            os_log("recv(): The connection was gracefully closed by the peer")
+            Logger.log.info("recv(): The connection was gracefully closed by the peer")
             completion(nil, SocketError.readNoData)
         } else {
-            os_log("Error when calling recv()")
+            Logger.log.info("Error when calling recv()")
             perror("recv")
             completion(nil, SocketError.readError)
         }
     }
     
-    func writeDataUDP(_ dataArray: [Data], _ endpoints: [NetworkExtension.NWEndpoint], completionHandler completion: @escaping (Error?) -> Void) {
+    func writeDataUDP(_ dataArray: [Data], _ endpoints: [NWEndpoint], completionHandler completion: @escaping (Error?) -> Void) {
         var error: SocketError? = nil
         if dataArray.count != endpoints.count {
-            os_log("number of data packets do not match number of endpoints")
+            Logger.log.info("number of data packets do not match number of endpoints")
             completion(SocketError.dataEndpointMismatchUDP)
         } else {
             for (data, endpoint) in zip(dataArray, endpoints) {
@@ -149,10 +149,10 @@ class Socket {
                 if bytesWritten == 0 {
                     // When sendto() returns 0 or -1, it is no longer
                     // possible to read or write to the socket
-                    os_log("sendto(): The connection was gracefully closed by the peer")
+                    Logger.log.info("sendto(): The connection was gracefully closed by the peer")
                     error = SocketError.writeNoData
                 } else if bytesWritten < 0 {
-                    os_log("Error when calling sendto()")
+                    Logger.log.info("Error when calling sendto()")
                     perror("sendto")
                     error = SocketError.writeError
                 }
@@ -175,16 +175,16 @@ class Socket {
         if bytesRead > 0 {
             let endpoint = createNWEndpoint(fromSockAddr: sourceAddress)
             let data = Data(bytes: buffer, count: bytesRead)
-            completion(data, endpoint, nil)
+            completion(data, endpoint, nil as Error?)
         } else if bytesRead == 0 {
             // When recvfrom() returns 0 or -1, it is no longer possible 
             // to read or write to the socket
-            os_log("recvfrom(): The connection was gracefully closed by the peer")
-            completion(nil, nil, SocketError.readNoData)
+            Logger.log.info("recvfrom(): The connection was gracefully closed by the peer")
+            completion(nil as Data?, nil as NWEndpoint?, SocketError.readNoData)
         } else {
-            os_log("Error when calling recvfrom()")
+            Logger.log.info("Error when calling recvfrom()")
             perror("recvfrom")
-            completion(nil, nil, SocketError.readError)
+            completion(nil as Data?, nil as NWEndpoint?, SocketError.readError)
         }
     }
     
@@ -210,7 +210,7 @@ class Socket {
             }
         }
         if bindResult == -1 {
-            os_log("Error when when calling bind()")
+            Logger.log.info("Error when when calling bind()")
             perror("bind")
             return false
         }
