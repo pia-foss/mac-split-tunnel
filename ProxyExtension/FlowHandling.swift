@@ -24,7 +24,9 @@ extension STProxyProvider {
             // flow.open() must be called before returning true in handleNewFlow
             if let tcpFlow = flow as? NEAppProxyTCPFlow {
                 os_log("managing %s TCP flow", appID)
-                manageTCPFlow(tcpFlow)
+                Task.detached(priority: .background) {
+                    self.manageTCPFlow(tcpFlow)
+                }
                 return true
             } else {
                 os_log("error: UDP flow caught by handleNewFlow()")
@@ -33,34 +35,54 @@ extension STProxyProvider {
         return false
     }
     
-    private func manageTCPFlow(_ tcpFlow: NEAppProxyTCPFlow) {
+    private func manageTCPFlow(_ flow: NEAppProxyTCPFlow) {
         // open() is used by an NEProvider implementation
         // to indicate to the system that the caller is ready
         // to start reading and writing to this flow.
-        tcpFlow.open(withLocalEndpoint: nil) { error in
-            // this is an escaping closure, therefore it is async
-            // and can outlive the manageTCPFlow function
+        flow.open(withLocalEndpoint: nil) { error in
             if (error != nil) {
                 os_log("error during flow open! %s", error.debugDescription)
+                return
             }
             
             // read-only info about the flow
-            let appName = tcpFlow.metaData.sourceAppSigningIdentifier
-            let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: tcpFlow.remoteEndpoint)
+            let appName = flow.metaData.sourceAppSigningIdentifier
+            let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: flow.remoteEndpoint)
             
             // Create the socket that will proxy the traffic
             let socket = Socket(transportProtocol: TransportProtocol.TCP,
-                                host: endpointAddress!,
-                                port: endpointPort!,
+                                             host: endpointAddress!,
+                                             port: endpointPort!,
                                           appName: appName)
-            socket.create()
-            socket.bindToNetworkInterface(interfaceName: self.networkInterface!)
-            socket.connectToHost()
+            var result = true
+            if !socket.create() {
+                os_log("Error creating TCP socket")
+                result = false
+            }
+            if !socket.bindToNetworkInterface(interfaceName: self.networkInterface!) {
+                os_log("Error binding TCP socket")
+                result = false
+            }
+            if !socket.connectToHost() {
+                os_log("Error connecting TCP socket")
+                result = false
+            }
             
-            // We read from the flow:
-            // that means reading the OUTBOUND traffic of the application
-            // TODO: Possible rework, change this from a recursive function to a while (true) loop
-            self.readTCPFlowData(tcpFlow, socket)
+            if !result {
+                socket.close()
+                closeFlow(flow)
+                return
+            }
+            
+            // These two functions are async using escaping completion handler
+            // They are also recursive: if they complete successfully they call
+            // themselves again.
+            // Whenever any error is detected in both these functions, the flow is
+            // closed as suggested by mother Apple (the application will likely deal
+            // with the dropped connection).
+            // Both functions are non-blocking
+            TCPIO.readOutboundTraffic(flow, socket)
+            TCPIO.readInboundTraffic(flow, socket)
         }
     }
     
@@ -98,11 +120,5 @@ extension STProxyProvider {
             
             self.readUDPFlowData(udpFlow, socket)
         }
-    }
-    
-    func closeFlow(_ flow: NEAppProxyFlow) {
-        // close the flow when you dont want to read and write to it anymore
-        flow.closeReadWithError(nil)
-        flow.closeWriteWithError(nil)
     }
 }

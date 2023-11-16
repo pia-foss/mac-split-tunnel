@@ -15,7 +15,7 @@ extension STProxyProvider {
             if flowError == nil, let dataToWriteToSocket = dataArrayReadFromFlow, !dataToWriteToSocket.isEmpty, let destinationEndpoints = endpointArray, !destinationEndpoints.isEmpty {
                 // Writing to the real endpoint (via the local socket) the application OUTBOUND traffic
                 if socket.status == .closed {
-                    self.closeFlow(udpFlow)
+                    closeFlow(udpFlow)
                     return
                 }
                 socket.writeDataUDP(dataToWriteToSocket, destinationEndpoints, completionHandler: { socketError in
@@ -25,8 +25,8 @@ extension STProxyProvider {
                         self.readUDPFlowData(udpFlow, socket)
                     } else { // handling errors for socket send()
                         os_log("error during socket writeData! %s", socketError.debugDescription)
-                        socket.closeConnection()
-                        self.closeFlow(udpFlow)
+                        socket.close()
+                        closeFlow(udpFlow)
                     }
                 })
             } else { // handling errors for flow readDatagrams()
@@ -38,15 +38,15 @@ extension STProxyProvider {
                     os_log("read no data from flow readDatagrams()")
                 }
                 // no op: We stop calling readTCPFlowData(), ending the recursive loop
-                socket.closeConnection()
-                self.closeFlow(udpFlow)
+                socket.close()
+                closeFlow(udpFlow)
             }
         }
     }
     
     func writeUDPFlowData(_ udpFlow: NEAppProxyUDPFlow, _ socket: Socket) {
         if socket.status == .closed {
-            self.closeFlow(udpFlow)
+            closeFlow(udpFlow)
             return
         }
         // This call is blocking: until some data is read the closure will not be called
@@ -57,8 +57,8 @@ extension STProxyProvider {
                         // no op, write executed correctly
                     } else {
                         os_log("error during UDP flow write! %s", flowError.debugDescription)
-                        socket.closeConnection()
-                        self.closeFlow(udpFlow)
+                        socket.close()
+                        closeFlow(udpFlow)
                     }
                 }
             } else { // handling socket readData() errors or read 0 data from socket
@@ -67,8 +67,8 @@ extension STProxyProvider {
                 } else {
                     os_log("error during udp stream read! %s", socketError.debugDescription)
                 }
-                socket.closeConnection()
-                self.closeFlow(udpFlow)
+                socket.close()
+                closeFlow(udpFlow)
             }
         })
     }
