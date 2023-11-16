@@ -132,7 +132,7 @@ class Socket {
             completion(SocketError.dataEndpointMismatchUDP)
         } else {
             for (data, endpoint) in zip(dataArray, endpoints) {
-                let endpointParts = getAddressAndPort(endpoint: endpoint)
+                let endpointParts = getAddressAndPort(endpoint: endpoint as! NWHostEndpoint)
                 var endpointAddress = sockaddr_in()
                 endpointAddress.sin_len = __uint8_t(MemoryLayout<sockaddr_in>.size)
                 endpointAddress.sin_family = sa_family_t(AF_INET)

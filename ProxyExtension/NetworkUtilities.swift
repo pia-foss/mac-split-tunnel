@@ -25,9 +25,9 @@ func getNetworkInterfaceIP(interfaceName: String) -> String? {
     return address
 }
 
-func getAddressAndPort(endpoint: NWEndpoint) -> (String?, UInt16?) {
-    let address = (endpoint as! NWHostEndpoint).hostname
-    let port = UInt16((endpoint as! NWHostEndpoint).port)
+func getAddressAndPort(endpoint: NWHostEndpoint) -> (String?, UInt16?) {
+    let address = endpoint.hostname
+    let port = UInt16(endpoint.port)
     return (address, port)
 }
 

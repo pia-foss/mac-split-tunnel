@@ -21,11 +21,10 @@ extension STProxyProvider {
         // - manage the flows of ONLY the apps in the list
         // - manage the flows of ALL the OTHER apps, EXCEPT the ones in the list.
         if appsToManage!.contains(appID) {
-            // flow.open() must be called before returning true in handleNewFlow
             if let tcpFlow = flow as? NEAppProxyTCPFlow {
                 os_log("managing %s TCP flow", appID)
                 Task.detached(priority: .background) {
-                    self.manageTCPFlow(tcpFlow)
+                    self.manageTCPFlow(tcpFlow, appID)
                 }
                 return true
             } else {
@@ -35,7 +34,7 @@ extension STProxyProvider {
         return false
     }
     
-    private func manageTCPFlow(_ flow: NEAppProxyTCPFlow) {
+    private func manageTCPFlow(_ flow: NEAppProxyTCPFlow, _ appID: String) {
         // open() is used by an NEProvider implementation
         // to indicate to the system that the caller is ready
         // to start reading and writing to this flow.
@@ -44,27 +43,25 @@ extension STProxyProvider {
                 os_log("error during flow open! %s", error.debugDescription)
                 return
             }
-            
-            // read-only info about the flow
-            let appName = flow.metaData.sourceAppSigningIdentifier
-            let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: flow.remoteEndpoint)
+
+            let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: flow.remoteEndpoint as! NWHostEndpoint)
             
             // Create the socket that will proxy the traffic
             let socket = Socket(transportProtocol: TransportProtocol.TCP,
                                              host: endpointAddress!,
                                              port: endpointPort!,
-                                          appName: appName)
+                                          appName: appID)
             var result = true
             if !socket.create() {
-                os_log("Error creating TCP socket")
+                os_log("Error creating TCP socket of app: %s", appID)
                 result = false
             }
             if !socket.bindToNetworkInterface(interfaceName: self.networkInterface!) {
-                os_log("Error binding TCP socket")
+                os_log("Error binding TCP socket of app: %s", appID)
                 result = false
             }
             if !socket.connectToHost() {
-                os_log("Error connecting TCP socket")
+                os_log("Error connecting TCP socket of app: %s", appID)
                 result = false
             }
             
@@ -89,36 +86,49 @@ extension STProxyProvider {
     // MARK: Managing UDP flows
     // handleNewUDPFlow() is called whenever an application
     // creates a new UDP socket.
-    //
-    // By overriding this method, all UDP flows will be
-    // caught by this function instead of handleNewFlow()
     override func handleNewUDPFlow(_ flow: NEAppProxyUDPFlow, initialRemoteEndpoint remoteEndpoint: NWEndpoint) -> Bool {
         let appID = flow.metaData.sourceAppSigningIdentifier
         
         if appsToManage!.contains(appID) {
             os_log("managing %s UDP flow", appID)
-            manageUDPFlow(flow, remoteEndpoint)
+            Task.detached(priority: .background) {
+                self.manageUDPFlow(flow, appID)
+            }
             return true
         }
         return false
     }
     
-    private func manageUDPFlow(_ udpFlow: NEAppProxyUDPFlow, _ endpoint: NWEndpoint) {
-        udpFlow.open(withLocalEndpoint: nil) { error in
+    private func manageUDPFlow(_ flow: NEAppProxyUDPFlow, _ appID: String) {
+        flow.open(withLocalEndpoint: nil) { error in
             if (error != nil) {
                 os_log("error during flow open! %s", error.debugDescription)
             }
             
-            let appName = udpFlow.metaData.sourceAppSigningIdentifier
-            
             let socket = Socket(transportProtocol: TransportProtocol.UDP,
-                                          appName: appName)
-            socket.create()
-            socket.bindToNetworkInterface(interfaceName: self.networkInterface!)
-            // Not calling connect() on a UDP socket since the application might
-            // want to receive and send data to different endpoints
+                                          appName: appID)
+            var result = true
+            if !socket.create() {
+                os_log("Error creating UDP socket of app: %s", appID)
+                result = false
+            }
+            if !socket.bindToNetworkInterface(interfaceName: self.networkInterface!) {
+                os_log("Error binding UDP socket of app: %s", appID)
+                result = false
+            }
+            // Not calling connect() on a UDP socket.
+            // Doing that will turn the socket into a "connected datagram socket".
+            // That will prevent the application from receiving and sending data 
+            // to different endpoints
             
-            self.readUDPFlowData(udpFlow, socket)
+            if !result {
+                socket.close()
+                closeFlow(flow)
+                return
+            }
+            
+            // UDPIO.readOutboundTraffic(flow, socket)
+            // UDPIO.readInboundTraffic(flow, socket)
         }
     }
 }
