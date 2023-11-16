@@ -3,73 +3,65 @@ import NetworkExtension
 import os.log
 
 @available(macOS 11.0, *)
-extension STProxyProvider {
-    func readUDPFlowData(_ udpFlow: NEAppProxyUDPFlow, _ socket: Socket) {
+class UDPIO {
+    static func readOutboundTraffic(_ flow: NEAppProxyUDPFlow, _ socket: Socket) {
         // Reading the application OUTBOUND traffic
-        // This call is blocking: until some data is read the closure will not be called
         //
-        // This is fundamentally different compared to TCP flows.
+        // This is fundamentally different compared to a TCP flow.
         // readDatagrams() can read multiple datagrams coming from multiple endpoints.
-        // For now, this implementation only supports one UDP socket
-        udpFlow.readDatagrams { dataArrayReadFromFlow, endpointArray, flowError in
-            if flowError == nil, let dataToWriteToSocket = dataArrayReadFromFlow, !dataToWriteToSocket.isEmpty, let destinationEndpoints = endpointArray, !destinationEndpoints.isEmpty {
-                // Writing to the real endpoint (via the local socket) the application OUTBOUND traffic
-                if socket.status == .closed {
-                    closeFlow(udpFlow)
-                    return
-                }
-                socket.writeDataUDP(dataToWriteToSocket, destinationEndpoints, completionHandler: { socketError in
-                    if socketError == nil {
-                        // wait for an answer from the endpoint
-                        self.writeUDPFlowData(udpFlow, socket)
-                        self.readUDPFlowData(udpFlow, socket)
-                    } else { // handling errors for socket send()
-                        os_log("error during socket writeData! %s", socketError.debugDescription)
-                        socket.close()
-                        closeFlow(udpFlow)
-                    }
-                })
-            } else { // handling errors for flow readDatagrams()
-                if flowError != nil {
-                    os_log("error during flow read! %s", flowError.debugDescription)
-                } else {
-                    // if error is nil and read data is nil
-                    // it means no data can no longer be read and wrote to the flow
-                    os_log("read no data from flow readDatagrams()")
-                }
-                // no op: We stop calling readTCPFlowData(), ending the recursive loop
-                socket.close()
-                closeFlow(udpFlow)
+        flow.readDatagrams { _dataArray, _endpointArray, flowError in
+            if flowError == nil, let dataArray = _dataArray, !dataArray.isEmpty, let endpointArray = _endpointArray, !endpointArray.isEmpty {
+                writeOutboundTraffic(flow, socket, dataArray, endpointArray)
+            } else {
+                handleError(flowError, "flow readDatagrams()", flow, socket)
             }
         }
     }
-    
-    func writeUDPFlowData(_ udpFlow: NEAppProxyUDPFlow, _ socket: Socket) {
+
+    private static func writeOutboundTraffic(_ flow: NEAppProxyUDPFlow, _ socket: Socket, _ dataArray: [Data], _ endpointArray: [NWEndpoint]) {
         if socket.status == .closed {
-            closeFlow(udpFlow)
+            os_log("error: local UDP socket is closed, aborting read")
+            closeFlow(flow)
             return
         }
-        // This call is blocking: until some data is read the closure will not be called
-        socket.readDataUDP(completionHandler: { dataReadFromSocket, endpoint, socketError in
-            if socketError == nil, let dataToWriteToFlow = dataReadFromSocket, !dataToWriteToFlow.isEmpty, let destinationEndpoint = endpoint {
-                udpFlow.writeDatagrams([dataToWriteToFlow], sentBy: [destinationEndpoint]) { flowError in
-                    if flowError == nil {
-                        // no op, write executed correctly
-                    } else {
-                        os_log("error during UDP flow write! %s", flowError.debugDescription)
-                        socket.close()
-                        closeFlow(udpFlow)
-                    }
-                }
-            } else { // handling socket readData() errors or read 0 data from socket
-                if socketError == nil {
-                    os_log("read no data from socket readDataUDP()")
-                } else {
-                    os_log("error during udp stream read! %s", socketError.debugDescription)
-                }
-                socket.close()
-                closeFlow(udpFlow)
+        socket.writeDataUDP(dataArray, endpointArray, completionHandler: { socketError in
+            if socketError == nil {
+                // read outbound completed successfully, calling it again
+                readOutboundTraffic(flow, socket)
+            } else { 
+                handleError(socketError, "socket writeDataUDP()", flow, socket)
             }
         })
+    }
+    
+    static func readInboundTraffic(_ flow: NEAppProxyUDPFlow, _ socket: Socket) {
+        // socket.readData() needs to be called in a detached task
+        // because it contains a blocking function: recvfrom().
+        Task.detached(priority: .background) {
+            if socket.status == .closed {
+                os_log("error: local UDP socket is closed, aborting read")
+                closeFlow(flow)
+                return
+            }
+            // Reading the application INBOUND traffic
+            socket.readDataUDP(completionHandler: { _data, _endpoint, socketError in
+                if socketError == nil, let data = _data, !data.isEmpty, let endpoint = _endpoint {
+                    writeInboundTraffic(flow, socket, data, endpoint)
+                } else {
+                    handleError(socketError, "socket readDataUDP()", flow, socket)
+                }
+            })
+        }
+    }
+
+    private static func writeInboundTraffic(_ flow: NEAppProxyUDPFlow, _ socket: Socket, _ data: Data, _ endpoint: NWEndpoint) {
+        flow.writeDatagrams([data], sentBy: [endpoint]) { flowError in
+            if flowError == nil {
+                // read inbound completed successfully, calling it again
+                readInboundTraffic(flow, socket)
+            } else {
+                handleError(flowError, "flow writeDatagrams()", flow, socket)
+            }
+        }
     }
 }

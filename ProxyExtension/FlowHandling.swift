@@ -127,8 +127,8 @@ extension STProxyProvider {
                 return
             }
             
-            // UDPIO.readOutboundTraffic(flow, socket)
-            // UDPIO.readInboundTraffic(flow, socket)
+             UDPIO.readOutboundTraffic(flow, socket)
+             UDPIO.readInboundTraffic(flow, socket)
         }
     }
 }
