@@ -26,6 +26,7 @@
 		D191DCE12AEFF886009F4392 /* UDPFlowsIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = D191DCE02AEFF886009F4392 /* UDPFlowsIO.swift */; };
 		D1A80A492AD07CE600FA9456 /* Socket.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A80A482AD07CE600FA9456 /* Socket.swift */; };
 		D1D447042ABCE52400A69316 /* ExtensionRequestDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D447032ABCE52400A69316 /* ExtensionRequestDelegate.swift */; };
+		D1D5B6A42B06802F0063363E /* ErrorHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6A32B06802E0063363E /* ErrorHandling.swift */; };
 		D1E9AEFE2AE31D4F007603BF /* NetworkUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E9AEFD2AE31D4F007603BF /* NetworkUtilities.swift */; };
 		D1FE4FB9295A1EA3002BBA20 /* ProxyAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1FE4FB8295A1EA3002BBA20 /* ProxyAppTests.swift */; };
 /* End PBXBuildFile section */
@@ -85,6 +86,7 @@
 		D191DCE02AEFF886009F4392 /* UDPFlowsIO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDPFlowsIO.swift; sourceTree = "<group>"; };
 		D1A80A482AD07CE600FA9456 /* Socket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Socket.swift; sourceTree = "<group>"; };
 		D1D447032ABCE52400A69316 /* ExtensionRequestDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionRequestDelegate.swift; sourceTree = "<group>"; };
+		D1D5B6A32B06802E0063363E /* ErrorHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandling.swift; sourceTree = "<group>"; };
 		D1E9AEFD2AE31D4F007603BF /* NetworkUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkUtilities.swift; sourceTree = "<group>"; };
 		D1FE4FB6295A1EA3002BBA20 /* SplitTunnelProxyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SplitTunnelProxyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1FE4FB8295A1EA3002BBA20 /* ProxyAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyAppTests.swift; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 				D1E9AEFD2AE31D4F007603BF /* NetworkUtilities.swift */,
 				D191DCDE2AEFEE15009F4392 /* TCPFlowsIO.swift */,
 				D191DCE02AEFF886009F4392 /* UDPFlowsIO.swift */,
+				D1D5B6A32B06802E0063363E /* ErrorHandling.swift */,
 			);
 			path = ProxyExtension;
 			sourceTree = "<group>";
@@ -328,6 +331,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D1D5B6A42B06802F0063363E /* ErrorHandling.swift in Sources */,
 				C40A5C56229DD92E00627D50 /* IPCConnection.swift in Sources */,
 				C40A5C4B229DD6A500627D50 /* main.swift in Sources */,
 				D191DCDF2AEFEE15009F4392 /* TCPFlowsIO.swift in Sources */,
