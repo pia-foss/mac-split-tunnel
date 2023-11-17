@@ -2,7 +2,6 @@ import Foundation
 import NetworkExtension
 import os.log
 
-@available(macOS 11.0, *)
 func handleError(_ error: Error?, _ operation: String, _ flow: NEAppProxyFlow, _ socket: Socket) {
     // We close both the flow and the connection when:
     // - Any I/O operation return an error

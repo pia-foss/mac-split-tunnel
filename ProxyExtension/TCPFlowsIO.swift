@@ -2,7 +2,6 @@ import Foundation
 import NetworkExtension
 import os.log
 
-@available(macOS 11.0, *)
 class TCPIO {
     static func readOutboundTraffic(_ flow: NEAppProxyTCPFlow, _ socket: Socket) {
         // Reading the application OUTBOUND traffic

@@ -2,7 +2,6 @@ import Foundation
 import NetworkExtension
 import os.log
 
-@available(macOS 11.0, *)
 class UDPIO {
     static func readOutboundTraffic(_ flow: NEAppProxyUDPFlow, _ socket: Socket) {
         // Reading the application OUTBOUND traffic

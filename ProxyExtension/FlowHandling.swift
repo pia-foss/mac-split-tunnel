@@ -2,7 +2,6 @@ import Foundation
 import NetworkExtension
 import os.log
 
-@available(macOS 11.0, *)
 extension STProxyProvider {
     // MARK: Managing TCP flows
     // handleNewFlow() is called whenever an application

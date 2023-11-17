@@ -25,7 +25,6 @@ enum SocketError: Error {
     case wrongAddressFamily
 }
 
-@available(macOS 11.0, *)
 class Socket {
     var fileDescriptor: Int32
     var status: SocketStatus

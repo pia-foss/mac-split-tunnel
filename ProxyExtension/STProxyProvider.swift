@@ -24,7 +24,6 @@ import os.log
 // in handleNewFlow, then verify that no app can connect to the internet.
 
 
-@available(macOS 11.0, *)
 class STProxyProvider : NETransparentProxyProvider {
     
     // MARK: Proxy Properties
