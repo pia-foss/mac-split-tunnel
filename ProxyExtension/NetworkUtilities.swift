@@ -25,9 +25,9 @@ func getNetworkInterfaceIP(interfaceName: String) -> String? {
     return address
 }
 
-func getAddressAndPort(endpoint: NWEndpoint) -> (String?, UInt16?) {
-    let address = (endpoint as! NWHostEndpoint).hostname
-    let port = UInt16((endpoint as! NWHostEndpoint).port)
+func getAddressAndPort(endpoint: NWHostEndpoint) -> (String?, UInt16?) {
+    let address = endpoint.hostname
+    let port = UInt16(endpoint.port)
     return (address, port)
 }
 
@@ -47,10 +47,4 @@ func createNWEndpoint(fromSockAddr addr: sockaddr_in) -> NWHostEndpoint {
     let endpoint = NWHostEndpoint(hostname: address, port: port)
 
     return endpoint
-}
-
-func closeFlow(_ flow: NEAppProxyFlow) {
-    // close the flow when you dont want to read and write to it anymore
-    flow.closeReadWithError(nil)
-    flow.closeWriteWithError(nil)
 }

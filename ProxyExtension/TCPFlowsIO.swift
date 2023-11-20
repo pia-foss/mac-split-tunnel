@@ -2,7 +2,6 @@ import Foundation
 import NetworkExtension
 import os.log
 
-@available(macOS 11.0, *)
 class TCPIO {
     static func readOutboundTraffic(_ flow: NEAppProxyTCPFlow, _ socket: Socket) {
         // Reading the application OUTBOUND traffic
@@ -60,19 +59,5 @@ class TCPIO {
                 handleError(flowError, "flow write()", flow, socket)
             }
         }
-    }
-
-    private static func handleError(_ error: Error?, _ operation: String, _ flow: NEAppProxyTCPFlow, _ socket: Socket) {
-        // We close both the flow and the connection when:
-        // - Any I/O operation return an error
-        // - We read or write 0 data to a flow
-        // - We read or write 0 data to a socket
-        if error != nil {
-            os_log("error during %s: %s", operation, error.debugDescription)
-        } else {
-            os_log("read no data from %s", operation)
-        }
-        socket.close()
-        closeFlow(flow)
     }
 }
