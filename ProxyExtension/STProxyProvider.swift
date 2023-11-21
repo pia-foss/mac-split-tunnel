@@ -1,6 +1,7 @@
 import Foundation
 import NetworkExtension
 import os.log
+import Puppy
 
 // TODO: Handle DNS requests of managed flows
 //  Be aware that returning false in NEDNSProxyProvider handleNewFlow(),
@@ -31,24 +32,59 @@ class STProxyProvider : NETransparentProxyProvider {
     var networkInterface: String?
     var serverAddress: String?
 
+    override init() {
+        super.init()
+    }
+    
     // MARK: Proxy Functions
     override func startProxy(options: [String : Any]?, completionHandler: @escaping (Error?) -> Void) {
-        os_log(.debug, "proxy extension started!")
+        // Initialize the logger first
+        guard let logLevelString = options!["logLevel"] as? String else {
+            return
+        }
+
+        let console = ConsoleLogger(Bundle.main.bundleIdentifier! + ".console", logLevel: logLevelFromString(logLevelString))
+        Logger.log.add(console)
+
+        guard let logFile = options!["logFile"] as? String else {
+            Logger.log.error("cannot find logFile in options")
+            return
+        }
+        
+        let fileURL = URL(fileURLWithPath: logFile).absoluteURL
+
+        do {
+            let file = try FileLogger("com.privateinternetaccess.splittunnel.poc.extension.systemextension.logfile",
+                                  logLevel: logLevelFromString(logLevelString),
+                                  fileURL: fileURL,
+                                  filePermission: "777")
+            Logger.log.add(file)
+        }
+        catch {
+            Logger.log.warning("Could not start File Logger, will log only to console.")
+        }
+        Logger.log.info("Logger initialized. Writing to \(fileURL)")
 
         // Checking that all the required settings have been passed to the
         // extension by the ProxyApp
         guard let appsToManage = options!["appsToManage"] as? [String] else {
-            os_log(.error, "cannot find appsToManage in options")
+            Logger.log.error("cannot find appsToManage in options")
             return
         }
+        Logger.log.info("Managing \(appsToManage)")
+        
         guard let networkInterface = options!["networkInterface"] as? String else {
-            os_log(.error, "cannot find networkInterface in options")
+            Logger.log.error("cannot find networkInterface in options")
             return
         }
+        Logger.log.info("Sending flows to interface \(networkInterface)")
+
         guard let serverAddress = options!["serverAddress"] as? String else {
-            os_log(.error, "cannot find serverAddress in options")
+            Logger.log.error("cannot find serverAddress in options")
             return
         }
+        Logger.log.info("Using server address \(serverAddress)")
+
         self.appsToManage = appsToManage
         self.networkInterface = networkInterface
         self.serverAddress = serverAddress
@@ -81,8 +117,7 @@ class STProxyProvider : NETransparentProxyProvider {
         self.setTunnelNetworkSettings(settings) { [] error in
             if (error != nil) {
                 let errorString = error.debugDescription
-                print(errorString)
-                os_log(.debug, "error in setTunnelNetworkSettings: %s!", errorString)
+                Logger.log.error("error in setTunnelNetworkSettings: \(errorString)!")
                 completionHandler(error)
                 return
             }
@@ -91,9 +126,26 @@ class STProxyProvider : NETransparentProxyProvider {
             // If omitted the proxy will hang in the "Connecting..." state.
             completionHandler(nil)
         }
+        
+        Logger.log.warning("Proxy extension started!")
     }
     
     override func stopProxy(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
-        os_log(.debug, "proxy stopped!")
+        Logger.log.info("Proxy stopped!")
+    }
+    
+    func logLevelFromString(_ levelString: String) -> LogLevel {
+        switch levelString.lowercased() {
+        case "debug":
+            return .debug
+        case "info":
+            return .info
+        case "warning":
+            return .warning
+        case "error":
+            return .error
+        default:
+            return .error
+        }
     }
 }

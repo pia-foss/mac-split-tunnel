@@ -19,7 +19,7 @@ class UDPIO {
 
     private static func writeOutboundTraffic(_ flow: NEAppProxyUDPFlow, _ socket: Socket, _ dataArray: [Data], _ endpointArray: [NWEndpoint]) {
         if socket.status == .closed {
-            os_log("error: local UDP socket is closed, aborting read")
+            Logger.log.error("error: local UDP socket is closed, aborting read")
             closeFlow(flow)
             return
         }
@@ -38,7 +38,7 @@ class UDPIO {
         // because it contains a blocking function: recvfrom().
         Task.detached(priority: .background) {
             if socket.status == .closed {
-                os_log("error: local UDP socket is closed, aborting read")
+                Logger.log.error("error: local UDP socket is closed, aborting read")
                 closeFlow(flow)
                 return
             }

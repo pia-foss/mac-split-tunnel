@@ -131,7 +131,9 @@ class ProxyAppDefault : ProxyApp {
                         try session.startTunnel(options: [
                             "appsToManage" : self.appsToManage,
                             "networkInterface" : self.networkInterface,
-                            "serverAddress" : ProxyAppDefault.serverAddress
+                            "serverAddress" : ProxyAppDefault.serverAddress,
+                            "logFile" : "/tmp/STProxy.log",
+                            "logLevel" : "debug"
                         ] as [String : Any])
                     } catch {
                         os_log("startProxy error!")

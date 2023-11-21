@@ -60,7 +60,7 @@ class IPCConnection: NSObject {
     func startListener() {
 
         let machServiceName = extensionMachServiceName(from: Bundle.main)
-        os_log("Starting XPC listener for mach service %@", machServiceName)
+        os_log("Starting XPC listener for mach service \(machServiceName)")
 
         let newListener = NSXPCListener(machServiceName: machServiceName)
         newListener.delegate = self
@@ -98,7 +98,7 @@ class IPCConnection: NSObject {
         newConnection.resume()
 
         guard let providerProxy = newConnection.remoteObjectProxyWithErrorHandler({ registerError in
-            os_log("Failed to register with the provider: %@", registerError.localizedDescription)
+            os_log("Failed to register with the provider: \(registerError.localizedDescription)")
             self.currentConnection?.invalidate()
             self.currentConnection = nil
             completionHandler(false)
@@ -121,7 +121,7 @@ class IPCConnection: NSObject {
         }
 
         guard let appProxy = connection.remoteObjectProxyWithErrorHandler({ promptError in
-            os_log("Failed to prompt the user: %@", promptError.localizedDescription)
+            os_log("Failed to prompt the user: \(promptError.localizedDescription)")
             self.currentConnection = nil
             responseHandler(true)
         }) as? AppCommunication else {
