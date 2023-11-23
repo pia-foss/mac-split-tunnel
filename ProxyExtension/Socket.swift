@@ -16,13 +16,35 @@ enum SocketStatus {
     case closed
 }
 
-enum SocketError: Error {
+public enum SocketError: Error {
     case readNoData
     case readError
     case writeNoData
     case writeError
     case dataEndpointMismatchUDP
     case wrongAddressFamily
+    case socketClosed
+}
+
+extension SocketError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .readNoData:
+            return NSLocalizedString("Socket Read no data", comment: "")
+        case .readError:
+            return NSLocalizedString("Socket Read error", comment: "")
+        case .writeNoData:
+            return NSLocalizedString("Socket Wrote no data", comment: "")
+        case .writeError:
+            return NSLocalizedString("Socket Write error", comment: "")
+        case .dataEndpointMismatchUDP:
+            return NSLocalizedString("Socket UDP Data endpoint mismatch", comment: "")
+        case .wrongAddressFamily:
+            return NSLocalizedString("Socket Wrong address family", comment: "")
+        case .socketClosed:
+            return NSLocalizedString("Socket is closed", comment: "")
+        }
+    }
 }
 
 class Socket {
@@ -31,24 +53,24 @@ class Socket {
     let transportProtocol: TransportProtocol
     let host: String?
     let port: UInt16?
-    let appName: String
+    let appID: String
     
-    init(transportProtocol: TransportProtocol, host: String, port: UInt16, appName: String) {
+    init(transportProtocol: TransportProtocol, host: String, port: UInt16, appID: String) {
         fileDescriptor = -1
         status = .empty
         self.transportProtocol = transportProtocol
         self.host = host
         self.port = port
-        self.appName = appName
+        self.appID = appID
     }
     
-    init(transportProtocol: TransportProtocol, appName: String) {
+    init(transportProtocol: TransportProtocol, appID: String) {
         fileDescriptor = -1
         status = .empty
         self.transportProtocol = transportProtocol
         self.host = nil
         self.port = nil
-        self.appName = appName
+        self.appID = appID
     }
     
     func create() -> Bool {
@@ -59,8 +81,8 @@ class Socket {
             fileDescriptor = socket(AF_INET, SOCK_STREAM, 0)
         }
         if fileDescriptor == -1 {
-            Logger.log.info("Error when creating the socket!")
-            perror("socket")
+            let error = String(cString: strerror(errno))
+            Logger.log.error("Error: \(appID) \"\(error)\" in socket() in fd: \(fileDescriptor)")
             return false
         }
         status = .created
@@ -80,8 +102,8 @@ class Socket {
             }
         }
         if connectResult == -1 {
-            Logger.log.info("Error when calling connect()")
-            perror("connect")
+            let error = String(cString: strerror(errno))
+            Logger.log.error("Error: \(appID) \"\(error)\" in connect() in fd: \(fileDescriptor)")
             close()
             return false
         }
@@ -98,11 +120,11 @@ class Socket {
         } else if bytesWritten == 0 {
             // When send() returns 0 or -1, it is no longer possible to
             // read or write to the socket
-            Logger.log.info("send(): The connection was gracefully closed by the peer")
+            Logger.log.warning("Warning: Written 0 bytes in \(appID) send(). The connection was gracefully closed by the peer in fd: \(fileDescriptor)")
             completion(SocketError.writeNoData)
         } else {
-            Logger.log.info("Error when calling send()")
-            perror("send")
+            let error = String(cString: strerror(errno))
+            Logger.log.error("Error: \(appID) \"\(error)\" in send() in fd: \(fileDescriptor)")
             completion(SocketError.writeError)
         }
     }
@@ -115,19 +137,19 @@ class Socket {
         } else if bytesRead == 0 {
             // When recv() returns 0 or -1, it is no longer possible to
             // read or write to the socket
-            Logger.log.info("recv(): The connection was gracefully closed by the peer")
+            Logger.log.warning("Warning: \(appID) Received 0 bytes in recv(). The connection was gracefully closed by the peer in fd: \(fileDescriptor)")
             completion(nil, SocketError.readNoData)
         } else {
-            Logger.log.info("Error when calling recv()")
-            perror("recv")
+            let error = String(cString: strerror(errno))
+            Logger.log.error("Error: \(appID) \"\(error)\" in recv() in fd: \(fileDescriptor)")
             completion(nil, SocketError.readError)
         }
     }
     
     func writeDataUDP(_ dataArray: [Data], _ endpoints: [NWEndpoint], completionHandler completion: @escaping (Error?) -> Void) {
-        var error: SocketError? = nil
+        var writeError: SocketError? = nil
         if dataArray.count != endpoints.count {
-            Logger.log.info("number of data packets do not match number of endpoints")
+            Logger.log.error("Error: \(appID) Number of data packets do not match number of endpoints in writeDataUDP() in fd: \(fileDescriptor)")
             completion(SocketError.dataEndpointMismatchUDP)
         } else {
             for (data, endpoint) in zip(dataArray, endpoints) {
@@ -149,15 +171,15 @@ class Socket {
                 if bytesWritten == 0 {
                     // When sendto() returns 0 or -1, it is no longer
                     // possible to read or write to the socket
-                    Logger.log.info("sendto(): The connection was gracefully closed by the peer")
-                    error = SocketError.writeNoData
+                    Logger.log.warning("Warning: \(appID) Written 0 bytes in sendto(). The connection was gracefully closed by the peer in fd: \(fileDescriptor)")
+                    writeError = SocketError.writeNoData
                 } else if bytesWritten < 0 {
-                    Logger.log.info("Error when calling sendto()")
-                    perror("sendto")
-                    error = SocketError.writeError
+                    let error = String(cString: strerror(errno))
+                    Logger.log.error("Error: \(appID) \"\(error)\" in sendto() in fd: \(fileDescriptor)")
+                    writeError = SocketError.writeError
                 }
             }
-            completion(error)
+            completion(writeError)
         }
     }
     
@@ -179,11 +201,11 @@ class Socket {
         } else if bytesRead == 0 {
             // When recvfrom() returns 0 or -1, it is no longer possible 
             // to read or write to the socket
-            Logger.log.info("recvfrom(): The connection was gracefully closed by the peer")
+            Logger.log.warning("Warning: \(appID) Received 0 bytes in recvfrom(). The connection was gracefully closed by the peer in fd: \(fileDescriptor)")
             completion(nil as Data?, nil as NWEndpoint?, SocketError.readNoData)
         } else {
-            Logger.log.info("Error when calling recvfrom()")
-            perror("recvfrom")
+            let error = String(cString: strerror(errno))
+            Logger.log.error("Error: \(appID) \"\(error)\" in recvfrom() in fd: \(fileDescriptor)")
             completion(nil as Data?, nil as NWEndpoint?, SocketError.readError)
         }
     }
@@ -210,8 +232,8 @@ class Socket {
             }
         }
         if bindResult == -1 {
-            Logger.log.info("Error when when calling bind()")
-            perror("bind")
+            let error = String(cString: strerror(errno))
+            Logger.log.error("Error: \(appID) \"\(error)\" in bind() in fd: \(fileDescriptor)")
             return false
         }
         return true

@@ -63,24 +63,24 @@ class STProxyProvider : NETransparentProxyProvider {
         catch {
             Logger.log.warning("Could not start File Logger, will log only to console.")
         }
-        Logger.log.info("Logger initialized. Writing to \(fileURL)")
+        Logger.log.info("######################################################\n######################################################\nLogger initialized. Writing to \(fileURL)")
 
         // Checking that all the required settings have been passed to the
         // extension by the ProxyApp
         guard let appsToManage = options!["appsToManage"] as? [String] else {
-            Logger.log.error("cannot find appsToManage in options")
+            Logger.log.error("Error: Cannot find appsToManage in options")
             return
         }
         Logger.log.info("Managing \(appsToManage)")
         
         guard let networkInterface = options!["networkInterface"] as? String else {
-            Logger.log.error("cannot find networkInterface in options")
+            Logger.log.error("Error: Cannot find networkInterface in options")
             return
         }
         Logger.log.info("Sending flows to interface \(networkInterface)")
 
         guard let serverAddress = options!["serverAddress"] as? String else {
-            Logger.log.error("cannot find serverAddress in options")
+            Logger.log.error("Error: Cannot find serverAddress in options")
             return
         }
         Logger.log.info("Using server address \(serverAddress)")
@@ -116,8 +116,7 @@ class STProxyProvider : NETransparentProxyProvider {
         // If the setting are not correct, an error will be thrown.
         self.setTunnelNetworkSettings(settings) { [] error in
             if (error != nil) {
-                let errorString = error.debugDescription
-                Logger.log.error("error in setTunnelNetworkSettings: \(errorString)!")
+                Logger.log.error("Error: \(error!.localizedDescription) in setTunnelNetworkSettings()")
                 completionHandler(error)
                 return
             }
@@ -127,7 +126,7 @@ class STProxyProvider : NETransparentProxyProvider {
             completionHandler(nil)
         }
         
-        Logger.log.warning("Proxy extension started!")
+        Logger.log.info("Proxy started!")
     }
     
     override func stopProxy(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
