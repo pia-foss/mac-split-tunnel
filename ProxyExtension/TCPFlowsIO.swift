@@ -4,29 +4,29 @@ import os.log
 
 class TCPIO {
     static func readOutboundTraffic(_ flow: NEAppProxyTCPFlow, _ socket: Socket) {
-        // Reading the application OUTBOUND traffic
+        // Reading the application OUTBOUND TCP traffic
         flow.readData { dataReadFromFlow, flowError in
             if flowError == nil, let data = dataReadFromFlow, !data.isEmpty {
+                Logger.log.debug("\(socket.appID) wants to write TCP \(data)")
                 writeOutboundTraffic(flow, socket, data)
-                Logger.log.info("\(data)")
             } else {
-                handleError(flowError, "flow readData()", flow, socket)
+                handleError(flowError, "TCP flow readData()", flow, socket)
             }
         }
     }
 
     private static func writeOutboundTraffic(_ flow: NEAppProxyTCPFlow, _ socket: Socket, _ data: Data) {
         if socket.status == .closed {
-            Logger.log.error("error: local socket is closed, aborting read")
-            closeFlow(flow)
+            handleError(SocketError.socketClosed, "before TCP socket writeData()", flow, socket)
             return
         }
         socket.writeData(data, completionHandler: { socketError in
             if socketError == nil {
+                Logger.log.debug("\(socket.appID) have written TCP \(data) successfully")
                 // read outbound completed successfully, calling it again
                 readOutboundTraffic(flow, socket)
             } else { 
-                handleError(socketError, "socket writeData()", flow, socket)
+                handleError(socketError, "TCP socket writeData()", flow, socket)
             }
         })
     }
@@ -36,16 +36,16 @@ class TCPIO {
         // because it contains a blocking function: recv().
         Task.detached(priority: .background) {
             if socket.status == .closed {
-                Logger.log.error("error: local socket is closed, aborting read")
-                closeFlow(flow)
+                handleError(SocketError.socketClosed, "before TCP socket readData()", flow, socket)
                 return
             }
-            // Reading the application INBOUND traffic
+            // Reading the application INBOUND TCP traffic
             socket.readData(completionHandler: { dataReadFromSocket, socketError in
                 if socketError == nil, let data = dataReadFromSocket, !data.isEmpty {
+                    Logger.log.debug("\(socket.appID) is waiting to read TCP \(data)")
                     writeInboundTraffic(flow, socket, data)
                 } else {
-                    handleError(socketError, "socket readData()", flow, socket)
+                    handleError(socketError, "TCP socket readData()", flow, socket)
                 }
             })
         }
@@ -54,10 +54,11 @@ class TCPIO {
     private static func writeInboundTraffic(_ flow: NEAppProxyTCPFlow, _ socket: Socket, _ data: Data) {
         flow.write(data) { flowError in
             if flowError == nil {
+                Logger.log.debug("\(socket.appID) has read TCP \(data)")
                 // read inbound completed successfully, calling it again
                 readInboundTraffic(flow, socket)
             } else {
-                handleError(flowError, "flow write()", flow, socket)
+                handleError(flowError, "TCP flow write()", flow, socket)
             }
         }
     }

@@ -21,13 +21,13 @@ extension STProxyProvider {
         // - manage the flows of ALL the OTHER apps, EXCEPT the ones in the list.
         if appsToManage!.contains(appID) {
             if let tcpFlow = flow as? NEAppProxyTCPFlow {
-                Logger.log.info("managing \(appID) TCP flow")
+                Logger.log.info("\(appID) Managing a new TCP flow")
                 Task.detached(priority: .background) {
                     self.manageTCPFlow(tcpFlow, appID)
                 }
                 return true
             } else {
-                Logger.log.info("error: UDP flow caught by handleNewFlow()")
+                Logger.log.error("Error: \(appID)'s UDP flow caught by handleNewFlow()")
             }
         }
         return false
@@ -39,7 +39,7 @@ extension STProxyProvider {
         // to start reading and writing to this flow.
         flow.open(withLocalEndpoint: nil) { error in
             if (error != nil) {
-                Logger.log.info("error during flow open! \(error.debugDescription)")
+                Logger.log.error("Error: \(appID) \"\(error!.localizedDescription)\" in TCP flow open()")
                 return
             }
 
@@ -49,18 +49,18 @@ extension STProxyProvider {
             let socket = Socket(transportProtocol: TransportProtocol.TCP,
                                              host: endpointAddress!,
                                              port: endpointPort!,
-                                          appName: appID)
+                                          appID: appID)
             var result = true
             if !socket.create() {
-                Logger.log.debug("Error creating TCP socket of app: \(appID)")
+                Logger.log.error("Error: Failed to create \(appID)'s TCP socket")
                 result = false
             }
             if !socket.bindToNetworkInterface(interfaceName: self.networkInterface!) {
-                Logger.log.debug("Error binding TCP socket of app: \(appID)")
+                Logger.log.error("Error: Failed to bind \(appID)'s TCP socket")
                 result = false
             }
             if !socket.connectToHost() {
-                Logger.log.debug("Error connecting TCP socket of app: \(appID)")
+                Logger.log.error("Error: Failed to connect \(appID)'s TCP socket")
                 result = false
             }
             
@@ -89,7 +89,7 @@ extension STProxyProvider {
         let appID = flow.metaData.sourceAppSigningIdentifier
         
         if appsToManage!.contains(appID) {
-            Logger.log.info("managing \(appID) UDP flow")
+            Logger.log.info("\(appID) Managing a new UDP flow")
             Task.detached(priority: .background) {
                 self.manageUDPFlow(flow, appID)
             }
@@ -101,18 +101,19 @@ extension STProxyProvider {
     private func manageUDPFlow(_ flow: NEAppProxyUDPFlow, _ appID: String) {
         flow.open(withLocalEndpoint: nil) { error in
             if (error != nil) {
-                Logger.log.info("error during flow open! \(error.debugDescription)")
+                Logger.log.error("Error: \(appID) \"\(error!.localizedDescription)\" in UDP flow open()")
+                return
             }
             
             let socket = Socket(transportProtocol: TransportProtocol.UDP,
-                                          appName: appID)
+                                          appID: appID)
             var result = true
             if !socket.create() {
-                Logger.log.error("Error creating UDP socket of app: \(appID)")
+                Logger.log.error("Error: Failed to create \(appID)'s UDP socket")
                 result = false
             }
             if !socket.bindToNetworkInterface(interfaceName: self.networkInterface!) {
-                Logger.log.error("Error binding UDP socket of app: \(appID)")
+                Logger.log.error("Error: Failed to bind \(appID)'s UDP socket")
                 result = false
             }
             // Not calling connect() on a UDP socket.

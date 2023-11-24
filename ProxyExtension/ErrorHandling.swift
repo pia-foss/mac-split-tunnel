@@ -7,11 +7,18 @@ func handleError(_ error: Error?, _ operation: String, _ flow: NEAppProxyFlow, _
     // - Any I/O operation return an error
     // - We read or write 0 data to a flow
     // - We read or write 0 data to a socket
-    if error != nil {
-        Logger.log.error("error during \(operation): \(error.debugDescription)")
-    } else {
-        Logger.log.info("read no data from \(operation)")
+    
+    // Filtering out socket readNoData and writeNoData for consistencies with flows
+    var filteredError = error
+    if let socketError = error as? SocketError, (socketError == .readNoData || socketError == .writeNoData) {
+        filteredError = nil
     }
+    if filteredError != nil {
+        Logger.log.error("Error: \(socket.appID) \"\(error!.localizedDescription)\" during operation: \(operation) in fd: \(socket.fileDescriptor)")
+    } else {
+        Logger.log.warning("Warning: \(socket.appID) Empty data buffer during operation: \(operation) in fd: \(socket.fileDescriptor)")
+    }
+    Logger.log.warning("Warning: \(socket.appID) Closing both flow and socket after operation: \(operation) in fd: \(socket.fileDescriptor)")
     socket.close()
     closeFlow(flow)
 }
