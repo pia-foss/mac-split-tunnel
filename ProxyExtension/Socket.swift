@@ -133,6 +133,9 @@ class Socket {
         var buffer = [UInt8](repeating: 0, count: 2048) // Adjust buffer size as needed
         let bytesRead = recv(fileDescriptor, &buffer, buffer.count, 0)
         if bytesRead > 0 {
+            if bytesRead == 2048 {
+                Logger.log.warning("Warning: \(appID) Read 2048 bytes in recv() in fd: \(fileDescriptor)")
+            }
             completion(Data(bytes: buffer, count: bytesRead), nil)
         } else if bytesRead == 0 {
             // When recv() returns 0 or -1, it is no longer possible to
@@ -195,6 +198,9 @@ class Socket {
         
         let bytesRead = recvfrom(fileDescriptor, &buffer, buffer.count, 0, sourceAddressPointer, &sourceAddressLength)
         if bytesRead > 0 {
+            if bytesRead == 2048 {
+                Logger.log.warning("Warning: \(appID) Read 2048 bytes in recvfrom() in fd: \(fileDescriptor)")
+            }
             let endpoint = createNWEndpoint(fromSockAddr: sourceAddress)
             let data = Data(bytes: buffer, count: bytesRead)
             completion(data, endpoint, nil as Error?)
