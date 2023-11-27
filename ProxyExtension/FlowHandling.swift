@@ -22,7 +22,7 @@ extension STProxyProvider {
         if appsToManage!.contains(appID) {
             if let tcpFlow = flow as? NEAppProxyTCPFlow {
                 Logger.log.info("\(appID) Managing a new TCP flow")
-                Task.detached(priority: .background) {
+                Task.detached(priority: .medium) {
                     self.manageTCPFlow(tcpFlow, appID)
                 }
                 return true
@@ -68,7 +68,7 @@ extension STProxyProvider {
                 socket.close()
                 closeFlow(flow)
                 return
-            }
+            }    
             
             // These two functions are async using escaping completion handler
             // They are also recursive: if they complete successfully they call
@@ -76,9 +76,12 @@ extension STProxyProvider {
             // Whenever any error is detected in both these functions, the flow is
             // closed as suggested by mother Apple (the application will likely deal
             // with the dropped connection).
-            // Both functions are non-blocking
-            TCPIO.readOutboundTraffic(flow, socket)
-            TCPIO.readInboundTraffic(flow, socket)
+            Task.detached(priority: .high) {
+                TCPIO.handleRead(flow, socket)
+            }
+            Task.detached(priority: .high) {
+                TCPIO.handleWrite(flow, socket)
+            }
         }
     }
     
@@ -90,7 +93,7 @@ extension STProxyProvider {
         
         if appsToManage!.contains(appID) {
             Logger.log.info("\(appID) Managing a new UDP flow")
-            Task.detached(priority: .background) {
+            Task.detached(priority: .medium) {
                 self.manageUDPFlow(flow, appID)
             }
             return true
@@ -127,8 +130,12 @@ extension STProxyProvider {
                 return
             }
             
-             UDPIO.readOutboundTraffic(flow, socket)
-             UDPIO.readInboundTraffic(flow, socket)
+            Task.detached(priority: .high) {
+                UDPIO.handleRead(flow, socket)
+            }
+            Task.detached(priority: .high) {
+                UDPIO.handleWrite(flow, socket)
+            }
         }
     }
 }
