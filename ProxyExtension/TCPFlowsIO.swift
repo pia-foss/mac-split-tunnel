@@ -3,22 +3,23 @@ import NetworkExtension
 import os.log
 
 class TCPIO {
-    static func handleRead(_ flow: NEAppProxyTCPFlow, _ socket: Socket) {
+    static func handleRead(_ flow: NEAppProxyTCPFlow, _ socket: Socket, _ semaphore: DispatchSemaphore) {
         // Reading the application OUTBOUND TCP traffic
         flow.readData { dataReadFromFlow, flowError in
             if flowError == nil, let data = dataReadFromFlow, !data.isEmpty {
                 Logger.log.debug("\(socket.appID) wants to write TCP \(data)")
-                writeToSocket(flow, socket, data)
-                handleRead(flow, socket)
+                writeToSocket(flow, socket, data, semaphore)
             } else {
                 handleError(flowError, "TCP flow readData()", flow, socket)
+                semaphore.signal()
             }
         }
     }
 
-    private static func writeToSocket(_ flow: NEAppProxyTCPFlow, _ socket: Socket, _ data: Data) {
+    private static func writeToSocket(_ flow: NEAppProxyTCPFlow, _ socket: Socket, _ data: Data, _ semaphore: DispatchSemaphore) {
         if socket.status == .closed {
             handleError(SocketError.socketClosed, "before TCP socket writeData()", flow, socket)
+            semaphore.signal()
             return
         }
         socket.writeData(data, completionHandler: { socketError in
@@ -28,27 +29,29 @@ class TCPIO {
             } else { 
                 handleError(socketError, "TCP socket writeData()", flow, socket)
             }
+            semaphore.signal()
         })
     }
     
-    static func handleWrite(_ flow: NEAppProxyTCPFlow, _ socket: Socket) {
+    static func handleWrite(_ flow: NEAppProxyTCPFlow, _ socket: Socket, _ semaphore: DispatchSemaphore) {
         if socket.status == .closed {
             handleError(SocketError.socketClosed, "before TCP socket readData()", flow, socket)
+            semaphore.signal()
             return
         }
         // Reading the application INBOUND TCP traffic
         socket.readData(completionHandler: { dataReadFromSocket, socketError in
             if socketError == nil, let data = dataReadFromSocket, !data.isEmpty {
                 Logger.log.debug("\(socket.appID) is waiting to read TCP \(data)")
-                writeToFlow(flow, socket, data)
-                handleWrite(flow, socket)
+                writeToFlow(flow, socket, data, semaphore)
             } else {
                 handleError(socketError, "TCP socket readData()", flow, socket)
+                semaphore.signal()
             }
         })
     }
 
-    private static func writeToFlow(_ flow: NEAppProxyTCPFlow, _ socket: Socket, _ data: Data) {
+    private static func writeToFlow(_ flow: NEAppProxyTCPFlow, _ socket: Socket, _ data: Data, _ semaphore: DispatchSemaphore) {
         flow.write(data) { flowError in
             if flowError == nil {
                 Logger.log.debug("\(socket.appID) has read TCP \(data)")
@@ -56,6 +59,7 @@ class TCPIO {
             } else {
                 handleError(flowError, "TCP flow write()", flow, socket)
             }
+            semaphore.signal()
         }
     }
 }

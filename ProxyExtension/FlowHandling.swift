@@ -77,10 +77,18 @@ extension STProxyProvider {
             // closed as suggested by mother Apple (the application will likely deal
             // with the dropped connection).
             Task.detached(priority: .high) {
-                TCPIO.handleRead(flow, socket)
+                let semaphore = DispatchSemaphore(value: 0)
+                while (socket.status != .closed) {
+                    TCPIO.handleRead(flow, socket, semaphore)
+                    semaphore.wait()
+                }
             }
             Task.detached(priority: .high) {
-                TCPIO.handleWrite(flow, socket)
+                let semaphore = DispatchSemaphore(value: 0)
+                while (socket.status != .closed) {
+                    TCPIO.handleWrite(flow, socket, semaphore)
+                    semaphore.wait()
+                }
             }
         }
     }
@@ -131,10 +139,18 @@ extension STProxyProvider {
             }
             
             Task.detached(priority: .high) {
-                UDPIO.handleRead(flow, socket)
+                let semaphore = DispatchSemaphore(value: 0)
+                while (socket.status != .closed) {
+                    UDPIO.handleRead(flow, socket, semaphore)
+                    semaphore.wait()
+                }
             }
             Task.detached(priority: .high) {
-                UDPIO.handleWrite(flow, socket)
+                let semaphore = DispatchSemaphore(value: 0)
+                while (socket.status != .closed) {
+                    UDPIO.handleWrite(flow, socket, semaphore)
+                    semaphore.wait()
+                }
             }
         }
     }
