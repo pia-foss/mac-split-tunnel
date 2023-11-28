@@ -62,47 +62,46 @@ class STProxyProvider : NETransparentProxyProvider {
     // Set the GID of the extension process to the piavpn group
     // This GID is whitelisted by the firewall so we can route packets out
     // the physical interface even when the killswitch is active.
-    func setGidForFirewallWhitelist() {
+    func setGidForFirewallWhitelist() -> Bool {
         Logger.log.info("Trying to set gid of extension to piavpn")
         if let piavpnGid = getGroupIdByName(groupName: "piavpn") {
             if(!setEffectiveGroupID(groupID: piavpnGid) && !setRealGroupID(groupID: piavpnGid)) {
                 Logger.log.error("Error: unable to set group to piavpn!")
+                return false
             }
             else {
                 Logger.log.info("Should have successfully set gid of extension to piavpn")
+                return false
             }
         }
         else {
             Logger.log.error("Error: unable to get gid for piavpn group!")
-        }
-    }
-
-    override init() {
-        super.init()
-        // Whitelist this process in the firewall
-        setGidForFirewallWhitelist()
-    }
-    
-    // MARK: Proxy Functions
-    override func startProxy(options: [String : Any]?, completionHandler: @escaping (Error?) -> Void) {
-        // Initialize the logger first
-        guard let logLevelString = options!["logLevel"] as? String else {
-            return
-        }
-
-        let console = ConsoleLogger(Bundle.main.bundleIdentifier! + ".console", logLevel: logLevelFromString(logLevelString))
-        Logger.log.add(console)
-
-        guard let logFile = options!["logFile"] as? String else {
-            Logger.log.error("cannot find logFile in options")
-            return
+            return false
         }
         
+        return true
+    }
+    
+    func initializeLogger(options: [String : Any]?) -> Bool {
+        guard let logLevel = options!["logLevel"] as? String else {
+            return false
+        }
+        
+        // Initialize the Console logger first
+        let console = ConsoleLogger(Bundle.main.bundleIdentifier! + ".console", logLevel: logLevelFromString(logLevel))
+        Logger.log.add(console)
+        
+        guard let logFile = options!["logFile"] as? String else {
+            Logger.log.error("Error: Cannot find logFile in options")
+            return false
+        }
+        
+        // Now configure the File logger
         let fileURL = URL(fileURLWithPath: logFile).absoluteURL
 
         do {
             let file = try FileLogger("com.privateinternetaccess.splittunnel.poc.extension.systemextension.logfile",
-                                  logLevel: logLevelFromString(logLevelString),
+                                  logLevel: logLevelFromString(logLevel),
                                   fileURL: fileURL,
                                   filePermission: "777")
             Logger.log.add(file)
@@ -111,6 +110,25 @@ class STProxyProvider : NETransparentProxyProvider {
             Logger.log.warning("Could not start File Logger, will log only to console.")
         }
         Logger.log.info("######################################################\n######################################################\nLogger initialized. Writing to \(fileURL)")
+        
+        return true
+    }
+
+    override init() {
+        super.init()
+    }
+    
+    // MARK: Proxy Functions
+    override func startProxy(options: [String : Any]?, completionHandler: @escaping (Error?) -> Void) {
+        // Ensure the logger is initialized - error logging happens in function
+        guard initializeLogger(options: options) else {
+            return
+        }
+        
+        // Whitelist this process in the firewall - error logging happens in function
+        guard setGidForFirewallWhitelist() else {
+            return
+        }
 
         // Checking that all the required settings have been passed to the
         // extension by the ProxyApp
