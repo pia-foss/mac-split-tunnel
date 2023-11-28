@@ -25,7 +25,7 @@ import Puppy
 // in handleNewFlow, then verify that no app can connect to the internet.
 
 // Given a group name (i.e "piavpn") return the associated GID
-func getGroupIdByName(groupName: String) -> gid_t? {
+func getGroupIdFromName(groupName: String) -> gid_t? {
     return groupName.withCString { cStringGroupName in
         var result: gid_t?
         var groupEntry = group()
@@ -59,26 +59,23 @@ class STProxyProvider : NETransparentProxyProvider {
     var networkInterface: String?
     var serverAddress: String?
 
-    // Set the GID of the extension process to the piavpn group
+    // Set the GID of the extension process to the whitelist group (likely "piavpn")
     // This GID is whitelisted by the firewall so we can route packets out
     // the physical interface even when the killswitch is active.
-    func setGidForFirewallWhitelist() -> Bool {
-        Logger.log.info("Trying to set gid of extension to piavpn")
-        if let piavpnGid = getGroupIdByName(groupName: "piavpn") {
-            if(!setEffectiveGroupID(groupID: piavpnGid) && !setRealGroupID(groupID: piavpnGid)) {
-                Logger.log.error("Error: unable to set group to piavpn!")
-                return false
-            }
-            else {
-                Logger.log.info("Should have successfully set gid of extension to piavpn")
-                return false
-            }
+    func setGidForFirewallWhitelist(groupName: String) -> Bool {
+        Logger.log.info("Trying to set gid of extension to \(groupName)")
+        guard let whitelistGid = getGroupIdFromName(groupName: groupName) else {
+            Logger.log.error("Error: unable to get gid for \(groupName) group!")
+            return false
         }
-        else {
-            Logger.log.error("Error: unable to get gid for piavpn group!")
+
+        // Setting either the egid or rgid successfully is a success
+        guard (setEffectiveGroupID(groupID: whitelistGid) || setRealGroupID(groupID: whitelistGid)) else {
+            Logger.log.error("Error: unable to set group to \(groupName) with gid: \(whitelistGid)!")
             return false
         }
         
+        Logger.log.info("Should have successfully set gid of extension to \(groupName) with gid: \(whitelistGid)")
         return true
     }
     
@@ -120,13 +117,13 @@ class STProxyProvider : NETransparentProxyProvider {
     
     // MARK: Proxy Functions
     override func startProxy(options: [String : Any]?, completionHandler: @escaping (Error?) -> Void) {
-        // Ensure the logger is initialized - error logging happens in function
+        // Ensure the logger is initialized
         guard initializeLogger(options: options) else {
             return
         }
         
         // Whitelist this process in the firewall - error logging happens in function
-        guard setGidForFirewallWhitelist() else {
+        guard let groupName = options!["whitelistGroupName"] as? String, setGidForFirewallWhitelist(groupName: groupName) else {
             return
         }
 

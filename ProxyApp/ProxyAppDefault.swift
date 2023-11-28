@@ -133,7 +133,10 @@ class ProxyAppDefault : ProxyApp {
                             "networkInterface" : self.networkInterface,
                             "serverAddress" : ProxyAppDefault.serverAddress,
                             "logFile" : "/tmp/STProxy.log",
-                            "logLevel" : "debug"
+                            "logLevel" : "debug",
+                            // The name of the unix group pia whitelists in the firewall
+                            // This may be different when PIA is white-labeled
+                            "whitelistGroupName" : "piavpn"
                         ] as [String : Any])
                     } catch {
                         os_log("startProxy error!")
