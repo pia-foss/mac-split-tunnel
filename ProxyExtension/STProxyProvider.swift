@@ -24,6 +24,33 @@ import Puppy
 // STProxyProvider class to a NEAppProxyProvider and return false
 // in handleNewFlow, then verify that no app can connect to the internet.
 
+// Given a group name (i.e "piavpn") return the associated GID
+func getGroupIdByName(groupName: String) -> gid_t? {
+    return groupName.withCString { cStringGroupName in
+        var result: gid_t?
+        var groupEntry = group()
+        var buffer: [Int8] = Array(repeating: 0, count: 1024)
+        var tempPointer: UnsafeMutablePointer<group>?
+
+        getgrnam_r(cStringGroupName, &groupEntry, &buffer, buffer.count, &tempPointer)
+
+        if let _ = tempPointer {
+            result = groupEntry.gr_gid
+        }
+
+        return result
+    }
+}
+
+func setEffectiveGroupID(groupID: gid_t) -> Bool {
+    // setegid returns 0 on success, -1 on failure
+    return setegid(groupID) == 0
+}
+
+func setRealGroupID(groupID: gid_t) -> Bool {
+    // setgid returns 0 on success, -1 on failure
+    return setgid(groupID) == 0
+}
 
 class STProxyProvider : NETransparentProxyProvider {
     
@@ -32,8 +59,28 @@ class STProxyProvider : NETransparentProxyProvider {
     var networkInterface: String?
     var serverAddress: String?
 
+    // Set the GID of the extension process to the piavpn group
+    // This GID is whitelisted by the firewall so we can route packets out
+    // the physical interface even when the killswitch is active.
+    func setGidForFirewallWhitelist() {
+        Logger.log.info("Trying to set gid of extension to piavpn")
+        if let piavpnGid = getGroupIdByName(groupName: "piavpn") {
+            if(!setEffectiveGroupID(groupID: piavpnGid) && !setRealGroupID(groupID: piavpnGid)) {
+                Logger.log.error("Error: unable to set group to piavpn!")
+            }
+            else {
+                Logger.log.info("Should have successfully set gid of extension to piavpn")
+            }
+        }
+        else {
+            Logger.log.error("Error: unable to get gid for piavpn group!")
+        }
+    }
+
     override init() {
         super.init()
+        // Whitelist this process in the firewall
+        setGidForFirewallWhitelist()
     }
     
     // MARK: Proxy Functions
