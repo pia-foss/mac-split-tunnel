@@ -1,6 +1,5 @@
 import Foundation
 import NetworkExtension
-import os.log
 import Puppy
 
 // TODO: Handle DNS requests of managed flows

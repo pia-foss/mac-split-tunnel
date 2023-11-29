@@ -1,6 +1,5 @@
 import Foundation
 import NetworkExtension
-import os.log
 
 func handleError(_ error: Error?, _ operation: String, _ flow: NEAppProxyFlow, _ socket: Socket) {
     // We close both the flow and the connection when:

@@ -1,6 +1,5 @@
 import Foundation
 import NetworkExtension
-import os.log
 
 class TCPIO {
     static func handleRead(_ flow: NEAppProxyTCPFlow, _ socket: Socket, _ semaphore: DispatchSemaphore) {
@@ -22,7 +21,7 @@ class TCPIO {
             semaphore.signal()
             return
         }
-        socket.writeData(data, completionHandler: { socketError in
+        socket.writeDataTCP(data, completionHandler: { socketError in
             if socketError == nil {
                 Logger.log.debug("\(socket.appID) have written TCP \(data) successfully")
                 // no op
@@ -40,7 +39,7 @@ class TCPIO {
             return
         }
         // Reading the application INBOUND TCP traffic
-        socket.readData(completionHandler: { dataReadFromSocket, socketError in
+        socket.readDataTCP(completionHandler: { dataReadFromSocket, socketError in
             if socketError == nil, let data = dataReadFromSocket, !data.isEmpty {
                 Logger.log.debug("\(socket.appID) is waiting to read TCP \(data)")
                 writeToFlow(flow, socket, data, semaphore)

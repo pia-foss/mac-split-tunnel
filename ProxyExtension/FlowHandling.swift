@@ -1,6 +1,5 @@
 import Foundation
 import NetworkExtension
-import os.log
 
 extension STProxyProvider {
     // MARK: Managing TCP flows
@@ -82,6 +81,7 @@ extension STProxyProvider {
                     TCPIO.handleRead(flow, socket, semaphore)
                     semaphore.wait()
                 }
+                Logger.log.info("\(appID) Exit read TCP loop in fd: \(socket.fileDescriptor)")
             }
             Task.detached(priority: .high) {
                 let semaphore = DispatchSemaphore(value: 0)
@@ -89,6 +89,7 @@ extension STProxyProvider {
                     TCPIO.handleWrite(flow, socket, semaphore)
                     semaphore.wait()
                 }
+                Logger.log.info("\(appID) Exit write TCP loop in fd: \(socket.fileDescriptor)")
             }
         }
     }
@@ -144,6 +145,7 @@ extension STProxyProvider {
                     UDPIO.handleRead(flow, socket, semaphore)
                     semaphore.wait()
                 }
+                Logger.log.info("\(appID) Exit read UDP loop in fd: \(socket.fileDescriptor)")
             }
             Task.detached(priority: .high) {
                 let semaphore = DispatchSemaphore(value: 0)
@@ -151,6 +153,7 @@ extension STProxyProvider {
                     UDPIO.handleWrite(flow, socket, semaphore)
                     semaphore.wait()
                 }
+                Logger.log.info("\(appID) Exit write UDP loop in fd: \(socket.fileDescriptor)")
             }
         }
     }
