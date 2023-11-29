@@ -24,6 +24,33 @@ import Puppy
 // STProxyProvider class to a NEAppProxyProvider and return false
 // in handleNewFlow, then verify that no app can connect to the internet.
 
+// Given a group name (i.e "piavpn") return the associated GID
+func getGroupIdFromName(groupName: String) -> gid_t? {
+    return groupName.withCString { cStringGroupName in
+        var result: gid_t?
+        var groupEntry = group()
+        var buffer: [Int8] = Array(repeating: 0, count: 1024)
+        var tempPointer: UnsafeMutablePointer<group>?
+
+        getgrnam_r(cStringGroupName, &groupEntry, &buffer, buffer.count, &tempPointer)
+
+        if let _ = tempPointer {
+            result = groupEntry.gr_gid
+        }
+
+        return result
+    }
+}
+
+func setEffectiveGroupID(groupID: gid_t) -> Bool {
+    // setegid returns 0 on success, -1 on failure
+    return setegid(groupID) == 0
+}
+
+func setRealGroupID(groupID: gid_t) -> Bool {
+    // setgid returns 0 on success, -1 on failure
+    return setgid(groupID) == 0
+}
 
 class STProxyProvider : NETransparentProxyProvider {
     
@@ -32,30 +59,46 @@ class STProxyProvider : NETransparentProxyProvider {
     var networkInterface: String?
     var serverAddress: String?
 
-    override init() {
-        super.init()
-    }
-    
-    // MARK: Proxy Functions
-    override func startProxy(options: [String : Any]?, completionHandler: @escaping (Error?) -> Void) {
-        // Initialize the logger first
-        guard let logLevelString = options!["logLevel"] as? String else {
-            return
+    // Set the GID of the extension process to the whitelist group (likely "piavpn")
+    // This GID is whitelisted by the firewall so we can route packets out
+    // the physical interface even when the killswitch is active.
+    func setGidForFirewallWhitelist(groupName: String) -> Bool {
+        Logger.log.info("Trying to set gid of extension to \(groupName)")
+        guard let whitelistGid = getGroupIdFromName(groupName: groupName) else {
+            Logger.log.error("Error: unable to get gid for \(groupName) group!")
+            return false
         }
 
-        let console = ConsoleLogger(Bundle.main.bundleIdentifier! + ".console", logLevel: logLevelFromString(logLevelString))
-        Logger.log.add(console)
-
-        guard let logFile = options!["logFile"] as? String else {
-            Logger.log.error("cannot find logFile in options")
-            return
+        // Setting either the egid or rgid successfully is a success
+        guard (setEffectiveGroupID(groupID: whitelistGid) || setRealGroupID(groupID: whitelistGid)) else {
+            Logger.log.error("Error: unable to set group to \(groupName) with gid: \(whitelistGid)!")
+            return false
         }
         
+        Logger.log.info("Should have successfully set gid of extension to \(groupName) with gid: \(whitelistGid)")
+        return true
+    }
+    
+    func initializeLogger(options: [String : Any]?) -> Bool {
+        guard let logLevel = options!["logLevel"] as? String else {
+            return false
+        }
+        
+        // Initialize the Console logger first
+        let console = ConsoleLogger(Bundle.main.bundleIdentifier! + ".console", logLevel: logLevelFromString(logLevel))
+        Logger.log.add(console)
+        
+        guard let logFile = options!["logFile"] as? String else {
+            Logger.log.error("Error: Cannot find logFile in options")
+            return false
+        }
+        
+        // Now configure the File logger
         let fileURL = URL(fileURLWithPath: logFile).absoluteURL
 
         do {
             let file = try FileLogger("com.privateinternetaccess.splittunnel.poc.extension.systemextension.logfile",
-                                  logLevel: logLevelFromString(logLevelString),
+                                  logLevel: logLevelFromString(logLevel),
                                   fileURL: fileURL,
                                   filePermission: "777")
             Logger.log.add(file)
@@ -64,6 +107,25 @@ class STProxyProvider : NETransparentProxyProvider {
             Logger.log.warning("Could not start File Logger, will log only to console.")
         }
         Logger.log.info("######################################################\n######################################################\nLogger initialized. Writing to \(fileURL)")
+        
+        return true
+    }
+
+    override init() {
+        super.init()
+    }
+    
+    // MARK: Proxy Functions
+    override func startProxy(options: [String : Any]?, completionHandler: @escaping (Error?) -> Void) {
+        // Ensure the logger is initialized
+        guard initializeLogger(options: options) else {
+            return
+        }
+        
+        // Whitelist this process in the firewall - error logging happens in function
+        guard let groupName = options!["whitelistGroupName"] as? String, setGidForFirewallWhitelist(groupName: groupName) else {
+            return
+        }
 
         // Checking that all the required settings have been passed to the
         // extension by the ProxyApp
