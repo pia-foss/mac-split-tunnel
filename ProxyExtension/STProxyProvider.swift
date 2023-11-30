@@ -57,7 +57,14 @@ class STProxyProvider : NETransparentProxyProvider {
     var appsToManage: [String]?
     var networkInterface: String?
     var serverAddress: String?
+    var ioLib: IOLib
 
+    // MARK: Proxy Functions
+    override init() {
+        self.ioLib = IOLibTasks()
+        super.init()
+    }
+    
     // Set the GID of the extension process to the whitelist group (likely "piavpn")
     // This GID is whitelisted by the firewall so we can route packets out
     // the physical interface even when the killswitch is active.
@@ -109,23 +116,8 @@ class STProxyProvider : NETransparentProxyProvider {
         
         return true
     }
-
-    override init() {
-        super.init()
-    }
     
-    // MARK: Proxy Functions
     override func startProxy(options: [String : Any]?, completionHandler: @escaping (Error?) -> Void) {
-        // Ensure the logger is initialized
-        guard initializeLogger(options: options) else {
-            return
-        }
-        
-        // Whitelist this process in the firewall - error logging happens in function
-        guard let groupName = options!["whitelistGroupName"] as? String, setGidForFirewallWhitelist(groupName: groupName) else {
-            return
-        }
-
         // Checking that all the required settings have been passed to the
         // extension by the ProxyApp
         guard let appsToManage = options!["appsToManage"] as? [String] else {
@@ -149,6 +141,16 @@ class STProxyProvider : NETransparentProxyProvider {
         self.appsToManage = appsToManage
         self.networkInterface = networkInterface
         self.serverAddress = serverAddress
+        
+        // Ensure the logger is initialized
+        guard initializeLogger(options: options) else {
+            return
+        }
+        
+        // Whitelist this process in the firewall - error logging happens in function
+        guard let groupName = options!["whitelistGroupName"] as? String, setGidForFirewallWhitelist(groupName: groupName) else {
+            return
+        }
         
         // Initiating the rules.
         // We want to be "notified" of all flows, so we can decide which to manage,
