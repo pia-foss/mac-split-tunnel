@@ -69,7 +69,9 @@ extension STProxyProvider {
                 return
             }    
             
+            log(.debug, "\(appID) Before launching TCP handleReadAndWrite() in fd \(socket.fileDescriptor)")
             self.ioLib.handleReadAndWrite(TransportProtocol.TCP, flow, socket)
+            log(.debug, "\(appID) After launching TCP handleReadAndWrite() in fd \(socket.fileDescriptor)")
         }
     }
 
@@ -118,7 +120,9 @@ extension STProxyProvider {
                 return
             }
             
+            log(.debug, "\(appID) Before launching UDP handleReadAndWrite() in fd \(socket.fileDescriptor)")
             self.ioLib.self.handleReadAndWrite(TransportProtocol.UDP, flow, socket)
+            log(.debug, "\(appID) After launching UDP handleReadAndWrite() in fd \(socket.fileDescriptor)")
         }
     }
 }

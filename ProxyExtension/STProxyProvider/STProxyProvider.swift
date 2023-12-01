@@ -38,6 +38,11 @@ class STProxyProvider : NETransparentProxyProvider {
     }
     
     override func startProxy(options: [String : Any]?, completionHandler: @escaping (Error?) -> Void) {
+        // Ensure the logger is initialized
+        guard initializeLogger(options: options) else {
+            return
+        }
+        
         // Checking that all the required settings have been passed to the
         // extension by the ProxyApp
         guard let appsToManage = options!["appsToManage"] as? [String] else {
@@ -61,11 +66,6 @@ class STProxyProvider : NETransparentProxyProvider {
         self.appsToManage = appsToManage
         self.networkInterface = networkInterface
         self.serverAddress = serverAddress
-        
-        // Ensure the logger is initialized
-        guard initializeLogger(options: options) else {
-            return
-        }
         
         // Whitelist this process in the firewall - error logging happens in function
         guard let groupName = options!["whitelistGroupName"] as? String, setGidForFirewallWhitelist(groupName: groupName) else {
@@ -112,38 +112,6 @@ class STProxyProvider : NETransparentProxyProvider {
         Logger.log.info("Proxy started!")
     }
     
-    func initializeLogger(options: [String : Any]?) -> Bool {
-        guard let logLevel = options!["logLevel"] as? String else {
-            return false
-        }
-        
-        // Initialize the Console logger first
-        let console = ConsoleLogger(Bundle.main.bundleIdentifier! + ".console", logLevel: logLevelFromString(logLevel))
-        Logger.log.add(console)
-        
-        guard let logFile = options!["logFile"] as? String else {
-            Logger.log.error("Error: Cannot find logFile in options")
-            return false
-        }
-        
-        // Now configure the File logger
-        let fileURL = URL(fileURLWithPath: logFile).absoluteURL
-
-        do {
-            let file = try FileLogger("com.privateinternetaccess.splittunnel.poc.extension.systemextension.logfile",
-                                  logLevel: logLevelFromString(logLevel),
-                                  fileURL: fileURL,
-                                  filePermission: "777")
-            Logger.log.add(file)
-        }
-        catch {
-            Logger.log.warning("Could not start File Logger, will log only to console.")
-        }
-        Logger.log.info("######################################################\n######################################################\nLogger initialized. Writing to \(fileURL)")
-        
-        return true
-    }
-    
     // Set the GID of the extension process to the whitelist group (likely "piavpn")
     // This GID is whitelisted by the firewall so we can route packets out
     // the physical interface even when the killswitch is active.
@@ -166,20 +134,5 @@ class STProxyProvider : NETransparentProxyProvider {
     
     override func stopProxy(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
         Logger.log.info("Proxy stopped!")
-    }
-    
-    func logLevelFromString(_ levelString: String) -> LogLevel {
-        switch levelString.lowercased() {
-        case "debug":
-            return .debug
-        case "info":
-            return .info
-        case "warning":
-            return .warning
-        case "error":
-            return .error
-        default:
-            return .error
-        }
     }
 }
