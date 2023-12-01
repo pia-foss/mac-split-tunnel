@@ -3,63 +3,63 @@ import NetworkExtension
 import os.log
 
 class TCPIO {
-    static func readOutboundTraffic(_ flow: NEAppProxyTCPFlow, _ socket: Socket) {
+    static func handleRead(_ flow: NEAppProxyTCPFlow, _ socket: Socket, _ semaphore: DispatchSemaphore) {
         // Reading the application OUTBOUND TCP traffic
         flow.readData { dataReadFromFlow, flowError in
             if flowError == nil, let data = dataReadFromFlow, !data.isEmpty {
                 Logger.log.debug("\(socket.appID) wants to write TCP \(data)")
-                writeOutboundTraffic(flow, socket, data)
+                writeToSocket(flow, socket, data, semaphore)
             } else {
                 handleError(flowError, "TCP flow readData()", flow, socket)
+                semaphore.signal()
             }
         }
     }
 
-    private static func writeOutboundTraffic(_ flow: NEAppProxyTCPFlow, _ socket: Socket, _ data: Data) {
+    private static func writeToSocket(_ flow: NEAppProxyTCPFlow, _ socket: Socket, _ data: Data, _ semaphore: DispatchSemaphore) {
         if socket.status == .closed {
             handleError(SocketError.socketClosed, "before TCP socket writeData()", flow, socket)
+            semaphore.signal()
             return
         }
         socket.writeData(data, completionHandler: { socketError in
             if socketError == nil {
                 Logger.log.debug("\(socket.appID) have written TCP \(data) successfully")
-                // read outbound completed successfully, calling it again
-                readOutboundTraffic(flow, socket)
+                // no op
             } else { 
                 handleError(socketError, "TCP socket writeData()", flow, socket)
             }
+            semaphore.signal()
         })
     }
     
-    static func readInboundTraffic(_ flow: NEAppProxyTCPFlow, _ socket: Socket) {
-        // socket.readData() needs to be called in a detached task
-        // because it contains a blocking function: recv().
-        Task.detached(priority: .background) {
-            if socket.status == .closed {
-                handleError(SocketError.socketClosed, "before TCP socket readData()", flow, socket)
-                return
-            }
-            // Reading the application INBOUND TCP traffic
-            socket.readData(completionHandler: { dataReadFromSocket, socketError in
-                if socketError == nil, let data = dataReadFromSocket, !data.isEmpty {
-                    Logger.log.debug("\(socket.appID) is waiting to read TCP \(data)")
-                    writeInboundTraffic(flow, socket, data)
-                } else {
-                    handleError(socketError, "TCP socket readData()", flow, socket)
-                }
-            })
+    static func handleWrite(_ flow: NEAppProxyTCPFlow, _ socket: Socket, _ semaphore: DispatchSemaphore) {
+        if socket.status == .closed {
+            handleError(SocketError.socketClosed, "before TCP socket readData()", flow, socket)
+            semaphore.signal()
+            return
         }
+        // Reading the application INBOUND TCP traffic
+        socket.readData(completionHandler: { dataReadFromSocket, socketError in
+            if socketError == nil, let data = dataReadFromSocket, !data.isEmpty {
+                Logger.log.debug("\(socket.appID) is waiting to read TCP \(data)")
+                writeToFlow(flow, socket, data, semaphore)
+            } else {
+                handleError(socketError, "TCP socket readData()", flow, socket)
+                semaphore.signal()
+            }
+        })
     }
 
-    private static func writeInboundTraffic(_ flow: NEAppProxyTCPFlow, _ socket: Socket, _ data: Data) {
+    private static func writeToFlow(_ flow: NEAppProxyTCPFlow, _ socket: Socket, _ data: Data, _ semaphore: DispatchSemaphore) {
         flow.write(data) { flowError in
             if flowError == nil {
                 Logger.log.debug("\(socket.appID) has read TCP \(data)")
-                // read inbound completed successfully, calling it again
-                readInboundTraffic(flow, socket)
+                // no op
             } else {
                 handleError(flowError, "TCP flow write()", flow, socket)
             }
+            semaphore.signal()
         }
     }
 }
