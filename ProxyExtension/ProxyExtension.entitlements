@@ -8,7 +8,7 @@
 	</array>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>$(TeamIdentifierPrefix)com.privateinternetaccess.splittunnel.poc</string>
+		<string>$(TeamIdentifierPrefix)com.privateinternetaccess</string>
 	</array>
 </dict>
 </plist>
