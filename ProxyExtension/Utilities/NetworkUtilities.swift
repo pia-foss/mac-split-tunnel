@@ -34,7 +34,7 @@ func getAddressAndPort(endpoint: NWHostEndpoint) -> (String?, UInt16?) {
 func createNWEndpoint(fromSockAddr addr: sockaddr_in) -> NWHostEndpoint {
     // Convert IPv4 address to string
     var ipAddr = addr.sin_addr
-    var address = withUnsafePointer(to: &ipAddr) { ipPtr -> String in
+    let address = withUnsafePointer(to: &ipAddr) { ipPtr -> String in
         var buffer = [CChar](repeating: 0, count: Int(INET_ADDRSTRLEN))
         inet_ntop(AF_INET, ipPtr, &buffer, socklen_t(INET_ADDRSTRLEN))
         return String(cString: buffer)

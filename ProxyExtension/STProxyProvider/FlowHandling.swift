@@ -1,6 +1,5 @@
 import Foundation
 import NetworkExtension
-import os.log
 
 extension STProxyProvider {
     // MARK: Managing TCP flows
@@ -23,7 +22,7 @@ extension STProxyProvider {
             if let tcpFlow = flow as? NEAppProxyTCPFlow {
                 Logger.log.info("\(appID) Managing a new TCP flow")
                 Task.detached(priority: .medium) {
-                    self.manageTCPFlow(tcpFlow, appID)
+                    self.manageNewTCPFlow(tcpFlow, appID)
                 }
                 return true
             } else {
@@ -33,7 +32,7 @@ extension STProxyProvider {
         return false
     }
     
-    private func manageTCPFlow(_ flow: NEAppProxyTCPFlow, _ appID: String) {
+    private func manageNewTCPFlow(_ flow: NEAppProxyTCPFlow, _ appID: String) {
         // open() is used by an NEProvider implementation
         // to indicate to the system that the caller is ready
         // to start reading and writing to this flow.
@@ -70,29 +69,12 @@ extension STProxyProvider {
                 return
             }    
             
-            // These two functions are async using escaping completion handler
-            // They are also recursive: if they complete successfully they call
-            // themselves again.
-            // Whenever any error is detected in both these functions, the flow is
-            // closed as suggested by mother Apple (the application will likely deal
-            // with the dropped connection).
-            Task.detached(priority: .high) {
-                let semaphore = DispatchSemaphore(value: 0)
-                while (socket.status != .closed) {
-                    TCPIO.handleRead(flow, socket, semaphore)
-                    semaphore.wait()
-                }
-            }
-            Task.detached(priority: .high) {
-                let semaphore = DispatchSemaphore(value: 0)
-                while (socket.status != .closed) {
-                    TCPIO.handleWrite(flow, socket, semaphore)
-                    semaphore.wait()
-                }
-            }
+            log(.debug, "\(appID) Before launching TCP handleReadAndWrite() in fd \(socket.fileDescriptor)")
+            self.ioLib.handleReadAndWrite(TransportProtocol.TCP, flow, socket)
+            log(.debug, "\(appID) After launching TCP handleReadAndWrite() in fd \(socket.fileDescriptor)")
         }
     }
-    
+
     // MARK: Managing UDP flows
     // handleNewUDPFlow() is called whenever an application
     // creates a new UDP socket.
@@ -138,20 +120,9 @@ extension STProxyProvider {
                 return
             }
             
-            Task.detached(priority: .high) {
-                let semaphore = DispatchSemaphore(value: 0)
-                while (socket.status != .closed) {
-                    UDPIO.handleRead(flow, socket, semaphore)
-                    semaphore.wait()
-                }
-            }
-            Task.detached(priority: .high) {
-                let semaphore = DispatchSemaphore(value: 0)
-                while (socket.status != .closed) {
-                    UDPIO.handleWrite(flow, socket, semaphore)
-                    semaphore.wait()
-                }
-            }
+            log(.debug, "\(appID) Before launching UDP handleReadAndWrite() in fd \(socket.fileDescriptor)")
+            self.ioLib.self.handleReadAndWrite(TransportProtocol.UDP, flow, socket)
+            log(.debug, "\(appID) After launching UDP handleReadAndWrite() in fd \(socket.fileDescriptor)")
         }
     }
 }

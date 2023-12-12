@@ -1,6 +1,5 @@
 import Foundation
 import NetworkExtension
-import os.log
 
 class UDPIO {
     static func handleRead(_ flow: NEAppProxyUDPFlow, _ socket: Socket, _ semaphore: DispatchSemaphore) {
