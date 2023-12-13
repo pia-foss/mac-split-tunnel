@@ -14,3 +14,6 @@ xcuserdata/
 
 **/*.playground/playground.xcworkspace/xcshareddata/*
 !**/*.playground/playground.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+
+# We commit this file once, but we will update it automatically, so we don't need to push it ever again.
+build.xcconfig

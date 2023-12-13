@@ -10,6 +10,7 @@
 		9704D2AD2B03C97400A899D7 /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = 9704D2AC2B03C97400A899D7 /* Puppy */; };
 		976B8CD72B0B55F60097FE7F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976B8CD62B0B55F60097FE7F /* Logger.swift */; };
 		978D16562B0B842300BA6F7A /* com.privateinternetaccess.splittunnel.poc.extension.systemextension in Embed System Extensions */ = {isa = PBXBuildFile; fileRef = 97E0D7C92B073427000B4997 /* com.privateinternetaccess.splittunnel.poc.extension.systemextension */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		97B1169C2B0CEF910028B01E /* build.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 97B1169B2B0CEF910028B01E /* build.xcconfig */; };
 		97E7B8AD2AFB565700138C6A /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = 97E7B8AC2AFB565700138C6A /* Puppy */; };
 		C40A5C46229DD6A500627D50 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4B45DDD2273A3450050C59B /* NetworkExtension.framework */; };
 		C40A5C4B229DD6A500627D50 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40A5C4A229DD6A500627D50 /* main.swift */; };
@@ -73,6 +74,7 @@
 /* Begin PBXFileReference section */
 		03411C5003411ED000000001 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		976B8CD62B0B55F60097FE7F /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		97B1169B2B0CEF910028B01E /* build.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = build.xcconfig; sourceTree = "<group>"; };
 		97E0D7C82B073427000B4997 /* SplitTunnelProxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SplitTunnelProxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		97E0D7C92B073427000B4997 /* com.privateinternetaccess.splittunnel.poc.extension.systemextension */ = {isa = PBXFileReference; explicitFileType = "wrapper.system-extension"; includeInIndex = 0; path = com.privateinternetaccess.splittunnel.poc.extension.systemextension; sourceTree = BUILT_PRODUCTS_DIR; };
 		97E0D7CA2B073427000B4997 /* SplitTunnelProxyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SplitTunnelProxyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -144,6 +146,7 @@
 				D1D5B6B22B18F67B0063363E /* Utilities */,
 				D1D5B6B12B18F64E0063363E /* STProxyProvider */,
 				C40A5C4A229DD6A500627D50 /* main.swift */,
+				97B1169B2B0CEF910028B01E /* build.xcconfig */,
 				C40A5C4C229DD6A500627D50 /* Info.plist */,
 				C40A5C4D229DD6A500627D50 /* ProxyExtension.entitlements */,
 			);
@@ -255,6 +258,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C40A5C54229DD6A500627D50 /* Build configuration list for PBXNativeTarget "SplitTunnelProxyExtension" */;
 			buildPhases = (
+				971C0CF12B0CED28007EE1FD /* ShellScript */,
 				C40A5C41229DD6A500627D50 /* Sources */,
 				C40A5C42229DD6A500627D50 /* Frameworks */,
 				C40A5C43229DD6A500627D50 /* Resources */,
@@ -363,6 +367,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				97B1169C2B0CEF910028B01E /* build.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -383,6 +388,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		971C0CF12B0CED28007EE1FD /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"",
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\necho \"EXT_BUILD_NUMBER=$(date '+%y%m%d%H%M%S')\" > $SRCROOT/ProxyExtension/build.xcconfig\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		C40A5C41229DD6A500627D50 /* Sources */ = {
@@ -458,13 +485,16 @@
 /* Begin XCBuildConfiguration section */
 		C40A5C52229DD6A500627D50 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 97B1169B2B0CEF910028B01E /* build.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ProxyExtension/ProxyExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(EXT_BUILD_NUMBER)";
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 5357M5NW9W;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = ProxyExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -482,13 +512,16 @@
 		};
 		C40A5C53229DD6A500627D50 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 97B1169B2B0CEF910028B01E /* build.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ProxyExtension/ProxyExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(EXT_BUILD_NUMBER)";
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 5357M5NW9W;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = ProxyExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
