@@ -59,9 +59,15 @@ extension STProxyProvider {
         // Failing that, try using the audit token
         else {
             let auditToken = appFlow.metaData.sourceAppAuditToken
-            let path = pathFromAuditToken(token: auditToken) ?? ""
 
-            return appsToManage!.contains(where: { path.hasPrefix($0) })
+            // Ensure we can get a path
+            guard let path = pathFromAuditToken(token: auditToken) else {
+                return false
+            }
+
+            // Requires an exact match for the app path - so a complete path to the executable is required.
+            // Case is ignored as macOS is a case-insensitive OS
+            return appsToManage!.contains(where: { path.lowercased() == $0.lowercased() })
         }
     }
 
