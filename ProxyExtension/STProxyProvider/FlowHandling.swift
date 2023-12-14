@@ -139,7 +139,7 @@ extension STProxyProvider {
             return nil
         }
 
-        Logger.log.info("Found a process with pid \(pid) and path \(path)")
+        // Logger.log.debug("Found a process with pid \(pid) and path \(path)")
         return path
     }
 
