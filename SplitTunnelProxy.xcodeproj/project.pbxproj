@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 53;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5274B64F2B2AE8DF0007250C /* libbsm.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5274B64E2B2AE8DF0007250C /* libbsm.tbd */; };
 		9704D2AD2B03C97400A899D7 /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = 9704D2AC2B03C97400A899D7 /* Puppy */; };
 		976B8CD72B0B55F60097FE7F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976B8CD62B0B55F60097FE7F /* Logger.swift */; };
 		978D16562B0B842300BA6F7A /* com.privateinternetaccess.splittunnel.poc.extension.systemextension in Embed System Extensions */ = {isa = PBXBuildFile; fileRef = 97E0D7C92B073427000B4997 /* com.privateinternetaccess.splittunnel.poc.extension.systemextension */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -35,7 +36,7 @@
 		D1D5B6AC2B18F1C50063363E /* IOLib.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6AB2B18F1C50063363E /* IOLib.swift */; };
 		D1D5B6AE2B18F2380063363E /* IOLibTasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6AD2B18F2380063363E /* IOLibTasks.swift */; };
 		D1D5B6B02B18F2B10063363E /* IOLibNew.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6AF2B18F2B10063363E /* IOLibNew.swift */; };
-		D1D5B6B62B18F7DF0063363E /* GroupUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6B52B18F7DF0063363E /* GroupUtilities.swift */; };
+		D1D5B6B62B18F7DF0063363E /* ProcessUtiilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6B52B18F7DF0063363E /* ProcessUtiilities.swift */; };
 		D1E9AEFE2AE31D4F007603BF /* NetworkUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E9AEFD2AE31D4F007603BF /* NetworkUtilities.swift */; };
 		D1FE4FB9295A1EA3002BBA20 /* ProxyAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1FE4FB8295A1EA3002BBA20 /* ProxyAppTests.swift */; };
 /* End PBXBuildFile section */
@@ -73,6 +74,8 @@
 
 /* Begin PBXFileReference section */
 		03411C5003411ED000000001 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		5274B64D2B2AE6880007250C /* STProxyProvider-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "STProxyProvider-Bridging-Header.h"; sourceTree = "<group>"; };
+		5274B64E2B2AE8DF0007250C /* libbsm.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbsm.tbd; path = usr/lib/libbsm.tbd; sourceTree = SDKROOT; };
 		976B8CD62B0B55F60097FE7F /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		97B1169B2B0CEF910028B01E /* build.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = build.xcconfig; sourceTree = "<group>"; };
 		97E0D7C82B073427000B4997 /* SplitTunnelProxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SplitTunnelProxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -104,7 +107,7 @@
 		D1D5B6AB2B18F1C50063363E /* IOLib.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOLib.swift; sourceTree = "<group>"; };
 		D1D5B6AD2B18F2380063363E /* IOLibTasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOLibTasks.swift; sourceTree = "<group>"; };
 		D1D5B6AF2B18F2B10063363E /* IOLibNew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOLibNew.swift; sourceTree = "<group>"; };
-		D1D5B6B52B18F7DF0063363E /* GroupUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupUtilities.swift; sourceTree = "<group>"; };
+		D1D5B6B52B18F7DF0063363E /* ProcessUtiilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessUtiilities.swift; sourceTree = "<group>"; };
 		D1E9AEFD2AE31D4F007603BF /* NetworkUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkUtilities.swift; sourceTree = "<group>"; };
 		D1FE4FB8295A1EA3002BBA20 /* ProxyAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyAppTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -114,6 +117,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5274B64F2B2AE8DF0007250C /* libbsm.tbd in Frameworks */,
 				C40A5C46229DD6A500627D50 /* NetworkExtension.framework in Frameworks */,
 				97E7B8AD2AFB565700138C6A /* Puppy in Frameworks */,
 			);
@@ -185,6 +189,7 @@
 		C4B45DDC2273A3450050C59B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5274B64E2B2AE8DF0007250C /* libbsm.tbd */,
 				C4B45DDD2273A3450050C59B /* NetworkExtension.framework */,
 			);
 			name = Frameworks;
@@ -205,6 +210,7 @@
 			children = (
 				D17F5D1B293E701D00FB8DAF /* STProxyProvider.swift */,
 				D13B634C2970CC6E00839689 /* FlowHandling.swift */,
+				5274B64D2B2AE6880007250C /* STProxyProvider-Bridging-Header.h */,
 			);
 			path = STProxyProvider;
 			sourceTree = "<group>";
@@ -215,7 +221,7 @@
 				C4B1415A227A396500B26560 /* IPCConnection.swift */,
 				976B8CD62B0B55F60097FE7F /* Logger.swift */,
 				D1E9AEFD2AE31D4F007603BF /* NetworkUtilities.swift */,
-				D1D5B6B52B18F7DF0063363E /* GroupUtilities.swift */,
+				D1D5B6B52B18F7DF0063363E /* ProcessUtiilities.swift */,
 				D1D5B6A32B06802E0063363E /* ErrorHandling.swift */,
 			);
 			path = Utilities;
@@ -424,7 +430,7 @@
 				D13B634E2970CE9600839689 /* FlowHandling.swift in Sources */,
 				976B8CD72B0B55F60097FE7F /* Logger.swift in Sources */,
 				D1A80A492AD07CE600FA9456 /* Socket.swift in Sources */,
-				D1D5B6B62B18F7DF0063363E /* GroupUtilities.swift in Sources */,
+				D1D5B6B62B18F7DF0063363E /* ProcessUtiilities.swift in Sources */,
 				D1D5B6A82B17C9A90063363E /* UDPSocketIO.swift in Sources */,
 				D1D5B6AC2B18F1C50063363E /* IOLib.swift in Sources */,
 				D1D5B6AA2B17C9D30063363E /* TCPSocketIO.swift in Sources */,
@@ -506,6 +512,7 @@
 				PRODUCT_NAME = "$(PRODUCT_BUNDLE_IDENTIFIER)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "ProxyExtension/STProxyProvider/STProxyProvider-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -533,6 +540,7 @@
 				PRODUCT_NAME = "$(PRODUCT_BUNDLE_IDENTIFIER)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "ProxyExtension/STProxyProvider/STProxyProvider-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;

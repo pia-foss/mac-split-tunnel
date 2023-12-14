@@ -27,3 +27,16 @@ func setRealGroupID(groupID: gid_t) -> Bool {
     // setgid returns 0 on success, -1 on failure
     return setgid(groupID) == 0
 }
+
+// Given a PID return the executable path of that process
+func getProcessPath(pid: pid_t) -> String? {
+    let bufferSize = Int(MAXPATHLEN)
+    var buffer = [CChar](repeating: 0, count: bufferSize)
+
+    let result = proc_pidpath(pid, &buffer, UInt32(bufferSize))
+    if result > 0 {
+        return String(cString: buffer)
+    } else {
+        return nil
+    }
+}
