@@ -2,6 +2,8 @@ import Foundation
 import NetworkExtension
 import NIO
 
+var myFlow: NEAppProxyTCPFlow?
+
 final class IOFlowLibNIO : IOFlowLib {
     let eventLoopGroup: MultiThreadedEventLoopGroup
     let interfaceAddress: String
@@ -19,6 +21,7 @@ final class IOFlowLibNIO : IOFlowLib {
 
     func handleTCPFlowIO(_ flow: NEAppProxyTCPFlow) {
         let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: flow.remoteEndpoint as! NWHostEndpoint)
+        myFlow = flow
         createNewTCPChannel(host: endpointAddress!, port: endpointPort!)
     }
 
@@ -58,12 +61,19 @@ final class InboundTCPHandler: ChannelInboundHandler {
     ) {
         let input = self.unwrapInboundIn(data)
         guard
-            let message = input.getString(at: 0, length: input.readableBytes)
+            let bytes = input.getBytes(at: 0, length: input.readableBytes)
         else {
             return
         }
         log(.debug, "there is new inbound TCP socket traffic")
-        // do something with inbound data
+        // write inbound data to the flow
+        myFlow!.write(Data(bytes)) { flowError in
+            if flowError == nil {
+                log(.debug, "wrote TCP data successfully to the flow")
+            } else {
+                log(.error, "failed to write TCP data to the flow")
+            }
+        }
     }
 
     func channelReadComplete(
