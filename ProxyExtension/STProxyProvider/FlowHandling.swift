@@ -51,10 +51,18 @@ extension STProxyProvider {
     // Should the app be split from default traffic?
     private func isSplitApp(appFlow: NEAppProxyFlow) -> Bool {
         let appID = appFlow.metaData.sourceAppSigningIdentifier
-        let auditToken = appFlow.metaData.sourceAppAuditToken
-        let appPath = pathFromAuditToken(token: auditToken)
 
-        return appsToManage!.contains(appID) || appsToManage!.contains(where: { (appPath ?? "").hasPrefix($0) })
+        // First try the app id
+        if appsToManage!.contains(appID) {
+            return true
+        }
+        // Failing that, try using the audit token
+        else {
+            let auditToken = appFlow.metaData.sourceAppAuditToken
+            let path = pathFromAuditToken(token: auditToken) ?? ""
+
+            return appsToManage!.contains(where: { path.hasPrefix($0) })
+        }
     }
 
     // Given an audit token of an app flow - extract out the executable path for

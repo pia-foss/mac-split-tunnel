@@ -9,7 +9,7 @@
 #ifndef STProxyProvider_Bridging_Header_h
 #define STProxyProvider_Bridging_Header_h
 
+// Needed for audit token processing
 #include <bsm/libbsm.h>
-
 
 #endif /* STProxyProvider_Bridging_Header_h */
