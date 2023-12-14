@@ -13,12 +13,14 @@ extension STProxyProvider {
     //     It will be routed using the system's routing tables
     override func handleNewFlow(_ flow: NEAppProxyFlow) -> Bool {
         let appID = flow.metaData.sourceAppSigningIdentifier
-        
+        let auditToken = flow.metaData.sourceAppAuditToken
+
         // A condition could be added here to achieve inverse split tunnelling.
         // Given the list of apps, we could either:
         // - manage the flows of ONLY the apps in the list
         // - manage the flows of ALL the OTHER apps, EXCEPT the ones in the list.
-        if appsToManage!.contains(appID) {
+        let appPath = processPathFromAuditToken(token: auditToken)
+        if appsToManage!.contains(appID) || appsToManage!.contains(where: { appPath.hasPrefix($0) }) {
             if let tcpFlow = flow as? NEAppProxyTCPFlow {
                 Logger.log.info("\(appID) Managing a new TCP flow")
                 Task.detached(priority: .medium) {
@@ -31,7 +33,37 @@ extension STProxyProvider {
         }
         return false
     }
-    
+
+    private func processPathFromAuditToken(token: Data?) -> String {
+        guard let auditToken = token else {
+            Logger.log.warning("Audit token is nil")
+            return ""
+        }
+
+        var pid: pid_t = 0
+
+        auditToken.withUnsafeBytes { bytes in
+            let auditTokenValue = bytes.bindMemory(to: audit_token_t.self).baseAddress!.pointee
+            audit_token_to_au32(auditTokenValue, nil, nil, nil, nil, nil, &pid, nil, nil)
+
+        }
+
+        if(pid != 0) {
+            guard let path = getProcessPath(pid: pid) else {
+                Logger.log.warning("Found a process with pid \(pid) but could not convert to a path")
+                return ""
+            }
+            
+            Logger.log.info("Found a process with pid \(pid) and path \(path)")
+
+            return path
+        }
+        else {
+            Logger.log.warning("Could not get a pid from the audit token")
+            return ""
+        }
+    }
+
     private func manageNewTCPFlow(_ flow: NEAppProxyTCPFlow, _ appID: String) {
         // open() is used by an NEProvider implementation
         // to indicate to the system that the caller is ready
