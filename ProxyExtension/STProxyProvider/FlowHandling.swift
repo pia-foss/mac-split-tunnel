@@ -31,7 +31,7 @@ extension STProxyProvider {
     override func handleNewUDPFlow(_ udpFlow: NEAppProxyUDPFlow, initialRemoteEndpoint remoteEndpoint: NWEndpoint) -> Bool {
         return processFlow(udpFlow) { appID in
             Task.detached(priority: .medium) {
-                self.manageUDPFlow(udpFlow, appID)
+                self.manageNewUDPFlow(udpFlow, appID)
             }
         }
     }
@@ -152,72 +152,23 @@ extension STProxyProvider {
                 Logger.log.error("Error: \(appID) \"\(error!.localizedDescription)\" in TCP flow open()")
                 return
             }
-
-            let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: flow.remoteEndpoint as! NWHostEndpoint)
-            
-            // Create the socket that will proxy the traffic
-            let socket = Socket(transportProtocol: TransportProtocol.TCP,
-                                             host: endpointAddress!,
-                                             port: endpointPort!,
-                                          appID: appID)
-            var result = true
-            if !socket.create() {
-                Logger.log.error("Error: Failed to create \(appID)'s TCP socket")
-                result = false
-            }
-            if !socket.bindToNetworkInterface(interfaceName: self.networkInterface!) {
-                Logger.log.error("Error: Failed to bind \(appID)'s TCP socket")
-                result = false
-            }
-            if !socket.connectToHost() {
-                Logger.log.error("Error: Failed to connect \(appID)'s TCP socket")
-                result = false
-            }
-            
-            if !result {
-                socket.close()
-                closeFlow(flow)
-                return
-            }    
-            
-            log(.debug, "\(appID) Before launching TCP handleReadAndWrite() in fd \(socket.fileDescriptor)")
-            self.ioLib.handleReadAndWrite(TransportProtocol.TCP, flow, socket)
-            log(.debug, "\(appID) After launching TCP handleReadAndWrite() in fd \(socket.fileDescriptor)")
+   
+            log(.debug, "\(appID) Before: Handling IO of a new TCP flow")
+            self.ioFlowLib!.handleTCPFlowIO(flow)
+            log(.debug, "\(appID) After: Handling IO of a new TCP flow")
         }
     }
     
-    private func manageUDPFlow(_ flow: NEAppProxyUDPFlow, _ appID: String) {
+    private func manageNewUDPFlow(_ flow: NEAppProxyUDPFlow, _ appID: String) {
         flow.open(withLocalEndpoint: nil) { error in
             if (error != nil) {
                 Logger.log.error("Error: \(appID) \"\(error!.localizedDescription)\" in UDP flow open()")
                 return
             }
-            
-            let socket = Socket(transportProtocol: TransportProtocol.UDP,
-                                          appID: appID)
-            var result = true
-            if !socket.create() {
-                Logger.log.error("Error: Failed to create \(appID)'s UDP socket")
-                result = false
-            }
-            if !socket.bindToNetworkInterface(interfaceName: self.networkInterface!) {
-                Logger.log.error("Error: Failed to bind \(appID)'s UDP socket")
-                result = false
-            }
-            // Not calling connect() on a UDP socket.
-            // Doing that will turn the socket into a "connected datagram socket".
-            // That will prevent the application from receiving and sending data 
-            // to different endpoints
-            
-            if !result {
-                socket.close()
-                closeFlow(flow)
-                return
-            }
-            
-            log(.debug, "\(appID) Before launching UDP handleReadAndWrite() in fd \(socket.fileDescriptor)")
-            self.ioLib.self.handleReadAndWrite(TransportProtocol.UDP, flow, socket)
-            log(.debug, "\(appID) After launching UDP handleReadAndWrite() in fd \(socket.fileDescriptor)")
+
+            log(.debug, "\(appID) Before: Handling IO of a new UDP flow")
+            self.ioFlowLib!.handleUDPFlowIO(flow)
+            log(.debug, "\(appID) After: Handling IO of a new UDP flow")
         }
     }
 }

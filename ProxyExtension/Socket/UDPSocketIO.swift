@@ -14,7 +14,7 @@ extension Socket {
                 var endpointAddress = sockaddr_in()
                 endpointAddress.sin_len = __uint8_t(MemoryLayout<sockaddr_in>.size)
                 endpointAddress.sin_family = sa_family_t(AF_INET)
-                endpointAddress.sin_port = endpointParts.1!.bigEndian
+                endpointAddress.sin_port = UInt16(endpointParts.1!.bigEndian)
                 endpointAddress.sin_addr.s_addr = inet_addr(endpointParts.0!)
                 let serverSocketAddress = withUnsafePointer(to: &endpointAddress) {
                     $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {

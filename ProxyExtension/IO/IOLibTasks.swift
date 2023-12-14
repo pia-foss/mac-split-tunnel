@@ -1,7 +1,7 @@
 import Foundation
 import NetworkExtension
 
-class IOLibTasks : IOLib {
+class IOLibTasks {
     func handleReadAndWrite(_ tProtocol: TransportProtocol, _ flow: NEAppProxyFlow, _ socket: Socket) {
         // These two functions are async using escaping completion handler
         //
