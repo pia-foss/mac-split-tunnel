@@ -12,6 +12,10 @@ extension STProxyProvider {
     //     The flow of this app will NOT be managed.
     //     It will be routed using the system's routing tables
     override func handleNewFlow(_ flow: NEAppProxyFlow) -> Bool {
+        guard isFlowIPv4(flow) else {
+            return false
+        }
+
         let appID = flow.metaData.sourceAppSigningIdentifier
 
         // A condition could be added here to achieve inverse split tunnelling.
@@ -36,6 +40,10 @@ extension STProxyProvider {
     // handleNewUDPFlow() is called whenever an application
     // creates a new UDP socket.
     override func handleNewUDPFlow(_ flow: NEAppProxyUDPFlow, initialRemoteEndpoint remoteEndpoint: NWEndpoint) -> Bool {
+        guard isFlowIPv4(flow) else {
+            return false
+        }
+
         let appID = flow.metaData.sourceAppSigningIdentifier
 
         if isSplitApp(appFlow: flow) {
@@ -69,6 +77,15 @@ extension STProxyProvider {
             // Case is ignored as macOS is a case-insensitive OS
             return appsToManage!.contains(where: { path.lowercased() == $0.lowercased() })
         }
+    }
+
+    // Is a given flow IPv4 ?
+    private func isFlowIPv4(_ flow: NEAppProxyFlow) -> Bool {
+        let hostName = flow.remoteHostname ?? ""
+        // Check if the address is an IPv6 address, and negate it. IPv6 addresses always contain a ":"
+        // We can't do the opposite (such as just checking for "." for an IPv4 address) due to IPv4-mapped IPv6 addresses
+        // which are IPv6 addresses but include IPv4 address notation.
+        return !hostName.contains(":")
     }
 
     // Given an audit token of an app flow - extract out the executable path for
