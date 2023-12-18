@@ -71,17 +71,40 @@ class STProxyProvider : NETransparentProxyProvider {
         guard let groupName = options!["whitelistGroupName"] as? String, setGidForFirewallWhitelist(groupName: groupName) else {
             return
         }
-        
+
+        // Build a rule to match traffic from a subnet and a prefix - default to all protocols (TCP/UDP) and outbound only
+        // A nil subnet implies remoteNetwork should be set to nil (which means it'll match all remote networks)
+        let subnetRule : (String?, Int) -> NENetworkRule = { (subnet, prefix) in
+            return NENetworkRule(
+                remoteNetwork: subnet != nil ? NWHostEndpoint(hostname: subnet!, port: "0") : nil,
+                remotePrefix: prefix,
+                localNetwork: nil,
+                localPrefix: 0,
+                protocol: .any,
+                direction: .outbound
+            )
+        }
+
         // Initiating the rules.
-        // We want to be "notified" of all flows, so we can decide which to manage,
-        // based on the flow's app name.
         //
         // Only outbound traffic is supported in NETransparentProxyNetworkSettings
-        var rules:[NENetworkRule] = []
-        let ruleAllTCP = NENetworkRule(remoteNetwork: nil, remotePrefix: 0, localNetwork: nil, localPrefix: 0, protocol: .TCP, direction: .outbound)
-        let ruleAllUDP = NENetworkRule(remoteNetwork: nil, remotePrefix: 0, localNetwork: nil, localPrefix: 0, protocol: .UDP, direction: .outbound)
-        rules.append(ruleAllTCP)
-        rules.append(ruleAllUDP)
+        var includedRules:[NENetworkRule] = []
+        var excludedRules: [NENetworkRule] = []
+
+        // We want to be "notified" of all flows (TCP and UDP), so we can decide which to manage
+        // nil subnet and 0 prefix indicate we want to match everything
+        let allNetworks = subnetRule(nil, 0)
+
+        // Exclude IPv4 LAN networks from the proxy
+        // We don't need to exclude localhost as this is excluded by default
+        let rfc1918NetworkRules = [
+            subnetRule("192.168.0.0", 16),
+            subnetRule("10.0.0.0", 8),
+            subnetRule("172.16.0.0", 12)
+        ]
+
+        includedRules.append(allNetworks)
+        excludedRules.append(contentsOf: rfc1918NetworkRules)
 
         // It is unclear what tunnelRemoteAddress means in the case of
         // NETransparentProxy.
@@ -92,8 +115,8 @@ class STProxyProvider : NETransparentProxyProvider {
         //
         // Setting it to localhost for now, until a 'proper' solution is found
         let settings = NETransparentProxyNetworkSettings(tunnelRemoteAddress: serverAddress)
-        settings.includedNetworkRules = rules
-        settings.excludedNetworkRules = nil
+        settings.includedNetworkRules = includedRules
+        settings.excludedNetworkRules = excludedRules
 
         // Sending the desired settings to the ProxyExtension process.
         // If the setting are not correct, an error will be thrown.
