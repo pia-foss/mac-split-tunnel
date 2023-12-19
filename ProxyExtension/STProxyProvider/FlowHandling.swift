@@ -13,38 +13,33 @@ extension STProxyProvider {
     //     The flow of this app will NOT be managed.
     //     It will be routed using the system's routing tables
     override func handleNewFlow(_ flow: NEAppProxyFlow) -> Bool {
-        guard isFlowIPv4(flow) else {
+        guard let tcpFlow = flow as? NEAppProxyTCPFlow else {
+            log(.warning, "Expected an NEAppProxyTCPFlow but got a UDP flow")
             return false
         }
 
-        let appID = flow.metaData.sourceAppSigningIdentifier
-
-        switch policyFor(appFlow: flow) {
-        case .proxy:
-            if let tcpFlow = flow as? NEAppProxyTCPFlow {
-                Logger.log.info("\(appID) Managing a new TCP flow")
-                Task.detached(priority: .medium) {
-                    self.manageNewTCPFlow(tcpFlow, appID)
-                }
-                return true
-            } else {
-                Logger.log.error("Error: \(appID)'s UDP flow caught by handleNewFlow()")
-                return false
+        return processFlow(flow) { appID in
+            Task.detached(priority: .medium) {
+                self.manageNewTCPFlow(tcpFlow, appID)
             }
-        case .block:
-            blockFlow(appFlow: flow)
-            // We return true to indicate to the OS we want to handle the flow
-            // but since we just closed it (in blockFlow) this should block the app's connections
-            return true
-        case .ignore:
-            return false
         }
     }
 
     // MARK: Managing UDP flows
     // handleNewUDPFlow() is called whenever an application
     // creates a new UDP socket.
-    override func handleNewUDPFlow(_ flow: NEAppProxyUDPFlow, initialRemoteEndpoint remoteEndpoint: NWEndpoint) -> Bool {
+    override func handleNewUDPFlow(_ udpFlow: NEAppProxyUDPFlow, initialRemoteEndpoint remoteEndpoint: NWEndpoint) -> Bool {
+        return processFlow(udpFlow) { appID in
+            Task.detached(priority: .medium) {
+                self.manageUDPFlow(udpFlow, appID)
+            }
+        }
+    }
+
+    // Process a new flow - whether it's an NEAppProxyTCPFlow or NEAppProxyUDPFlow
+    // This function applies the correct flow policy - whether that is to proxy, block, or ignore.
+    // If the policy type is proxy - then we also execute the associated lambda and pass in the appID.
+    private func processFlow<T: NEAppProxyFlow>(_ flow: T, successHandler: (_ appID: String) -> Void) -> Bool {
         guard isFlowIPv4(flow) else {
             return false
         }
@@ -53,10 +48,9 @@ extension STProxyProvider {
 
         switch policyFor(appFlow: flow) {
         case .proxy:
-            Logger.log.info("\(appID) Managing a new UDP flow")
-            Task.detached(priority: .medium) {
-                self.manageUDPFlow(flow, appID)
-            }
+            let flowType = String(describing: T.self)
+            Logger.log.info("\(appID) Managing a new \(flowType) flow")
+            successHandler(appID)
             return true
         case .block:
             blockFlow(appFlow: flow)
@@ -68,6 +62,7 @@ extension STProxyProvider {
         }
     }
 
+    // Block a flow by closing it
     private func blockFlow(appFlow: NEAppProxyFlow) -> Void {
         let appID = appFlow.metaData.sourceAppSigningIdentifier
 
@@ -92,7 +87,7 @@ extension STProxyProvider {
         }
 
         // We failed to find a policy based on appId - now let's try the app path
-        // In order to find the app path we irst have to extract it from the flow's audit token
+        // In order to find the app path we first have to extract it from the flow's audit token
         let auditToken = appFlow.metaData.sourceAppAuditToken
 
         guard let path = pathFromAuditToken(token: auditToken) else {
