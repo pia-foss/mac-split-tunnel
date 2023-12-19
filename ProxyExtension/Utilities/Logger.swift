@@ -52,7 +52,7 @@ func logLevelFromString(_ levelString: String) -> LogLevel {
     }
 }
 
-func log(_ type:LogLevel, _ text: String) {
+func log(_ type: LogLevel, _ text: String) {
     let currentDate = Date()
     let formatter = DateFormatter()
     formatter.dateFormat = "HH:mm:ss:SSSS"

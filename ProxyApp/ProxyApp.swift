@@ -63,5 +63,5 @@ protocol ProxyApp {
     //
     // To get the bundle ID of an app, knowing its name use this command:
     // `osascript -e 'id of app "Google Chrome"'`
-    func setManagedApps(apps: [String]) -> Void
+    func setBypassApps(apps: [String]) -> Void
 }

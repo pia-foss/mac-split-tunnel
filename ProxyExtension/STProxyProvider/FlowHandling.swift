@@ -2,6 +2,7 @@ import Foundation
 import NetworkExtension
 
 extension STProxyProvider {
+
     // MARK: Managing TCP flows
     // handleNewFlow() is called whenever an application
     // creates a new TCP socket.
@@ -12,74 +13,92 @@ extension STProxyProvider {
     //     The flow of this app will NOT be managed.
     //     It will be routed using the system's routing tables
     override func handleNewFlow(_ flow: NEAppProxyFlow) -> Bool {
-        guard isFlowIPv4(flow) else {
+        guard let tcpFlow = flow as? NEAppProxyTCPFlow else {
+            log(.warning, "Expected an NEAppProxyTCPFlow but got a UDP flow")
             return false
         }
 
-        let appID = flow.metaData.sourceAppSigningIdentifier
-
-        // A condition could be added here to achieve inverse split tunnelling.
-        // Given the list of apps, we could either:
-        // - manage the flows of ONLY the apps in the list
-        // - manage the flows of ALL the OTHER apps, EXCEPT the ones in the list.
-        if isSplitApp(appFlow: flow) {
-            if let tcpFlow = flow as? NEAppProxyTCPFlow {
-                Logger.log.info("\(appID) Managing a new TCP flow")
-                Task.detached(priority: .medium) {
-                    self.manageNewTCPFlow(tcpFlow, appID)
-                }
-                return true
-            } else {
-                Logger.log.error("Error: \(appID)'s UDP flow caught by handleNewFlow()")
+        return processFlow(flow) { appID in
+            Task.detached(priority: .medium) {
+                self.manageNewTCPFlow(tcpFlow, appID)
             }
         }
-        return false
     }
 
     // MARK: Managing UDP flows
     // handleNewUDPFlow() is called whenever an application
     // creates a new UDP socket.
-    override func handleNewUDPFlow(_ flow: NEAppProxyUDPFlow, initialRemoteEndpoint remoteEndpoint: NWEndpoint) -> Bool {
+    override func handleNewUDPFlow(_ udpFlow: NEAppProxyUDPFlow, initialRemoteEndpoint remoteEndpoint: NWEndpoint) -> Bool {
+        return processFlow(udpFlow) { appID in
+            Task.detached(priority: .medium) {
+                self.manageUDPFlow(udpFlow, appID)
+            }
+        }
+    }
+
+    // Process a new flow - whether it's an NEAppProxyTCPFlow or NEAppProxyUDPFlow
+    // This function applies the correct flow policy - whether that is to proxy, block, or ignore.
+    // If the policy type is proxy - then we also execute the associated lambda and pass in the appID.
+    private func processFlow<T: NEAppProxyFlow>(_ flow: T, successHandler: (_ appID: String) -> Void) -> Bool {
         guard isFlowIPv4(flow) else {
             return false
         }
 
         let appID = flow.metaData.sourceAppSigningIdentifier
 
-        if isSplitApp(appFlow: flow) {
-            Logger.log.info("\(appID) Managing a new UDP flow")
-            Task.detached(priority: .medium) {
-                self.manageUDPFlow(flow, appID)
-            }
+        switch policyFor(appFlow: flow) {
+        case .proxy:
+            let flowType = String(describing: T.self)
+            Logger.log.info("\(appID) Managing a new \(flowType) flow")
+            successHandler(appID)
             return true
+        case .block:
+            blockFlow(appFlow: flow)
+            // We return true to indicate to the OS we want to handle the flow
+            // but since we just closed it (in blockFlow) this should result in the app being blocked
+            return true
+        case .ignore:
+            return false
         }
-        return false
     }
 
-    // Should the app be split from default traffic?
-    private func isSplitApp(appFlow: NEAppProxyFlow) -> Bool {
+    // Block a flow by closing it
+    private func blockFlow(appFlow: NEAppProxyFlow) -> Void {
         let appID = appFlow.metaData.sourceAppSigningIdentifier
 
-        // First try the app id
-        if appsToManage!.contains(appID) {
-            return true
-        }
-        // Failing that, try using the audit token
-        else {
-            let auditToken = appFlow.metaData.sourceAppAuditToken
+        let error = NSError(domain: "com.privateinternetaccess.vpn", code: 100, userInfo: nil)
+        appFlow.closeReadWithError(error)
+        appFlow.closeWriteWithError(error)
 
-            // Ensure we can get a path
-            guard let path = pathFromAuditToken(token: auditToken) else {
-                return false
-            }
-
-            // Requires an exact match for the app path - so a complete path to the executable is required.
-            // Case is ignored as macOS is a case-insensitive OS
-            return appsToManage!.contains(where: { path.lowercased() == $0.lowercased() })
-        }
+        log(.warning, "Blocking the flow for appId: \(appID)")
     }
 
-    // Is a given flow IPv4 ?
+    // Given a flow, return the app policy to apply (.proxy, .block. ignore)
+    private func policyFor(appFlow: NEAppProxyFlow) -> AppPolicy.Policy {
+        // First try to find a policy for the app using the appId
+        let appID = appFlow.metaData.sourceAppSigningIdentifier
+        let appIdPolicy = appPolicy.policyFor(appId: appID)
+
+        // If we fail to find a policy from the appId
+        // then try using the path (extracted from the audit token)
+        // Otherwise, if we do find a policy, return that policy
+        guard appIdPolicy == .ignore else {
+            return appIdPolicy
+        }
+
+        // We failed to find a policy based on appId - now let's try the app path
+        // In order to find the app path we first have to extract it from the flow's audit token
+        let auditToken = appFlow.metaData.sourceAppAuditToken
+
+        guard let path = pathFromAuditToken(token: auditToken) else {
+            return .ignore
+        }
+
+        // Return the policy for the app (by its path)
+        return appPolicy.policyFor(appPath: path)
+    }
+
+    // Is the flow IPv4 ? (we only support IPv4 flows at present)
     private func isFlowIPv4(_ flow: NEAppProxyFlow) -> Bool {
         let hostName = flow.remoteHostname ?? ""
         // Check if the address is an IPv6 address, and negate it. IPv6 addresses always contain a ":"

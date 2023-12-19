@@ -26,14 +26,15 @@ import Puppy
 class STProxyProvider : NETransparentProxyProvider {
     
     // MARK: Proxy Properties
-    var appsToManage: [String]?
     var networkInterface: String?
     var serverAddress: String?
     var ioLib: IOLib
+    var appPolicy: AppPolicy
 
     // MARK: Proxy Functions
     override init() {
         self.ioLib = IOLibTasks() //IOLibTasks() IOLibNew()
+        self.appPolicy = AppPolicy()
         super.init()
     }
     
@@ -45,12 +46,17 @@ class STProxyProvider : NETransparentProxyProvider {
         
         // Checking that all the required settings have been passed to the
         // extension by the ProxyApp
-        guard let appsToManage = options!["appsToManage"] as? [String] else {
-            Logger.log.error("Error: Cannot find appsToManage in options")
+        guard let bypassApps = options!["bypassApps"] as? [String] else {
+            Logger.log.error("Error: Cannot find bypassApps in options")
             return
         }
-        Logger.log.info("Managing \(appsToManage)")
-        
+        Logger.log.info("Managing \(bypassApps)")
+
+        guard let vpnOnlyApps = options!["vpnOnlyApps"] as? [String] else {
+            Logger.log.error("Error: Cannot find vpnOnlyApps in options")
+            return
+        }
+
         guard let networkInterface = options!["networkInterface"] as? String else {
             Logger.log.error("Error: Cannot find networkInterface in options")
             return
@@ -63,10 +69,20 @@ class STProxyProvider : NETransparentProxyProvider {
         }
         Logger.log.info("Using server address \(serverAddress)")
 
-        self.appsToManage = appsToManage
+        guard let routeVpn = options!["routeVpn"] as? Bool else {
+            Logger.log.error("Error: Cannot find routeVpn in options")
+            return
+        }
+
+        guard let connected = options!["connected"] as? Bool else {
+            Logger.log.error("Error: Cannot find connected in options")
+            return
+        }
+
         self.networkInterface = networkInterface
         self.serverAddress = serverAddress
-        
+        self.appPolicy = AppPolicy(bypassApps: bypassApps, vpnOnlyApps: vpnOnlyApps, routeVpn: routeVpn, connected: connected)
+
         // Whitelist this process in the firewall - error logging happens in function
         guard let groupName = options!["whitelistGroupName"] as? String, setGidForFirewallWhitelist(groupName: groupName) else {
             return
