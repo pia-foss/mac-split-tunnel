@@ -19,11 +19,8 @@ extension STProxyProvider {
 
         let appID = flow.metaData.sourceAppSigningIdentifier
 
-        // A condition could be added here to achieve inverse split tunnelling.
-        // Given the list of apps, we could either:
-        // - manage the flows of ONLY the apps in the list
-        // - manage the flows of ALL the OTHER apps, EXCEPT the ones in the list.
-        if policyFor(appFlow: flow) == .proxy {
+        switch policyFor(appFlow: flow) {
+        case .proxy:
             if let tcpFlow = flow as? NEAppProxyTCPFlow {
                 Logger.log.info("\(appID) Managing a new TCP flow")
                 Task.detached(priority: .medium) {
@@ -32,9 +29,16 @@ extension STProxyProvider {
                 return true
             } else {
                 Logger.log.error("Error: \(appID)'s UDP flow caught by handleNewFlow()")
+                return false
             }
+        case .block:
+            blockFlow(appFlow: flow)
+            // We return true to indicate to the OS we want to handle the flow
+            // but since we just closed it (in blockFlow) this should block the app's connections
+            return true
+        case .ignore:
+            return false
         }
-        return false
     }
 
     // MARK: Managing UDP flows
@@ -47,14 +51,31 @@ extension STProxyProvider {
 
         let appID = flow.metaData.sourceAppSigningIdentifier
 
-        if policyFor(appFlow: flow) == .proxy {
+        switch policyFor(appFlow: flow) {
+        case .proxy:
             Logger.log.info("\(appID) Managing a new UDP flow")
             Task.detached(priority: .medium) {
                 self.manageUDPFlow(flow, appID)
             }
             return true
+        case .block:
+            blockFlow(appFlow: flow)
+            // We return true to indicate to the OS we want to handle the flow
+            // but since we just closed it (in blockFlow) this should result in the app being blocked
+            return true
+        case .ignore:
+            return false
         }
-        return false
+    }
+
+    private func blockFlow(appFlow: NEAppProxyFlow) -> Void {
+        let appID = appFlow.metaData.sourceAppSigningIdentifier
+
+        let error = NSError(domain: "com.privateinternetaccess.vpn", code: 100, userInfo: nil)
+        appFlow.closeReadWithError(error)
+        appFlow.closeWriteWithError(error)
+
+        log(.warning, "Blocking the flow for appId: \(appID)")
     }
 
     // Given a flow, return the app policy to apply (.proxy, .block. ignore)

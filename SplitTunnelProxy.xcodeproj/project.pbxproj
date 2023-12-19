@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		5274B64F2B2AE8DF0007250C /* libbsm.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5274B64E2B2AE8DF0007250C /* libbsm.tbd */; };
 		527F56A82B3180D6003E7DF7 /* AppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A72B3180D6003E7DF7 /* AppPolicy.swift */; };
+		527F56AA2B31A098003E7DF7 /* AppPolicyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A92B31A098003E7DF7 /* AppPolicyTest.swift */; };
+		527F56AE2B31A5DA003E7DF7 /* AppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A72B3180D6003E7DF7 /* AppPolicy.swift */; };
+		527F56B22B31B43B003E7DF7 /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = 527F56B12B31B43B003E7DF7 /* Quick */; };
+		527F56B42B31B440003E7DF7 /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = 527F56B32B31B440003E7DF7 /* Nimble */; };
 		9704D2AD2B03C97400A899D7 /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = 9704D2AC2B03C97400A899D7 /* Puppy */; };
 		976B8CD72B0B55F60097FE7F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976B8CD62B0B55F60097FE7F /* Logger.swift */; };
 		978D16562B0B842300BA6F7A /* com.privateinternetaccess.splittunnel.poc.extension.systemextension in Embed System Extensions */ = {isa = PBXBuildFile; fileRef = 97E0D7C92B073427000B4997 /* com.privateinternetaccess.splittunnel.poc.extension.systemextension */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -78,6 +82,7 @@
 		5274B64D2B2AE6880007250C /* STProxyProvider-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "STProxyProvider-Bridging-Header.h"; sourceTree = "<group>"; };
 		5274B64E2B2AE8DF0007250C /* libbsm.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbsm.tbd; path = usr/lib/libbsm.tbd; sourceTree = SDKROOT; };
 		527F56A72B3180D6003E7DF7 /* AppPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPolicy.swift; sourceTree = "<group>"; };
+		527F56A92B31A098003E7DF7 /* AppPolicyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPolicyTest.swift; sourceTree = "<group>"; };
 		976B8CD62B0B55F60097FE7F /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		97B1169B2B0CEF910028B01E /* build.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = build.xcconfig; sourceTree = "<group>"; };
 		97E0D7C82B073427000B4997 /* SplitTunnelProxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SplitTunnelProxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -138,6 +143,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				527F56B22B31B43B003E7DF7 /* Quick in Frameworks */,
+				527F56B42B31B440003E7DF7 /* Nimble in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,6 +263,7 @@
 			isa = PBXGroup;
 			children = (
 				D1FE4FB8295A1EA3002BBA20 /* ProxyAppTests.swift */,
+				527F56A92B31A098003E7DF7 /* AppPolicyTest.swift */,
 			);
 			path = ProxyTests;
 			sourceTree = "<group>";
@@ -320,6 +328,10 @@
 				D1FE4FBB295A1EA3002BBA20 /* PBXTargetDependency */,
 			);
 			name = SplitTunnelProxyTests;
+			packageProductDependencies = (
+				527F56B12B31B43B003E7DF7 /* Quick */,
+				527F56B32B31B440003E7DF7 /* Nimble */,
+			);
 			productName = SplitTunnelProxyTests;
 			productReference = 97E0D7CA2B073427000B4997 /* SplitTunnelProxyTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -359,6 +371,8 @@
 			mainGroup = C4B45DAC22739FFF0050C59B;
 			packageReferences = (
 				97E7B8AB2AFB565700138C6A /* XCRemoteSwiftPackageReference "Puppy" */,
+				527F56AF2B31B358003E7DF7 /* XCRemoteSwiftPackageReference "Quick" */,
+				527F56B02B31B37E003E7DF7 /* XCRemoteSwiftPackageReference "Nimble" */,
 			);
 			productRefGroup = C4B45DAC22739FFF0050C59B;
 			projectDirPath = "";
@@ -462,7 +476,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				527F56AE2B31A5DA003E7DF7 /* AppPolicy.swift in Sources */,
 				D1FE4FB9295A1EA3002BBA20 /* ProxyAppTests.swift in Sources */,
+				527F56AA2B31A098003E7DF7 /* AppPolicyTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -806,6 +822,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		527F56AF2B31B358003E7DF7 /* XCRemoteSwiftPackageReference "Quick" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Quick/Quick.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		527F56B02B31B37E003E7DF7 /* XCRemoteSwiftPackageReference "Nimble" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Quick/Nimble.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		97E7B8AB2AFB565700138C6A /* XCRemoteSwiftPackageReference "Puppy" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sushichop/Puppy";
@@ -817,6 +849,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		527F56B12B31B43B003E7DF7 /* Quick */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 527F56AF2B31B358003E7DF7 /* XCRemoteSwiftPackageReference "Quick" */;
+			productName = Quick;
+		};
+		527F56B32B31B440003E7DF7 /* Nimble */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 527F56B02B31B37E003E7DF7 /* XCRemoteSwiftPackageReference "Nimble" */;
+			productName = Nimble;
+		};
 		9704D2AC2B03C97400A899D7 /* Puppy */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 97E7B8AB2AFB565700138C6A /* XCRemoteSwiftPackageReference "Puppy" */;

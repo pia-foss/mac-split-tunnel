@@ -58,8 +58,8 @@ class ViewController: NSViewController {
     
     // MARK: UI BUTTONS
     @IBAction func activate(_ sender: Any) {
-        proxyApp.setBypassApps(apps: ["com.privateinternetaccess.splittunnel.testapp", "net.limechat.LimeChat-AppStore", "org.mozilla.firefox", "/usr/bin/curl"])
-        proxyApp.setVpnOnlyApps(apps: ["/opt/homebrew/bin/wget"])
+        proxyApp.setBypassApps(apps: ["com.privateinternetaccess.splittunnel.testapp", "net.limechat.LimeChat-AppStore", "org.mozilla.firefox", "/opt/homebrew/bin/wget"])
+        proxyApp.setVpnOnlyApps(apps: ["/usr/bin/curl"])
         proxyApp.setNetworkInterface(interface: "en0")
         guard proxyApp.activateExtension() else {
             fatalError("Failed to activate the extension")

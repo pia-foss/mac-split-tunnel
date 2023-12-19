@@ -8,7 +8,7 @@
 
 import Foundation
 
-// Determine the policy to apply to a given app -
+// Responsible for determining the policy to apply to a given app -
 // We can either: proxy, block or ignore the app
 // This object also depends on the routeVpn, connected, bypassApps,
 // and vpnOnlyApps being up to date.
@@ -29,11 +29,16 @@ struct AppPolicy {
 
     // Determine the policy by appId (i.e com.apple.curl)
     func policyFor(appId: String) -> Policy {
-        guard isManagedApp(app: appId) else {
-            return .ignore
-        }
+        // If we're connected to the VPN then we just have to check
+        // if the app is managed by us.
+        if connected {
+            return isManagedApp(app: appId) ? .proxy : .ignore
 
-        return connected ? .proxy : .block
+        // If the VPN is not connected then we ignore all apps except vpnOnly apps
+        // which we block.
+        } else {
+            return vpnOnlyApps.contains(appId) ? .block : .ignore
+        }
     }
 
     // Determine the policy by app path (i.e /usr/bin/curl)
@@ -41,6 +46,11 @@ struct AppPolicy {
         return policyFor(appId: appPath)
     }
 
+    // A managed app is one that we proxy.
+    // In the case of routeVpn == true, we check for the app in bypassApps:
+    // this is because we need to proxy these apps to escape the default routing.
+    // In the case routeVpn == false, we check for it in vpnOnlyApps
+    // this is because we need to proxy these apps to bind them to the VPN interface.
     private func isManagedApp(app: String) -> Bool {
         return routeVpn ? bypassApps.contains(app) : vpnOnlyApps.contains(app)
     }
