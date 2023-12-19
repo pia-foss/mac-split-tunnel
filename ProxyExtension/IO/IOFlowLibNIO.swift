@@ -2,58 +2,18 @@ import Foundation
 import NetworkExtension
 import NIO
 
-// Global dictionary for storing (NEAppProxyFlow, Channel) pairs
-var flowToChannelMap: Dictionary = [NEAppProxyFlow: Channel]()
-// We need to use ObjectIdentifier because Channel is not hashable:
-// "Type 'any Channel' does not conform to protocol 'Hashable'"
-var channelToFlowMap: Dictionary = [ObjectIdentifier: NEAppProxyFlow]()
-// The queue ensures that access to the dictionary are thread-safe.
-// We might want to remove the label, or make it dynamic based on the extension bundle ID.
-// It has no functional impact, it is useful just for debugging / tracing
-let mapsQueue = DispatchQueue(
-    label: "com.privateinternetaccess.splittunnel.poc.extension.systemextension.flowChannelMapQueue",
-    attributes: .concurrent)
-
-// This function adds a new pair to the dictionary.
-// The barrier flag ensures that add and remove operations are not executed concurrently
-// with any other read or write operations
-func addPair(flow: NEAppProxyFlow, channel: Channel) {
-    mapsQueue.async(flags: .barrier) {
-        flowToChannelMap[flow] = channel
-        channelToFlowMap[ObjectIdentifier(channel)] = flow
-    }
-}
-
-func removePair(flow: NEAppProxyFlow) {
-    mapsQueue.async(flags: .barrier) {
-        if let channel = flowToChannelMap[flow] {
-            channelToFlowMap.removeValue(forKey: ObjectIdentifier(channel))
-            flowToChannelMap.removeValue(forKey: flow)
-        }
-    }
-}
-
-// These functions just read, so they can be executed on multiple threads
-func getChannel(flow: NEAppProxyFlow) -> Channel? {
-    return mapsQueue.sync {
-        return flowToChannelMap[flow]
-    }
-}
-func getFlow(channel: Channel) -> NEAppProxyFlow? {
-    return mapsQueue.sync {
-        return channelToFlowMap[ObjectIdentifier(channel)]
-    }
-}
 final class IOFlowLibNIO : IOFlowLib {
     let eventLoopGroup: MultiThreadedEventLoopGroup
     let interfaceAddress: String
+    let dictionary: IODictionary
     
     init(interfaceName: String) {
         self.interfaceAddress = getNetworkInterfaceIP(interfaceName: interfaceName)!
         // Trying with just 1 thread for now, since we dont want to use too many resources on the user's machines.
         // According to SwiftNIO docs it is better to use MultiThreadedEventLoopGroup
         // even in the case of just 1 thread
-        eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
+        self.eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
+        self.dictionary = IODictionaryNIO(label: "com.privateinternetaccess.splittunnel.poc.extension.systemextension.flowChannelMapQueue")
     }
     
     deinit {
@@ -66,7 +26,7 @@ final class IOFlowLibNIO : IOFlowLib {
         let channel = initTCPChannel(host: endpointAddress!, port: endpointPort!)
         log(.info, "\(flow.metaData.sourceAppSigningIdentifier) A new TCP socket has been created, bound and connected")
         // Linking this flow and channel, so that it is always possible to retrive one from the other
-        addPair(flow: flow, channel: channel)
+        dictionary.addPair(flow: flow, channel: channel)
         
         // Scheduling the first read on the flow.
         // The following ones will be scheduled in the socket write handler
@@ -94,7 +54,7 @@ final class IOFlowLibNIO : IOFlowLib {
                 // We add only the inbound handler to the channel pipeline.
                 // We don't add a OutboundTCPHandler because SwiftNIO doesn't use it
                 // when using channel.writeAndFlush() ¯\_(ツ)_/¯
-                channel.pipeline.addHandler(InboundTCPHandler())
+                channel.pipeline.addHandler(InboundTCPHandler(dictionary: self.dictionary))
             }
         // TODO: Handle bind and connect failures
         bootstrap = try! bootstrap.bind(to: SocketAddress(ipAddress: interfaceAddress, port: 0))
@@ -109,7 +69,7 @@ final class IOFlowLibNIO : IOFlowLib {
             if flowError == nil, let data = outboundData, !data.isEmpty {
                 log(.debug, "\(flow.metaData.sourceAppSigningIdentifier) TCP flow.readData() has read: \(data)")
                 
-                guard let channel = getChannel(flow: flow) else {
+                guard let channel = self.dictionary.getChannel(flow: flow) else {
                     log(.error, "\(flow.metaData.sourceAppSigningIdentifier) Could not get corresponding channel from the dictionary")
                     return
                     // TODO: Handle the error
@@ -140,13 +100,19 @@ final class IOFlowLibNIO : IOFlowLib {
 final class InboundTCPHandler: ChannelInboundHandler {
     typealias InboundIn = ByteBuffer
     typealias OutboundOut = ByteBuffer
+    
+    let dictionary: IODictionary
+    
+    init(dictionary: IODictionary) {
+        self.dictionary = dictionary
+    }
 
     func channelRead(context: ChannelHandlerContext, data: NIOAny) {
         let input = self.unwrapInboundIn(data)
         guard let bytes = input.getBytes(at: 0, length: input.readableBytes) else {
             return
         }
-        guard let flow = getFlow(channel: context.channel) as? NEAppProxyTCPFlow else {
+        guard let flow = dictionary.getFlow(channel: context.channel) as? NEAppProxyTCPFlow else {
             log(.error, "Could not get corresponding flow from the dictionary")
             return
             // TODO: Handle the error

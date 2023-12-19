@@ -30,6 +30,8 @@
 		D13B634E2970CE9600839689 /* FlowHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = D13B634C2970CC6E00839689 /* FlowHandling.swift */; };
 		D144EC2D2B31FB4200000A9B /* NIOCore in Frameworks */ = {isa = PBXBuildFile; productRef = D144EC2C2B31FB4200000A9B /* NIOCore */; };
 		D144EC2F2B31FB4200000A9B /* NIOPosix in Frameworks */ = {isa = PBXBuildFile; productRef = D144EC2E2B31FB4200000A9B /* NIOPosix */; };
+		D144EC322B31FC0900000A9B /* IODictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = D144EC302B31FC0900000A9B /* IODictionary.swift */; };
+		D144EC332B31FC0900000A9B /* IODictionaryNIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = D144EC312B31FC0900000A9B /* IODictionaryNIO.swift */; };
 		D1795F732AE9CC50003B0DAE /* ExtensionBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1795F722AE9CC50003B0DAE /* ExtensionBundle.swift */; };
 		D17F5D1A293E1DC300FB8DAF /* ProxyAppDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D19293E1DC300FB8DAF /* ProxyAppDefault.swift */; };
 		D17F5D1C293E701D00FB8DAF /* STProxyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D1B293E701D00FB8DAF /* STProxyProvider.swift */; };
@@ -103,6 +105,8 @@
 		C4B45DDD2273A3450050C59B /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		D12A9E9F2AE98D870009BA23 /* ProxyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyApp.swift; sourceTree = "<group>"; };
 		D13B634C2970CC6E00839689 /* FlowHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowHandling.swift; sourceTree = "<group>"; };
+		D144EC302B31FC0900000A9B /* IODictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IODictionary.swift; sourceTree = "<group>"; };
+		D144EC312B31FC0900000A9B /* IODictionaryNIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IODictionaryNIO.swift; sourceTree = "<group>"; };
 		D1795F722AE9CC50003B0DAE /* ExtensionBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionBundle.swift; sourceTree = "<group>"; };
 		D17F5D19293E1DC300FB8DAF /* ProxyAppDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyAppDefault.swift; sourceTree = "<group>"; };
 		D17F5D1B293E701D00FB8DAF /* STProxyProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STProxyProvider.swift; sourceTree = "<group>"; };
@@ -254,6 +258,8 @@
 		D1D5B6B42B18F7200063363E /* IO */ = {
 			isa = PBXGroup;
 			children = (
+				D144EC302B31FC0900000A9B /* IODictionary.swift */,
+				D144EC312B31FC0900000A9B /* IODictionaryNIO.swift */,
 				D1D5B6AB2B18F1C50063363E /* IOFlowLib.swift */,
 				D1D5B6AD2B18F2380063363E /* IOLibTasks.swift */,
 				D191DCDE2AEFEE15009F4392 /* TCPIO.swift */,
@@ -457,6 +463,8 @@
 				D1D5B6B62B18F7DF0063363E /* ProcessUtilities.swift in Sources */,
 				D1D5B6A82B17C9A90063363E /* UDPSocketIO.swift in Sources */,
 				D1D5B6AC2B18F1C50063363E /* IOFlowLib.swift in Sources */,
+				D144EC332B31FC0900000A9B /* IODictionaryNIO.swift in Sources */,
+				D144EC322B31FC0900000A9B /* IODictionary.swift in Sources */,
 				D1D5B6AA2B17C9D30063363E /* TCPSocketIO.swift in Sources */,
 				D17F5D1C293E701D00FB8DAF /* STProxyProvider.swift in Sources */,
 				527F56A82B3180D6003E7DF7 /* AppPolicy.swift in Sources */,
