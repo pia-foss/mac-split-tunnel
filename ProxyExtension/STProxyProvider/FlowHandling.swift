@@ -2,6 +2,7 @@ import Foundation
 import NetworkExtension
 
 extension STProxyProvider {
+
     // MARK: Managing TCP flows
     // handleNewFlow() is called whenever an application
     // creates a new TCP socket.
@@ -22,7 +23,7 @@ extension STProxyProvider {
         // Given the list of apps, we could either:
         // - manage the flows of ONLY the apps in the list
         // - manage the flows of ALL the OTHER apps, EXCEPT the ones in the list.
-        if isSplitApp(appFlow: flow) {
+        if policyFor(appFlow: flow) == .proxy {
             if let tcpFlow = flow as? NEAppProxyTCPFlow {
                 Logger.log.info("\(appID) Managing a new TCP flow")
                 Task.detached(priority: .medium) {
@@ -46,7 +47,7 @@ extension STProxyProvider {
 
         let appID = flow.metaData.sourceAppSigningIdentifier
 
-        if isSplitApp(appFlow: flow) {
+        if policyFor(appFlow: flow) == .proxy {
             Logger.log.info("\(appID) Managing a new UDP flow")
             Task.detached(priority: .medium) {
                 self.manageUDPFlow(flow, appID)
@@ -56,30 +57,32 @@ extension STProxyProvider {
         return false
     }
 
-    // Should the app be split from default traffic?
-    private func isSplitApp(appFlow: NEAppProxyFlow) -> Bool {
+    // Given a flow, return the app policy to apply (.proxy, .block. ignore)
+    private func policyFor(appFlow: NEAppProxyFlow) -> AppPolicy.Policy {
+        // First try to find a policy for the app using the appId
         let appID = appFlow.metaData.sourceAppSigningIdentifier
+        let appIdPolicy = appPolicy.policyFor(appId: appID)
 
-        // First try the app id
-        if appsToManage!.contains(appID) {
-            return true
+        // If we fail to find a policy from the appId
+        // then try using the path (extracted from the audit token)
+        // Otherwise, if we do find a policy, return that policy
+        guard appIdPolicy == .ignore else {
+            return appIdPolicy
         }
-        // Failing that, try using the audit token
-        else {
-            let auditToken = appFlow.metaData.sourceAppAuditToken
 
-            // Ensure we can get a path
-            guard let path = pathFromAuditToken(token: auditToken) else {
-                return false
-            }
+        // We failed to find a policy based on appId - now let's try the app path
+        // In order to find the app path we irst have to extract it from the flow's audit token
+        let auditToken = appFlow.metaData.sourceAppAuditToken
 
-            // Requires an exact match for the app path - so a complete path to the executable is required.
-            // Case is ignored as macOS is a case-insensitive OS
-            return appsToManage!.contains(where: { path.lowercased() == $0.lowercased() })
+        guard let path = pathFromAuditToken(token: auditToken) else {
+            return .ignore
         }
+
+        // Return the policy for the app (by its path)
+        return appPolicy.policyFor(appPath: path)
     }
 
-    // Is a given flow IPv4 ?
+    // Is the flow IPv4 ? (we only support IPv4 flows at present)
     private func isFlowIPv4(_ flow: NEAppProxyFlow) -> Bool {
         let hostName = flow.remoteHostname ?? ""
         // Check if the address is an IPv6 address, and negate it. IPv6 addresses always contain a ":"

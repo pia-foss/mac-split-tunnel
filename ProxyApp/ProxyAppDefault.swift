@@ -11,15 +11,20 @@ for the root network extension process
 class ProxyAppDefault : ProxyApp {
     var proxyManager: NETransparentProxyManager?
     var extensionRequestDelegate = ExtensionRequestDelegate()
-    var appsToManage: [String] = []
+    var bypassApps: [String] = []
+    var vpnOnlyApps: [String] = []
     var networkInterface: String = ""
     static let proxyManagerName = "PIA Split Tunnel Proxy"
     static let serverAddress = "127.0.0.1"
 
-    func setManagedApps(apps: [String]) -> Void {
-        self.appsToManage = apps
+    func setBypassApps(apps: [String]) -> Void {
+        self.bypassApps = apps
     }
-    
+
+    func setVpnOnlyApps(apps: [String]) -> Void {
+        self.vpnOnlyApps = apps
+    }
+
     func setNetworkInterface(interface: String) -> Void {
         self.networkInterface = interface
     }
@@ -129,11 +134,14 @@ class ProxyAppDefault : ProxyApp {
                         // This function is used to start the tunnel (the proxy)
                         // passing it the following settings
                         try session.startTunnel(options: [
-                            "appsToManage" : self.appsToManage,
+                            "bypassApps" : self.bypassApps,
+                            "vpnOnlyApps" : self.vpnOnlyApps,
                             "networkInterface" : self.networkInterface,
                             "serverAddress" : ProxyAppDefault.serverAddress,
                             "logFile" : "/tmp/STProxy.log",
                             "logLevel" : "debug",
+                            "routeVpn" : true,
+                            "connected" : true,
                             // The name of the unix group pia whitelists in the firewall
                             // This may be different when PIA is white-labeled
                             "whitelistGroupName" : "piavpn"
