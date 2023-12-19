@@ -26,7 +26,7 @@ final class IOFlowLibNIO : IOFlowLib {
         let channel = initTCPChannel(host: endpointAddress!, port: endpointPort!)
         log(.info, "\(flow.metaData.sourceAppSigningIdentifier) A new TCP socket has been created, bound and connected")
         // Linking this flow and channel, so that it is always possible to retrive one from the other
-        dictionary.addPair(flow: flow, channel: channel)
+        dictionary.add(flow: flow, channel: channel)
         
         // Scheduling the first read on the flow.
         // The following ones will be scheduled in the socket write handler

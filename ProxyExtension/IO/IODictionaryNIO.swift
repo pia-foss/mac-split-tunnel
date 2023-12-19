@@ -24,16 +24,25 @@ final class IODictionaryNIO : IODictionary {
     // This function adds a new pair to the dictionary.
     // The barrier flag ensures that add and remove operations are not executed concurrently
     // with any other read or write operations
-    func addPair(flow: NEAppProxyFlow, channel: Channel) {
+    func add(flow: NEAppProxyFlow, channel: Channel) {
         mapsQueue.async(flags: .barrier) {
             self.flowToChannelMap[flow] = channel
             self.channelToFlowMap[ObjectIdentifier(channel)] = flow
         }
     }
 
-    func removePair(flow: NEAppProxyFlow) {
+    func remove(flow: NEAppProxyFlow) {
         mapsQueue.async(flags: .barrier) {
             if let channel = self.flowToChannelMap[flow] {
+                self.channelToFlowMap.removeValue(forKey: ObjectIdentifier(channel))
+                self.flowToChannelMap.removeValue(forKey: flow)
+            }
+        }
+    }
+    
+    func remove(channel: Channel) {
+        mapsQueue.async(flags: .barrier) {
+            if let flow = self.channelToFlowMap[ObjectIdentifier(channel)] {
                 self.channelToFlowMap.removeValue(forKey: ObjectIdentifier(channel))
                 self.flowToChannelMap.removeValue(forKey: flow)
             }

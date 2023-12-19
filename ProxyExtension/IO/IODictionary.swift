@@ -3,9 +3,11 @@ import NetworkExtension
 import NIO
 
 protocol IODictionary {
-    func addPair(flow: NEAppProxyFlow, channel: Channel)
+    func add(flow: NEAppProxyFlow, channel: Channel)
 
-    func removePair(flow: NEAppProxyFlow)
+    func remove(flow: NEAppProxyFlow)
+    
+    func remove(channel: Channel)
 
     func getChannel(flow: NEAppProxyFlow)  -> Channel?
     
