@@ -154,7 +154,7 @@ extension STProxyProvider {
             }
    
             log(.debug, "\(appID) Before: Handling IO of a new TCP flow")
-            self.ioFlowLib!.handleTCPFlowIO(flow)
+            self.ioFlowLib!.handleFlowIO(flow)
             log(.debug, "\(appID) After: Handling IO of a new TCP flow")
         }
     }
@@ -167,7 +167,7 @@ extension STProxyProvider {
             }
 
             log(.debug, "\(appID) Before: Handling IO of a new UDP flow")
-            self.ioFlowLib!.handleUDPFlowIO(flow)
+            self.ioFlowLib!.handleFlowIO(flow)
             log(.debug, "\(appID) After: Handling IO of a new UDP flow")
         }
     }
