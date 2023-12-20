@@ -24,7 +24,6 @@
 		527F56B42B31B440003E7DF7 /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = 527F56B32B31B440003E7DF7 /* Nimble */; };
 		9704D2AD2B03C97400A899D7 /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = 9704D2AC2B03C97400A899D7 /* Puppy */; };
 		976B8CD72B0B55F60097FE7F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976B8CD62B0B55F60097FE7F /* Logger.swift */; };
-		978D16562B0B842300BA6F7A /* com.privateinternetaccess.splittunnel.poc.extension.systemextension in Embed System Extensions */ = {isa = PBXBuildFile; fileRef = 97E0D7C92B073427000B4997 /* com.privateinternetaccess.splittunnel.poc.extension.systemextension */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		97B1169C2B0CEF910028B01E /* build.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 97B1169B2B0CEF910028B01E /* build.xcconfig */; };
 		97E7B8AD2AFB565700138C6A /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = 97E7B8AC2AFB565700138C6A /* Puppy */; };
 		C40A5C46229DD6A500627D50 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4B45DDD2273A3450050C59B /* NetworkExtension.framework */; };
@@ -72,7 +71,6 @@
 			dstPath = "$(SYSTEM_EXTENSIONS_FOLDER_PATH)";
 			dstSubfolderSpec = 16;
 			files = (
-				978D16562B0B842300BA6F7A /* com.privateinternetaccess.splittunnel.poc.extension.systemextension in Embed System Extensions */,
 			);
 			name = "Embed System Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -87,10 +85,10 @@
 		527F56A72B3180D6003E7DF7 /* AppPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPolicy.swift; sourceTree = "<group>"; };
 		527F56A92B31A098003E7DF7 /* AppPolicyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPolicyTest.swift; sourceTree = "<group>"; };
 		976B8CD62B0B55F60097FE7F /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		97AD92092B35876200405E3A /* com.privateinternetaccess.splittunnel.poc.extension.systemextension */ = {isa = PBXFileReference; explicitFileType = "wrapper.system-extension"; includeInIndex = 0; path = com.privateinternetaccess.splittunnel.poc.extension.systemextension; sourceTree = BUILT_PRODUCTS_DIR; };
 		97B1169B2B0CEF910028B01E /* build.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = build.xcconfig; sourceTree = "<group>"; };
-		97E0D7C82B073427000B4997 /* SplitTunnelProxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SplitTunnelProxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		97E0D7C92B073427000B4997 /* com.privateinternetaccess.splittunnel.poc.extension.systemextension */ = {isa = PBXFileReference; explicitFileType = "wrapper.system-extension"; includeInIndex = 0; path = com.privateinternetaccess.splittunnel.poc.extension.systemextension; sourceTree = BUILT_PRODUCTS_DIR; };
-		97E0D7CA2B073427000B4997 /* SplitTunnelProxyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SplitTunnelProxyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		97E0D7C82B073427000B4997 /* SplitTunnelProxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = SplitTunnelProxy.app; path = /Users/miguelgalindo/projects/xv_mac_split_tunnelling_poc/build/Debug/SplitTunnelProxy.app; sourceTree = "<absolute>"; };
+		97E0D7CA2B073427000B4997 /* SplitTunnelProxyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = SplitTunnelProxyTests.xctest; path = /Users/miguelgalindo/projects/xv_mac_split_tunnelling_poc/build/Debug/SplitTunnelProxyTests.xctest; sourceTree = "<absolute>"; };
 		C40A5C4A229DD6A500627D50 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		C40A5C4C229DD6A500627D50 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C40A5C4D229DD6A500627D50 /* ProxyExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ProxyExtension.entitlements; sourceTree = "<group>"; };
@@ -179,9 +177,7 @@
 				C40A5C47229DD6A500627D50 /* ProxyExtension */,
 				D1FE4FB7295A1EA3002BBA20 /* ProxyTests */,
 				C4B45DDC2273A3450050C59B /* Frameworks */,
-				97E0D7C82B073427000B4997 /* SplitTunnelProxy.app */,
-				97E0D7C92B073427000B4997 /* com.privateinternetaccess.splittunnel.poc.extension.systemextension */,
-				97E0D7CA2B073427000B4997 /* SplitTunnelProxyTests.xctest */,
+				97AD92092B35876200405E3A /* com.privateinternetaccess.splittunnel.poc.extension.systemextension */,
 			);
 			sourceTree = "<group>";
 		};
@@ -287,7 +283,7 @@
 				526CFC162B3AD15B00F31493 /* _NIOConcurrency */,
 			);
 			productName = SplitTunnelProxyExtension;
-			productReference = 97E0D7C92B073427000B4997 /* com.privateinternetaccess.splittunnel.poc.extension.systemextension */;
+			productReference = 97AD92092B35876200405E3A /* com.privateinternetaccess.splittunnel.poc.extension.systemextension */;
 			productType = "com.apple.product-type.system-extension";
 		};
 		C4B45DB422739FFF0050C59B /* SplitTunnelProxy */ = {
@@ -524,7 +520,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.privateinternetaccess.splittunnel.poc.extension;
 				PRODUCT_NAME = "$(PRODUCT_BUNDLE_IDENTIFIER)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SKIP_INSTALL = YES;
+				SKIP_INSTALL = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "ProxyExtension/STProxyProvider/STProxyProvider-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
@@ -552,7 +548,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.privateinternetaccess.splittunnel.poc.extension;
 				PRODUCT_NAME = "$(PRODUCT_BUNDLE_IDENTIFIER)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SKIP_INSTALL = YES;
+				SKIP_INSTALL = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "ProxyExtension/STProxyProvider/STProxyProvider-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
@@ -594,7 +590,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEPLOYMENT_LOCATION = YES;
+				DEPLOYMENT_LOCATION = NO;
 				DSTROOT = "$(LOCAL_APPS_DIR)/$(PROJECT_NAME).dst";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -613,7 +609,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INSTALL_PATH = /;
+				INSTALL_PATH = /Applications;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -660,7 +656,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEPLOYMENT_LOCATION = YES;
+				DEPLOYMENT_LOCATION = NO;
 				DSTROOT = "$(LOCAL_APPS_DIR)/$(PROJECT_NAME).dst";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -673,7 +669,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INSTALL_PATH = /;
+				INSTALL_PATH = /Applications;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
