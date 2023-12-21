@@ -3,35 +3,25 @@ import NetworkExtension
 
 extension STProxyProvider {
 
-    // MARK: Managing TCP flows
+    // MARK: Managing flows
     // handleNewFlow() is called whenever an application
-    // creates a new TCP socket.
+    // creates a new TCP or UDP socket.
     //
     //   return true  ->
     //     The flow of this app will be managed by the network extension
     //   return false ->
     //     The flow of this app will NOT be managed.
-    //     It will be routed using the system's routing tables
+    //     It will be routed through the system default network interface
     override func handleNewFlow(_ flow: NEAppProxyFlow) -> Bool {
-        guard let tcpFlow = flow as? NEAppProxyTCPFlow else {
-            log(.warning, "Expected an NEAppProxyTCPFlow but got a UDP flow")
-            return false
-        }
-
         return processFlow(flow) { appID in
-            Task.detached(priority: .medium) {
-                self.manageNewTCPFlow(tcpFlow, appID)
-            }
-        }
-    }
-
-    // MARK: Managing UDP flows
-    // handleNewUDPFlow() is called whenever an application
-    // creates a new UDP socket.
-    override func handleNewUDPFlow(_ udpFlow: NEAppProxyUDPFlow, initialRemoteEndpoint remoteEndpoint: NWEndpoint) -> Bool {
-        return processFlow(udpFlow) { appID in
-            Task.detached(priority: .medium) {
-                self.manageUDPFlow(udpFlow, appID)
+            Task.detached() {
+                flow.open(withLocalEndpoint: nil) { error in
+                    if (error != nil) {
+                        log(.error, "\(appID) \"\(error!.localizedDescription)\" in \(String(describing: flow.self)) open()")
+                        return
+                    }
+                    self.trafficManager!.handleFlowIO(flow)
+                }
             }
         }
     }
@@ -39,7 +29,7 @@ extension STProxyProvider {
     // Process a new flow - whether it's an NEAppProxyTCPFlow or NEAppProxyUDPFlow
     // This function applies the correct flow policy - whether that is to proxy, block, or ignore.
     // If the policy type is proxy - then we also execute the associated lambda and pass in the appID.
-    private func processFlow<T: NEAppProxyFlow>(_ flow: T, successHandler: (_ appID: String) -> Void) -> Bool {
+    private func processFlow(_ flow: NEAppProxyFlow, successHandler: (_ appID: String) -> Void) -> Bool {
         guard isFlowIPv4(flow) else {
             return false
         }
@@ -48,12 +38,12 @@ extension STProxyProvider {
 
         switch policyFor(appFlow: flow) {
         case .proxy:
-            let flowType = String(describing: T.self)
-            Logger.log.info("\(appID) Managing a new \(flowType) flow")
+            log(.info, "\(appID) Proxying a new flow")
             successHandler(appID)
             return true
         case .block:
             blockFlow(appFlow: flow)
+            log(.debug, "\(appID) Blocking a new flow")
             // We return true to indicate to the OS we want to handle the flow
             // but since we just closed it (in blockFlow) this should result in the app being blocked
             return true
@@ -139,85 +129,6 @@ extension STProxyProvider {
             return nil
         }
 
-        Logger.log.info("Found a process with pid \(pid) and path \(path)")
         return path
-    }
-
-    private func manageNewTCPFlow(_ flow: NEAppProxyTCPFlow, _ appID: String) {
-        // open() is used by an NEProvider implementation
-        // to indicate to the system that the caller is ready
-        // to start reading and writing to this flow.
-        flow.open(withLocalEndpoint: nil) { error in
-            if (error != nil) {
-                Logger.log.error("Error: \(appID) \"\(error!.localizedDescription)\" in TCP flow open()")
-                return
-            }
-
-            let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: flow.remoteEndpoint as! NWHostEndpoint)
-            
-            // Create the socket that will proxy the traffic
-            let socket = Socket(transportProtocol: TransportProtocol.TCP,
-                                             host: endpointAddress!,
-                                             port: endpointPort!,
-                                          appID: appID)
-            var result = true
-            if !socket.create() {
-                Logger.log.error("Error: Failed to create \(appID)'s TCP socket")
-                result = false
-            }
-            if !socket.bindToNetworkInterface(interfaceName: self.networkInterface!) {
-                Logger.log.error("Error: Failed to bind \(appID)'s TCP socket")
-                result = false
-            }
-            if !socket.connectToHost() {
-                Logger.log.error("Error: Failed to connect \(appID)'s TCP socket")
-                result = false
-            }
-            
-            if !result {
-                socket.close()
-                closeFlow(flow)
-                return
-            }    
-            
-            log(.debug, "\(appID) Before launching TCP handleReadAndWrite() in fd \(socket.fileDescriptor)")
-            self.ioLib.handleReadAndWrite(TransportProtocol.TCP, flow, socket)
-            log(.debug, "\(appID) After launching TCP handleReadAndWrite() in fd \(socket.fileDescriptor)")
-        }
-    }
-    
-    private func manageUDPFlow(_ flow: NEAppProxyUDPFlow, _ appID: String) {
-        flow.open(withLocalEndpoint: nil) { error in
-            if (error != nil) {
-                Logger.log.error("Error: \(appID) \"\(error!.localizedDescription)\" in UDP flow open()")
-                return
-            }
-            
-            let socket = Socket(transportProtocol: TransportProtocol.UDP,
-                                          appID: appID)
-            var result = true
-            if !socket.create() {
-                Logger.log.error("Error: Failed to create \(appID)'s UDP socket")
-                result = false
-            }
-            if !socket.bindToNetworkInterface(interfaceName: self.networkInterface!) {
-                Logger.log.error("Error: Failed to bind \(appID)'s UDP socket")
-                result = false
-            }
-            // Not calling connect() on a UDP socket.
-            // Doing that will turn the socket into a "connected datagram socket".
-            // That will prevent the application from receiving and sending data 
-            // to different endpoints
-            
-            if !result {
-                socket.close()
-                closeFlow(flow)
-                return
-            }
-            
-            log(.debug, "\(appID) Before launching UDP handleReadAndWrite() in fd \(socket.fileDescriptor)")
-            self.ioLib.self.handleReadAndWrite(TransportProtocol.UDP, flow, socket)
-            log(.debug, "\(appID) After launching UDP handleReadAndWrite() in fd \(socket.fileDescriptor)")
-        }
     }
 }
