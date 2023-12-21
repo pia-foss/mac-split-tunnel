@@ -2,7 +2,7 @@ import Foundation
 import NetworkExtension
 import NIO
 
-final class IOFlowLibNIO : IOFlowLib {
+final class TrafficManagerNIO : TrafficManager {
     let eventLoopGroup: MultiThreadedEventLoopGroup
     let interfaceAddress: String
     
@@ -20,16 +20,14 @@ final class IOFlowLibNIO : IOFlowLib {
 
     func handleFlowIO(_ flow: NEAppProxyFlow) {
         if let tcpFlow = flow as? NEAppProxyTCPFlow {
-            let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: tcpFlow.remoteEndpoint as! NWHostEndpoint)
-            let channel = initChannel(flow: tcpFlow, host: endpointAddress!, port: endpointPort!)
-            log(.debug, "\(flow.metaData.sourceAppSigningIdentifier) A new TCP socket has been created, bound and connected")
+            let channel = initChannel(flow: tcpFlow)
+            log(.debug, "\(flow.metaData.sourceAppSigningIdentifier) A new TCP socket has been initialized")
             scheduleFlowRead(flow: tcpFlow, channel: channel)
-        } else if let udpFlow = flow as? NEAppProxyUDPFlow {
+        } else if let udpFlow = flow as? NEAppProxyTCPFlow {
             let channel = initChannel(flow: udpFlow)
-            log(.debug, "\(flow.metaData.sourceAppSigningIdentifier) A new UDP socket has been created and bound")
+            log(.debug, "\(flow.metaData.sourceAppSigningIdentifier) A new UDP socket has been initialized")
             scheduleFlowRead(flow: udpFlow, channel: channel)
         }
-        
         // The first read has been scheduled on the flow.
         // The following ones will be scheduled in the socket write handler
         //
@@ -38,8 +36,9 @@ final class IOFlowLibNIO : IOFlowLib {
         // - any new socket inboud traffic will trigger InboudHandler.channelRead()
     }
     
-    // this function creates, bind and connect a new TCP channel
-    private func initChannel(flow: NEAppProxyTCPFlow, host: String, port: Int) -> Channel {
+    // this function creates, binds and connects a new TCP channel
+    private func initChannel(flow: NEAppProxyTCPFlow) -> Channel {
+        log(.debug, "\(flow.metaData.sourceAppSigningIdentifier) creating, binding and connecting a new TCP socket")
         var bootstrap = ClientBootstrap(group: eventLoopGroup)
             // Enable SO_REUSEADDR.
             .channelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)
@@ -51,12 +50,14 @@ final class IOFlowLibNIO : IOFlowLib {
             }
         // TODO: Handle bind and connect failures
         bootstrap = try! bootstrap.bind(to: SocketAddress(ipAddress: interfaceAddress, port: 0))
-        return try! bootstrap.connect(host: host, port: port).wait()
+        let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: flow.remoteEndpoint as! NWHostEndpoint)
+        return try! bootstrap.connect(host: endpointAddress!, port: endpointPort!).wait()
     }
     
     // this function creates and bind a new UDP channel
     private func initChannel(flow: NEAppProxyUDPFlow) -> Channel {
-        var bootstrap = DatagramBootstrap(group: eventLoopGroup)
+        log(.debug, "\(flow.metaData.sourceAppSigningIdentifier) creating and binding a new UDP socket")
+        let bootstrap = DatagramBootstrap(group: eventLoopGroup)
             // Enable SO_REUSEADDR.
             .channelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)
             .channelInitializer { channel in
@@ -112,14 +113,14 @@ final class IOFlowLibNIO : IOFlowLib {
                             log(.debug, "\(flow.metaData.sourceAppSigningIdentifier) UDP datagram successfully sent through the socket")
                             // since everything worked as expected, we schedule another read on the flow
                             //
-                            // for UDP we might get more than 1 data buffer:
-                            // right now, if the array contains more than one element
-                            // and write is successful we will schedule more than 1 read.
-                            // This raises an error.
-                            // TODO: Check if the error make the flow no longer readable/writable, or if it  can be ignored
-                            // We could extend either the flow or the channel and add an atomic
-                            // bool that says if a read has already been scheduled.
-                            // It would need to be set to false, after we successfully complete a read
+                            // compared to TPC, for a UDP flow we get an array of [Data].
+                            // If the array contains more than one element it is possible that we will 
+                            // try to schedule multiple reads.
+                            // Scheduling a read, if one is already scheduled, raises an error:
+                            // "A read operation is already pending".
+                            // The error appears to be harmless though:
+                            // flow.readDatagrams() will just return immediately and flow functionality
+                            // will remain the same
                             self.scheduleFlowRead(flow: flow, channel: channel)
                         case .failure(let error):
                             log(.error, "\(flow.metaData.sourceAppSigningIdentifier) \(error) while sending a UDP datagram through the socket")

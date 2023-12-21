@@ -29,7 +29,7 @@ class STProxyProvider : NETransparentProxyProvider {
     var networkInterface: String?
     var serverAddress: String?
     var appPolicy: AppPolicy
-    var ioFlowLib: IOFlowLib?
+    var trafficManager: TrafficManager?
 
     // MARK: Proxy Functions
     override init() {
@@ -81,10 +81,9 @@ class STProxyProvider : NETransparentProxyProvider {
         self.networkInterface = networkInterface
         self.serverAddress = serverAddress
         self.appPolicy = AppPolicy(bypassApps: bypassApps, vpnOnlyApps: vpnOnlyApps, routeVpn: routeVpn, connected: connected)
-
         
-        // Initializing the IOLib component
-        self.ioFlowLib = IOFlowLibNIO(interfaceName: networkInterface)
+        // Initializing the TrafficManager component
+        self.trafficManager = TrafficManagerNIO(interfaceName: networkInterface)
         
         // Whitelist this process in the firewall - error logging happens in function
         guard let groupName = options!["whitelistGroupName"] as? String, setGidForFirewallWhitelist(groupName: groupName) else {
