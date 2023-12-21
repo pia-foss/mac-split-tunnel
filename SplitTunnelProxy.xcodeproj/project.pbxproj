@@ -36,8 +36,8 @@
 		D17F5D1A293E1DC300FB8DAF /* ProxyAppDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D19293E1DC300FB8DAF /* ProxyAppDefault.swift */; };
 		D17F5D1C293E701D00FB8DAF /* STProxyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D1B293E701D00FB8DAF /* STProxyProvider.swift */; };
 		D1D447042ABCE52400A69316 /* ExtensionRequestDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D447032ABCE52400A69316 /* ExtensionRequestDelegate.swift */; };
-		D1D5B6AC2B18F1C50063363E /* IOFlowLib.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6AB2B18F1C50063363E /* IOFlowLib.swift */; };
-		D1D5B6B02B18F2B10063363E /* IOFlowLibNIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6AF2B18F2B10063363E /* IOFlowLibNIO.swift */; };
+		D1D5B6AC2B18F1C50063363E /* TrafficManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6AB2B18F1C50063363E /* TrafficManager.swift */; };
+		D1D5B6B02B18F2B10063363E /* TrafficManagerNIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6AF2B18F2B10063363E /* TrafficManagerNIO.swift */; };
 		D1D5B6B62B18F7DF0063363E /* ProcessUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6B52B18F7DF0063363E /* ProcessUtilities.swift */; };
 		D1E9AEFE2AE31D4F007603BF /* NetworkUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E9AEFD2AE31D4F007603BF /* NetworkUtilities.swift */; };
 		D1FE4FB9295A1EA3002BBA20 /* ProxyAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1FE4FB8295A1EA3002BBA20 /* ProxyAppTests.swift */; };
@@ -104,8 +104,8 @@
 		D17F5D19293E1DC300FB8DAF /* ProxyAppDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyAppDefault.swift; sourceTree = "<group>"; };
 		D17F5D1B293E701D00FB8DAF /* STProxyProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STProxyProvider.swift; sourceTree = "<group>"; };
 		D1D447032ABCE52400A69316 /* ExtensionRequestDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionRequestDelegate.swift; sourceTree = "<group>"; };
-		D1D5B6AB2B18F1C50063363E /* IOFlowLib.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOFlowLib.swift; sourceTree = "<group>"; };
-		D1D5B6AF2B18F2B10063363E /* IOFlowLibNIO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOFlowLibNIO.swift; sourceTree = "<group>"; };
+		D1D5B6AB2B18F1C50063363E /* TrafficManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrafficManager.swift; sourceTree = "<group>"; };
+		D1D5B6AF2B18F2B10063363E /* TrafficManagerNIO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrafficManagerNIO.swift; sourceTree = "<group>"; };
 		D1D5B6B52B18F7DF0063363E /* ProcessUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessUtilities.swift; sourceTree = "<group>"; };
 		D1E9AEFD2AE31D4F007603BF /* NetworkUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkUtilities.swift; sourceTree = "<group>"; };
 		D1FE4FB8295A1EA3002BBA20 /* ProxyAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyAppTests.swift; sourceTree = "<group>"; };
@@ -234,8 +234,8 @@
 			children = (
 				D144EC302B31FC0900000A9B /* IODictionary.swift */,
 				D144EC312B31FC0900000A9B /* IODictionaryNIO.swift */,
-				D1D5B6AB2B18F1C50063363E /* IOFlowLib.swift */,
-				D1D5B6AF2B18F2B10063363E /* IOFlowLibNIO.swift */,
+				D1D5B6AB2B18F1C50063363E /* TrafficManager.swift */,
+				D1D5B6AF2B18F2B10063363E /* TrafficManagerNIO.swift */,
 			);
 			path = IO;
 			sourceTree = "<group>";
@@ -428,12 +428,12 @@
 				D13B634E2970CE9600839689 /* FlowHandling.swift in Sources */,
 				976B8CD72B0B55F60097FE7F /* Logger.swift in Sources */,
 				D1D5B6B62B18F7DF0063363E /* ProcessUtilities.swift in Sources */,
-				D1D5B6AC2B18F1C50063363E /* IOFlowLib.swift in Sources */,
+				D1D5B6AC2B18F1C50063363E /* TrafficManager.swift in Sources */,
 				D144EC332B31FC0900000A9B /* IODictionaryNIO.swift in Sources */,
 				D144EC322B31FC0900000A9B /* IODictionary.swift in Sources */,
 				D17F5D1C293E701D00FB8DAF /* STProxyProvider.swift in Sources */,
 				527F56A82B3180D6003E7DF7 /* AppPolicy.swift in Sources */,
-				D1D5B6B02B18F2B10063363E /* IOFlowLibNIO.swift in Sources */,
+				D1D5B6B02B18F2B10063363E /* TrafficManagerNIO.swift in Sources */,
 				D1E9AEFE2AE31D4F007603BF /* NetworkUtilities.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
