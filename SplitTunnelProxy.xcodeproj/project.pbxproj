@@ -15,6 +15,7 @@
 		526CFC152B3AD15B00F31493 /* NIOTestUtils in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC142B3AD15B00F31493 /* NIOTestUtils */; };
 		526CFC172B3AD15B00F31493 /* _NIOConcurrency in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC162B3AD15B00F31493 /* _NIOConcurrency */; };
 		526CFC342B3AD94A00F31493 /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC332B3AD94A00F31493 /* Puppy */; };
+		526CFC362B3ADD0600F31493 /* libproc.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 526CFC352B3ADD0600F31493 /* libproc.tbd */; };
 		5274B64F2B2AE8DF0007250C /* libbsm.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5274B64E2B2AE8DF0007250C /* libbsm.tbd */; };
 		527F56A82B3180D6003E7DF7 /* AppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A72B3180D6003E7DF7 /* AppPolicy.swift */; };
 		527F56AA2B31A098003E7DF7 /* AppPolicyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A92B31A098003E7DF7 /* AppPolicyTest.swift */; };
@@ -80,6 +81,7 @@
 
 /* Begin PBXFileReference section */
 		03411C5003411ED000000001 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		526CFC352B3ADD0600F31493 /* libproc.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libproc.tbd; path = usr/lib/libproc.tbd; sourceTree = SDKROOT; };
 		5274B64D2B2AE6880007250C /* STProxyProvider-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "STProxyProvider-Bridging-Header.h"; sourceTree = "<group>"; };
 		5274B64E2B2AE8DF0007250C /* libbsm.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbsm.tbd; path = usr/lib/libbsm.tbd; sourceTree = SDKROOT; };
 		527F56A72B3180D6003E7DF7 /* AppPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPolicy.swift; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				526CFC362B3ADD0600F31493 /* libproc.tbd in Frameworks */,
 				526CFC0F2B3AD15B00F31493 /* NIOCore in Frameworks */,
 				526CFC132B3AD15B00F31493 /* NIOPosix in Frameworks */,
 				526CFC152B3AD15B00F31493 /* NIOTestUtils in Frameworks */,
@@ -199,6 +202,7 @@
 		C4B45DDC2273A3450050C59B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				526CFC352B3ADD0600F31493 /* libproc.tbd */,
 				5274B64E2B2AE8DF0007250C /* libbsm.tbd */,
 				C4B45DDD2273A3450050C59B /* NetworkExtension.framework */,
 			);
