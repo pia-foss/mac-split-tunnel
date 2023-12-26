@@ -9,7 +9,7 @@
 import Quick
 import Nimble
 
-class TableOfContentsSpec: QuickSpec {
+class AppPolicySpec: QuickSpec {
     override class func spec() {
         describe("AppPolicy") {
             context("when the VPN is connected with default route") {
