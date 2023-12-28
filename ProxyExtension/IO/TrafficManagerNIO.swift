@@ -20,13 +20,27 @@ final class TrafficManagerNIO : TrafficManager {
 
     func handleFlowIO(_ flow: NEAppProxyFlow) {
         if let tcpFlow = flow as? NEAppProxyTCPFlow {
-            let channel = initChannel(flow: tcpFlow)
+            initChannel(flow: tcpFlow).whenComplete { result in
+                switch result {
+                case .success(let channel):
+                    self.scheduleFlowRead(flow: tcpFlow, channel: channel)
+                case .failure(let error):
+                    log(.error, "Unable to connect")
+                    // Handle the connection error
+                }
+            }
             log(.debug, "\(flow.metaData.sourceAppSigningIdentifier) A new TCP socket has been initialized")
-            scheduleFlowRead(flow: tcpFlow, channel: channel)
+
         } else if let udpFlow = flow as? NEAppProxyTCPFlow {
-            let channel = initChannel(flow: udpFlow)
-            log(.debug, "\(flow.metaData.sourceAppSigningIdentifier) A new UDP socket has been initialized")
-            scheduleFlowRead(flow: udpFlow, channel: channel)
+            initChannel(flow: udpFlow).whenComplete { result in
+                switch result {
+                case .success(let channel):
+                    self.scheduleFlowRead(flow: udpFlow, channel: channel)
+                case .failure(let error):
+                    log(.error, "Unable to establish UDP")
+                    // Handle the connection error
+                }
+            }
         }
         // The first read has been scheduled on the flow.
         // The following ones will be scheduled in the socket write handler
@@ -37,25 +51,32 @@ final class TrafficManagerNIO : TrafficManager {
     }
     
     // this function creates, binds and connects a new TCP channel
-    private func initChannel(flow: NEAppProxyTCPFlow) -> Channel {
+    private func initChannel(flow: NEAppProxyTCPFlow) -> EventLoopFuture<Channel> {
         log(.debug, "\(flow.metaData.sourceAppSigningIdentifier) creating, binding and connecting a new TCP socket")
         var bootstrap = ClientBootstrap(group: eventLoopGroup)
-            // Enable SO_REUSEADDR.
             .channelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)
             .channelInitializer { channel in
-                // We add only the inbound handler to the channel pipeline.
-                // We don't add an outbound handler because SwiftNIO doesn't use it
-                // when using channel.writeAndFlush() ¯\_(ツ)_/¯
                 channel.pipeline.addHandler(InboundHandlerTCP(flow: flow))
             }
-        // TODO: Handle bind and connect failures
-        bootstrap = try! bootstrap.bind(to: SocketAddress(ipAddress: interfaceAddress, port: 0))
+
+        // Assuming interfaceAddress is already defined
         let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: flow.remoteEndpoint as! NWHostEndpoint)
-        return try! bootstrap.connect(host: endpointAddress!, port: endpointPort!).wait()
+            // Handle error appropriately
+        
+        //let error = SocketAddressError.unknown(host: interfaceAddress, port: 0)
+        //return eventLoopGroup.next().makeFailedFuture(error)
+
+        // Bind to a local address and then connect
+        let socketAddress = try! SocketAddress(ipAddress: interfaceAddress, port: 0)
+        let channelFuture = bootstrap.bind(to: socketAddress)
+            .connect(host: endpointAddress!, port: endpointPort!)
+
+        // Return the future
+        return channelFuture
     }
-    
+
     // this function creates and bind a new UDP channel
-    private func initChannel(flow: NEAppProxyUDPFlow) -> Channel {
+    private func initChannel(flow: NEAppProxyUDPFlow) -> EventLoopFuture<Channel> {
         log(.debug, "\(flow.metaData.sourceAppSigningIdentifier) creating and binding a new UDP socket")
         let bootstrap = DatagramBootstrap(group: eventLoopGroup)
             // Enable SO_REUSEADDR.
@@ -63,8 +84,11 @@ final class TrafficManagerNIO : TrafficManager {
             .channelInitializer { channel in
                 channel.pipeline.addHandler(InboundHandlerUDP(flow: flow))
             }
+
+        let socketAddress = try! SocketAddress(ipAddress: interfaceAddress, port: 0)
+        let channelFuture = bootstrap.bind(to: socketAddress)
         // TODO: Handle bind failures
-        return try! bootstrap.bind(to: SocketAddress(ipAddress: interfaceAddress, port: 0)).wait()
+        return channelFuture
         // Not calling connect() on a UDP socket.
         // Doing that will turn the socket into a "connected datagram socket".
         // That will prevent the application from exchanging data with multiple endpoints

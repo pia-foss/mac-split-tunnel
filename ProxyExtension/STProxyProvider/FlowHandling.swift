@@ -14,14 +14,12 @@ extension STProxyProvider {
     //     It will be routed through the system default network interface
     override func handleNewFlow(_ flow: NEAppProxyFlow) -> Bool {
         return processFlow(flow) { appID in
-            Task.detached() {
-                flow.open(withLocalEndpoint: nil) { error in
-                    if (error != nil) {
-                        log(.error, "\(appID) \"\(error!.localizedDescription)\" in \(String(describing: flow.self)) open()")
-                        return
-                    }
-                    self.trafficManager!.handleFlowIO(flow)
+            flow.open(withLocalEndpoint: nil) { error in
+                if (error != nil) {
+                    log(.error, "\(appID) \"\(error!.localizedDescription)\" in \(String(describing: flow.self)) open()")
+                    return
                 }
+                self.trafficManager!.handleFlowIO(flow)
             }
         }
     }
