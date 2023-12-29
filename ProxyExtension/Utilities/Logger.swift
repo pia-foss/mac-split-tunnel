@@ -52,22 +52,24 @@ func logLevelFromString(_ levelString: String) -> LogLevel {
     }
 }
 
-func log(_ type: LogLevel, _ text: String) {
+func log(_ type: LogLevel, _ text: String, file: String = #file, line: Int = #line) {
     let currentDate = Date()
     let formatter = DateFormatter()
     formatter.dateFormat = "HH:mm:ss:SSSS"
     let currentTimeString = formatter.string(from: currentDate)
-    
+    let fileName = (file as NSString).lastPathComponent // Extracts just the filename
+
     switch type {
     case .debug:
-        Logger.log.debug("[\(currentTimeString)] debug: \(text)")
+        Logger.log.debug("[\(currentTimeString)] [\(fileName):\(line)] debug: \(text)")
     case .info:
-        Logger.log.info("[\(currentTimeString)] info: \(text)")
+        Logger.log.info("[\(currentTimeString)] [\(fileName):\(line)] info: \(text)")
     case .warning:
-        Logger.log.warning("[\(currentTimeString)] warning: \(text)")
+        Logger.log.warning("[\(currentTimeString)] [\(fileName):\(line)] warning: \(text)")
     case .error:
-        Logger.log.error("[\(currentTimeString)] error: \(text)")
+        Logger.log.error("[\(currentTimeString)] [\(fileName):\(line)] error: \(text)")
     default:
-        Logger.log.info("[\(currentTimeString)] info: \(text)")
+        Logger.log.info("[\(currentTimeString)] [\(fileName):\(line)] info: \(text)")
     }
 }
+

@@ -157,7 +157,7 @@ class STProxyProvider : NETransparentProxyProvider {
     // This GID is whitelisted by the firewall so we can route packets out
     // the physical interface even when the killswitch is active.
     func setGidForFirewallWhitelist(groupName: String) -> Bool {
-        Logger.log.info("Trying to set gid of extension to \(groupName)")
+        Logger.log.info("Trying to set gid of extension (pid: \(getpid()) at \(getProcessPath(pid: getpid())!) to \(groupName)")
         guard let whitelistGid = getGroupIdFromName(groupName: groupName) else {
             Logger.log.error("Error: unable to get gid for \(groupName) group!")
             return false
