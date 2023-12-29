@@ -13,21 +13,6 @@ extension STProxyProvider {
     //     The flow of this app will NOT be managed.
     //     It will be routed through the system default network interface
     override func handleNewFlow(_ flow: NEAppProxyFlow) -> Bool {
-        return processFlow(flow) { appID in
-            flow.open(withLocalEndpoint: nil) { error in
-                if (error != nil) {
-                    log(.error, "\(appID) \"\(error!.localizedDescription)\" in \(String(describing: flow.self)) open()")
-                    return
-                }
-                self.trafficManager!.handleFlowIO(flow)
-            }
-        }
-    }
-
-    // Process a new flow - whether it's an NEAppProxyTCPFlow or NEAppProxyUDPFlow
-    // This function applies the correct flow policy - whether that is to proxy, block, or ignore.
-    // If the policy type is proxy - then we also execute the associated lambda and pass in the appID.
-    private func processFlow(_ flow: NEAppProxyFlow, successHandler: (_ appID: String) -> Void) -> Bool {
         guard isFlowIPv4(flow) else {
             return false
         }
@@ -37,7 +22,13 @@ extension STProxyProvider {
         switch policyFor(appFlow: flow) {
         case .proxy:
             log(.info, "\(appID) Proxying a new flow")
-            successHandler(appID)
+            flow.open(withLocalEndpoint: nil) { error in
+                if (error != nil) {
+                    log(.error, "\(appID) \"\(error!.localizedDescription)\" in \(String(describing: flow.self)) open()")
+                    return
+                }
+                self.trafficManager!.handleFlowIO(flow)
+            }
             return true
         case .block:
             TrafficManagerNIO.dropFlow(appFlow: flow)

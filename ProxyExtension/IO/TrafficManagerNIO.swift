@@ -19,8 +19,8 @@ final class TrafficManagerNIO : TrafficManager {
     }
 
     // Drop a flow by closing it
-    // We use a class method so we can call it using `Self` - rather than full class
-    // name in the case of a static method. We also call this method from outside this class.
+    // We use a class method so we can call it using `Self`.
+    // We also call this method from outside this class.
     class func dropFlow(appFlow: NEAppProxyFlow) -> Void {
         let error = NSError(domain: "com.privateinternetaccess.vpn", code: 100, userInfo: nil)
         appFlow.closeReadWithError(error)
@@ -54,7 +54,7 @@ final class TrafficManagerNIO : TrafficManager {
                 log(.error, "Unable to TCP connect: \(error), dropping the flow.")
                 Self.dropFlow(appFlow: tcpFlow)
             }
-        } else if let udpFlow = flow as? NEAppProxyTCPFlow {
+        } else if let udpFlow = flow as? NEAppProxyUDPFlow {
             let channelFuture = initChannel(flow: udpFlow)
             channelFuture.whenSuccess { channel in
                 log(.debug, "\(flow.metaData.sourceAppSigningIdentifier) A new UDP socket has been initialized")
@@ -76,7 +76,7 @@ final class TrafficManagerNIO : TrafficManager {
     // this function creates, binds and connects a new TCP channel
     private func initChannel(flow: NEAppProxyTCPFlow) -> EventLoopFuture<Channel> {
         log(.debug, "\(flow.metaData.sourceAppSigningIdentifier) creating, binding and connecting a new TCP socket")
-        var bootstrap = ClientBootstrap(group: eventLoopGroup)
+        let bootstrap = ClientBootstrap(group: eventLoopGroup)
             .channelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)
             .channelInitializer { channel in
                 channel.pipeline.addHandler(InboundHandlerTCP(flow: flow))
@@ -92,7 +92,6 @@ final class TrafficManagerNIO : TrafficManager {
             let channelFuture = bootstrap.bind(to: socketAddress)
                 .connect(host: endpointAddress!, port: endpointPort!)
 
-            // Return the future
             return channelFuture
         } catch {
             return eventLoopGroup.next().makeFailedFuture(error)
