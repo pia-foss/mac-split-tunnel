@@ -18,28 +18,35 @@ final class TrafficManagerNIO : TrafficManager {
         try! eventLoopGroup.syncShutdownGracefully()
     }
 
+    // Block a flow by closing it
+    static func dropFlow(appFlow: NEAppProxyFlow) -> Void {
+        let appID = appFlow.metaData.sourceAppSigningIdentifier
+
+        let error = NSError(domain: "com.privateinternetaccess.vpn", code: 100, userInfo: nil)
+        appFlow.closeReadWithError(error)
+        appFlow.closeWriteWithError(error)
+    }
+
     func handleFlowIO(_ flow: NEAppProxyFlow) {
         if let tcpFlow = flow as? NEAppProxyTCPFlow {
-            initChannel(flow: tcpFlow).whenComplete { result in
-                switch result {
-                case .success(let channel):
-                    self.scheduleFlowRead(flow: tcpFlow, channel: channel)
-                case .failure(let error):
-                    log(.error, "Unable to connect")
-                    // Handle the connection error
-                }
+            let channelFuture = initChannel(flow: tcpFlow)
+            channelFuture.whenSuccess { channel in
+                log(.debug, "\(flow.metaData.sourceAppSigningIdentifier) A new TCP socket has been initialized")
+                self.scheduleFlowRead(flow: tcpFlow, channel: channel)
             }
-            log(.debug, "\(flow.metaData.sourceAppSigningIdentifier) A new TCP socket has been initialized")
-
+            channelFuture.whenFailure { error in
+                log(.error, "Unable to TCP connect")
+                TrafficManagerNIO.dropFlow(appFlow: tcpFlow)
+            }
         } else if let udpFlow = flow as? NEAppProxyTCPFlow {
-            initChannel(flow: udpFlow).whenComplete { result in
-                switch result {
-                case .success(let channel):
-                    self.scheduleFlowRead(flow: udpFlow, channel: channel)
-                case .failure(let error):
-                    log(.error, "Unable to establish UDP")
-                    // Handle the connection error
-                }
+            let channelFuture = initChannel(flow: udpFlow)
+            channelFuture.whenSuccess { channel in
+                log(.debug, "\(flow.metaData.sourceAppSigningIdentifier) A new UDP socket has been initialized")
+                self.scheduleFlowRead(flow: udpFlow, channel: channel)
+            }
+            channelFuture.whenFailure { error in
+                log(.error, "Unable to establish UDP")
+                TrafficManagerNIO.dropFlow(appFlow: udpFlow)
             }
         }
         // The first read has been scheduled on the flow.
@@ -61,18 +68,19 @@ final class TrafficManagerNIO : TrafficManager {
 
         // Assuming interfaceAddress is already defined
         let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: flow.remoteEndpoint as! NWHostEndpoint)
-            // Handle error appropriately
-        
-        //let error = SocketAddressError.unknown(host: interfaceAddress, port: 0)
-        //return eventLoopGroup.next().makeFailedFuture(error)
 
         // Bind to a local address and then connect
-        let socketAddress = try! SocketAddress(ipAddress: interfaceAddress, port: 0)
-        let channelFuture = bootstrap.bind(to: socketAddress)
-            .connect(host: endpointAddress!, port: endpointPort!)
+        do {
+            // This is the only call that can throw an exception
+            let socketAddress = try SocketAddress(ipAddress: interfaceAddress, port: 0)
+            let channelFuture = bootstrap.bind(to: socketAddress)
+                .connect(host: endpointAddress!, port: endpointPort!)
 
-        // Return the future
-        return channelFuture
+            // Return the future
+            return channelFuture
+        } catch {
+            return eventLoopGroup.next().makeFailedFuture(error)
+        }
     }
 
     // this function creates and bind a new UDP channel
@@ -85,13 +93,17 @@ final class TrafficManagerNIO : TrafficManager {
                 channel.pipeline.addHandler(InboundHandlerUDP(flow: flow))
             }
 
-        let socketAddress = try! SocketAddress(ipAddress: interfaceAddress, port: 0)
-        let channelFuture = bootstrap.bind(to: socketAddress)
-        // TODO: Handle bind failures
-        return channelFuture
-        // Not calling connect() on a UDP socket.
-        // Doing that will turn the socket into a "connected datagram socket".
-        // That will prevent the application from exchanging data with multiple endpoints
+        do {
+            // This is the only call that can throw an exception
+            let socketAddress = try SocketAddress(ipAddress: interfaceAddress, port: 0)
+            // Not calling connect() on a UDP socket.
+            // Doing that will turn the socket into a "connected datagram socket".
+            // That will prevent the application from exchanging data with multiple endpoints
+            let channelFuture = bootstrap.bind(to: socketAddress)
+            return channelFuture
+        } catch {
+            return eventLoopGroup.next().makeFailedFuture(error)
+        }
     }
     
     // schedule a new read on a TCP flow
@@ -137,8 +149,8 @@ final class TrafficManagerNIO : TrafficManager {
                             log(.debug, "\(flow.metaData.sourceAppSigningIdentifier) UDP datagram successfully sent through the socket")
                             // since everything worked as expected, we schedule another read on the flow
                             //
-                            // compared to TPC, for a UDP flow we get an array of [Data].
-                            // If the array contains more than one element it is possible that we will 
+                            // compared to TCP, for a UDP flow we get an array of [Data].
+                            // If the array contains more than one element it is possible that we will
                             // try to schedule multiple reads.
                             // Scheduling a read, if one is already scheduled, raises an error:
                             // "A read operation is already pending".

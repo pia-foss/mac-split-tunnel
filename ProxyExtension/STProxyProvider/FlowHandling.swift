@@ -40,7 +40,7 @@ extension STProxyProvider {
             successHandler(appID)
             return true
         case .block:
-            blockFlow(appFlow: flow)
+            TrafficManagerNIO.dropFlow(appFlow: flow)
             log(.debug, "\(appID) Blocking a new flow")
             // We return true to indicate to the OS we want to handle the flow
             // but since we just closed it (in blockFlow) this should result in the app being blocked
@@ -48,17 +48,6 @@ extension STProxyProvider {
         case .ignore:
             return false
         }
-    }
-
-    // Block a flow by closing it
-    private func blockFlow(appFlow: NEAppProxyFlow) -> Void {
-        let appID = appFlow.metaData.sourceAppSigningIdentifier
-
-        let error = NSError(domain: "com.privateinternetaccess.vpn", code: 100, userInfo: nil)
-        appFlow.closeReadWithError(error)
-        appFlow.closeWriteWithError(error)
-
-        log(.warning, "Blocking the flow for appId: \(appID)")
     }
 
     // Given a flow, return the app policy to apply (.proxy, .block. ignore)
