@@ -29,17 +29,29 @@ final class TrafficManagerNIO : TrafficManager {
 
     class func terminateProxySession(appFlow: NEAppProxyFlow, channel: Channel) -> Void {
         dropFlow(appFlow: appFlow)
-        channel.close().whenFailure { error in
-            // Not much we can do here other than trace it
-            log(.error, "Failed to close the channel: \(error)")
+        // Ensure we execute the close in the same event loop as the channel
+        channel.eventLoop.execute {
+            guard channel.isActive else {
+                return
+            }
+            channel.close().whenFailure { error in
+                // Not much we can do here other than trace it
+                log(.error, "Failed to close the channel: \(error)")
+            }
         }
     }
 
     class func terminateProxySession(appFlow: NEAppProxyFlow, context: ChannelHandlerContext) -> Void {
         dropFlow(appFlow: appFlow)
-        context.close().whenFailure { error in
-            // Not much we can do here other than trace it
-            log(.error, "Failed to close the channel: \(error)")
+        // Ensure we execute the close in the same event loop as the channel
+        context.eventLoop.execute {
+            guard context.channel.isActive else {
+                return
+            }
+            context.close().whenFailure { error in
+                // Not much we can do here other than trace it
+                log(.error, "Failed to close the channel: \(error)")
+            }
         }
     }
 
@@ -236,6 +248,8 @@ final class InboundHandlerTCP: ChannelInboundHandler {
                 // this function will be called again automatically by the event loop
             } else {
                 log(.error, "\(self.flow.metaData.sourceAppSigningIdentifier) \(flowError!.localizedDescription) occurred when writing TCP data to the flow")
+
+                // Ensure we close the context in the same thread as the event
                 TrafficManagerNIO.terminateProxySession(appFlow: self.flow, context: context)
             }
         }
