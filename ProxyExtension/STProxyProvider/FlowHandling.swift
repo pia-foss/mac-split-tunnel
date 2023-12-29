@@ -43,7 +43,7 @@ extension STProxyProvider {
             TrafficManagerNIO.dropFlow(appFlow: flow)
             log(.debug, "\(appID) Blocking a new flow")
             // We return true to indicate to the OS we want to handle the flow
-            // but since we just closed it (in blockFlow) this should result in the app being blocked
+            // but since we just closed it (in dropFlow) this should result in the app being blocked
             return true
         case .ignore:
             return false
