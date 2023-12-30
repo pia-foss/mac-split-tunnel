@@ -19,16 +19,19 @@ final class TrafficManagerNIO : TrafficManager {
     }
 
     // Drop a flow by closing it
-    // We use a class method so we can call it using `Self`.
+    // We use a class method (rather than a static method) so we can call it using `Self`.
     // We also call this method from outside this class.
-    class func dropFlow(appFlow: NEAppProxyFlow) -> Void {
+    class func dropFlow(flow: NEAppProxyFlow) -> Void {
+        let appID = flow.metaData.sourceAppSigningIdentifier
+        log(.debug, "\(appID) Dropping a flow")
+
         let error = NSError(domain: "com.privateinternetaccess.vpn", code: 100, userInfo: nil)
-        appFlow.closeReadWithError(error)
-        appFlow.closeWriteWithError(error)
+        flow.closeReadWithError(error)
+        flow.closeWriteWithError(error)
     }
 
-    class func terminateProxySession(appFlow: NEAppProxyFlow, channel: Channel) -> Void {
-        dropFlow(appFlow: appFlow)
+    class func terminateProxySession(flow: NEAppProxyFlow, channel: Channel) -> Void {
+        dropFlow(flow: flow)
         // Ensure we execute the close in the same event loop as the channel
         channel.eventLoop.execute {
             guard channel.isActive else {
@@ -41,8 +44,8 @@ final class TrafficManagerNIO : TrafficManager {
         }
     }
 
-    class func terminateProxySession(appFlow: NEAppProxyFlow, context: ChannelHandlerContext) -> Void {
-        dropFlow(appFlow: appFlow)
+    class func terminateProxySession(flow: NEAppProxyFlow, context: ChannelHandlerContext) -> Void {
+        dropFlow(flow: flow)
         // Ensure we execute the close in the same event loop as the channel
         context.eventLoop.execute {
             guard context.channel.isActive else {
@@ -64,7 +67,7 @@ final class TrafficManagerNIO : TrafficManager {
             }
             channelFuture.whenFailure { error in
                 log(.error, "Unable to TCP connect: \(error), dropping the flow.")
-                Self.dropFlow(appFlow: tcpFlow)
+                Self.dropFlow(flow: tcpFlow)
             }
         } else if let udpFlow = flow as? NEAppProxyUDPFlow {
             let channelFuture = initChannel(flow: udpFlow)
@@ -74,7 +77,7 @@ final class TrafficManagerNIO : TrafficManager {
             }
             channelFuture.whenFailure { error in
                 log(.error, "Unable to establish UDP: \(error), dropping the flow.")
-                Self.dropFlow(appFlow: udpFlow)
+                Self.dropFlow(flow: udpFlow)
             }
         }
         // The first read has been scheduled on the flow.
@@ -151,12 +154,12 @@ final class TrafficManagerNIO : TrafficManager {
                         self.scheduleFlowRead(flow: flow, channel: channel)
                     case .failure(let error):
                         log(.error, "\(flow.metaData.sourceAppSigningIdentifier) \(error) while sending TCP data through the socket")
-                        Self.terminateProxySession(appFlow: flow, channel: channel)
+                        Self.terminateProxySession(flow: flow, channel: channel)
                     }
                 }
             } else {
                 log(.error, "\(flow.metaData.sourceAppSigningIdentifier) \((flowError?.localizedDescription) ?? "Empty buffer") occurred during TCP flow.readData()")
-                Self.terminateProxySession(appFlow: flow, channel: channel)
+                Self.terminateProxySession(flow: flow, channel: channel)
             }
         }
         log(.debug, "\(flow.metaData.sourceAppSigningIdentifier) A new TCP flow readData() has been scheduled")
@@ -171,7 +174,7 @@ final class TrafficManagerNIO : TrafficManager {
                 for (data, endpoint) in zip(datas, endpoints) {
                     // Kill the proxy session if we can't create a datagram
                     guard let datagram = self.createDatagram(channel: channel, data: data, endpoint: endpoint) else {
-                        Self.terminateProxySession(appFlow: flow, channel: channel)
+                        Self.terminateProxySession(flow: flow, channel: channel)
                         return
                     }
 
@@ -192,7 +195,7 @@ final class TrafficManagerNIO : TrafficManager {
                             self.scheduleFlowRead(flow: flow, channel: channel)
                         case .failure(let error):
                             log(.error, "\(flow.metaData.sourceAppSigningIdentifier) \(error) while sending a UDP datagram through the socket")
-                            Self.terminateProxySession(appFlow: flow, channel: channel)
+                            Self.terminateProxySession(flow: flow, channel: channel)
                         }
                     }
                 }
@@ -200,7 +203,7 @@ final class TrafficManagerNIO : TrafficManager {
                 log(.error, "\(flow.metaData.sourceAppSigningIdentifier) \((flowError?.localizedDescription) ?? "Empty buffer") occurred during UDP flow.readDatagrams()")
 
                 // TODO: Make an exception for "A read operation is already pending" - do not terminate the session
-                Self.terminateProxySession(appFlow: flow, channel: channel)
+                Self.terminateProxySession(flow: flow, channel: channel)
             }
         }
         log(.debug, "\(flow.metaData.sourceAppSigningIdentifier) A new UDP flow readDatagrams() has been scheduled")
@@ -250,7 +253,7 @@ final class InboundHandlerTCP: ChannelInboundHandler {
                 log(.error, "\(self.flow.metaData.sourceAppSigningIdentifier) \(flowError!.localizedDescription) occurred when writing TCP data to the flow")
 
                 // Ensure we close the context in the same thread as the event
-                TrafficManagerNIO.terminateProxySession(appFlow: self.flow, context: context)
+                TrafficManagerNIO.terminateProxySession(flow: self.flow, context: context)
             }
         }
     }
@@ -261,7 +264,7 @@ final class InboundHandlerTCP: ChannelInboundHandler {
 
     func errorCaught(context: ChannelHandlerContext, error: Error) {
         log(.error, "\(error) in InboundTCPHandler")
-        TrafficManagerNIO.terminateProxySession(appFlow: self.flow, context: context)
+        TrafficManagerNIO.terminateProxySession(flow: self.flow, context: context)
     }
 }
 
@@ -297,7 +300,7 @@ final class InboundHandlerUDP: ChannelInboundHandler {
                 // this function will be called again automatically by the event loop
             } else {
                 log(.error, "\(self.flow.metaData.sourceAppSigningIdentifier) \(flowError!.localizedDescription) occurred when writing a UDP datagram to the flow")
-                TrafficManagerNIO.terminateProxySession(appFlow: self.flow, context: context)
+                TrafficManagerNIO.terminateProxySession(flow: self.flow, context: context)
             }
         }
     }
@@ -308,6 +311,6 @@ final class InboundHandlerUDP: ChannelInboundHandler {
 
     func errorCaught(context: ChannelHandlerContext, error: Error) {
         log(.error, "\(error) in InboundTCPHandler")
-        TrafficManagerNIO.terminateProxySession(appFlow: self.flow, context: context)
+        TrafficManagerNIO.terminateProxySession(flow: self.flow, context: context)
     }
 }

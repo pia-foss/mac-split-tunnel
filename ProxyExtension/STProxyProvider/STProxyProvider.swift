@@ -24,12 +24,12 @@ import Puppy
 // in handleNewFlow, then verify that no app can connect to the internet.
 
 class STProxyProvider : NETransparentProxyProvider {
-    
+
     // MARK: Proxy Properties
     var networkInterface: String?
     var serverAddress: String?
     var appPolicy: AppPolicy
-    var trafficManager: TrafficManager?
+    var trafficManager: TrafficManager!
 
     // MARK: Proxy Functions
     override init() {
