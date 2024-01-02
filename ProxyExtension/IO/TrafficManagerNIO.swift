@@ -170,7 +170,8 @@ final class TrafficManagerNIO : TrafficManager {
         flow.readDatagrams { outboundData, outboundEndpoints, flowError in
             if flowError == nil, let datas = outboundData, !datas.isEmpty, let endpoints = outboundEndpoints, !endpoints.isEmpty {
                 log(.debug, "\(flow.metaData.sourceAppSigningIdentifier) UDP flow.readDatagrams() has read: \(datas)")
-                
+
+                var readIsScheduled = false
                 for (data, endpoint) in zip(datas, endpoints) {
                     // Kill the proxy session if we can't create a datagram
                     guard let datagram = self.createDatagram(channel: channel, data: data, endpoint: endpoint) else {
@@ -182,17 +183,12 @@ final class TrafficManagerNIO : TrafficManager {
                         switch result {
                         case .success:
                             log(.debug, "\(flow.metaData.sourceAppSigningIdentifier) UDP datagram successfully sent through the socket")
-                            // since everything worked as expected, we schedule another read on the flow
-                            //
-                            // compared to TCP, for a UDP flow we get an array of [Data].
-                            // If the array contains more than one element it is possible that we will
-                            // try to schedule multiple reads.
-                            // Scheduling a read, if one is already scheduled, raises an error:
-                            // "A read operation is already pending".
-                            // The error appears to be harmless though:
-                            // flow.readDatagrams() will just return immediately and flow functionality
-                            // will remain the same
-                            self.scheduleFlowRead(flow: flow, channel: channel)
+
+                            // Only schedule another read if we haven't already done so
+                            if !readIsScheduled {
+                                self.scheduleFlowRead(flow: flow, channel: channel)
+                                readIsScheduled = true
+                            }
                         case .failure(let error):
                             log(.error, "\(flow.metaData.sourceAppSigningIdentifier) \(error) while sending a UDP datagram through the socket")
                             Self.terminateProxySession(flow: flow, channel: channel)
@@ -252,7 +248,6 @@ final class InboundHandlerTCP: ChannelInboundHandler {
             } else {
                 log(.error, "\(self.flow.metaData.sourceAppSigningIdentifier) \(flowError!.localizedDescription) occurred when writing TCP data to the flow")
 
-                // Ensure we close the context in the same thread as the event
                 TrafficManagerNIO.terminateProxySession(flow: self.flow, context: context)
             }
         }
