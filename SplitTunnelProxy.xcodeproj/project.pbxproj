@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		526CFC0B2B3AD15B00F31493 /* NIO in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC0A2B3AD15B00F31493 /* NIO */; };
+		526CFC0D2B3AD15B00F31493 /* NIOConcurrencyHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC0C2B3AD15B00F31493 /* NIOConcurrencyHelpers */; };
+		526CFC0F2B3AD15B00F31493 /* NIOCore in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC0E2B3AD15B00F31493 /* NIOCore */; };
+		526CFC112B3AD15B00F31493 /* NIOFoundationCompat in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC102B3AD15B00F31493 /* NIOFoundationCompat */; };
+		526CFC132B3AD15B00F31493 /* NIOPosix in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC122B3AD15B00F31493 /* NIOPosix */; };
+		526CFC152B3AD15B00F31493 /* NIOTestUtils in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC142B3AD15B00F31493 /* NIOTestUtils */; };
+		526CFC172B3AD15B00F31493 /* _NIOConcurrency in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC162B3AD15B00F31493 /* _NIOConcurrency */; };
+		526CFC342B3AD94A00F31493 /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC332B3AD94A00F31493 /* Puppy */; };
+		526CFC362B3ADD0600F31493 /* libproc.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 526CFC352B3ADD0600F31493 /* libproc.tbd */; };
 		5274B64F2B2AE8DF0007250C /* libbsm.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5274B64E2B2AE8DF0007250C /* libbsm.tbd */; };
 		527F56A82B3180D6003E7DF7 /* AppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A72B3180D6003E7DF7 /* AppPolicy.swift */; };
 		527F56AA2B31A098003E7DF7 /* AppPolicyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A92B31A098003E7DF7 /* AppPolicyTest.swift */; };
@@ -28,10 +37,6 @@
 		C4B45DDE2273A3450050C59B /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4B45DDD2273A3450050C59B /* NetworkExtension.framework */; };
 		D12A9EA02AE98D880009BA23 /* ProxyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D12A9E9F2AE98D870009BA23 /* ProxyApp.swift */; };
 		D13B634E2970CE9600839689 /* FlowHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = D13B634C2970CC6E00839689 /* FlowHandling.swift */; };
-		D144EC2D2B31FB4200000A9B /* NIOCore in Frameworks */ = {isa = PBXBuildFile; productRef = D144EC2C2B31FB4200000A9B /* NIOCore */; };
-		D144EC2F2B31FB4200000A9B /* NIOPosix in Frameworks */ = {isa = PBXBuildFile; productRef = D144EC2E2B31FB4200000A9B /* NIOPosix */; };
-		D144EC322B31FC0900000A9B /* IODictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = D144EC302B31FC0900000A9B /* IODictionary.swift */; };
-		D144EC332B31FC0900000A9B /* IODictionaryNIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = D144EC312B31FC0900000A9B /* IODictionaryNIO.swift */; };
 		D1795F732AE9CC50003B0DAE /* ExtensionBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1795F722AE9CC50003B0DAE /* ExtensionBundle.swift */; };
 		D17F5D1A293E1DC300FB8DAF /* ProxyAppDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D19293E1DC300FB8DAF /* ProxyAppDefault.swift */; };
 		D17F5D1C293E701D00FB8DAF /* STProxyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D1B293E701D00FB8DAF /* STProxyProvider.swift */; };
@@ -76,6 +81,7 @@
 
 /* Begin PBXFileReference section */
 		03411C5003411ED000000001 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		526CFC352B3ADD0600F31493 /* libproc.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libproc.tbd; path = usr/lib/libproc.tbd; sourceTree = SDKROOT; };
 		5274B64D2B2AE6880007250C /* STProxyProvider-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "STProxyProvider-Bridging-Header.h"; sourceTree = "<group>"; };
 		5274B64E2B2AE8DF0007250C /* libbsm.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbsm.tbd; path = usr/lib/libbsm.tbd; sourceTree = SDKROOT; };
 		527F56A72B3180D6003E7DF7 /* AppPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPolicy.swift; sourceTree = "<group>"; };
@@ -98,8 +104,6 @@
 		C4B45DDD2273A3450050C59B /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		D12A9E9F2AE98D870009BA23 /* ProxyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyApp.swift; sourceTree = "<group>"; };
 		D13B634C2970CC6E00839689 /* FlowHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowHandling.swift; sourceTree = "<group>"; };
-		D144EC302B31FC0900000A9B /* IODictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IODictionary.swift; sourceTree = "<group>"; };
-		D144EC312B31FC0900000A9B /* IODictionaryNIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IODictionaryNIO.swift; sourceTree = "<group>"; };
 		D1795F722AE9CC50003B0DAE /* ExtensionBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionBundle.swift; sourceTree = "<group>"; };
 		D17F5D19293E1DC300FB8DAF /* ProxyAppDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyAppDefault.swift; sourceTree = "<group>"; };
 		D17F5D1B293E701D00FB8DAF /* STProxyProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STProxyProvider.swift; sourceTree = "<group>"; };
@@ -116,11 +120,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D144EC2F2B31FB4200000A9B /* NIOPosix in Frameworks */,
+				526CFC362B3ADD0600F31493 /* libproc.tbd in Frameworks */,
+				526CFC0F2B3AD15B00F31493 /* NIOCore in Frameworks */,
+				526CFC132B3AD15B00F31493 /* NIOPosix in Frameworks */,
+				526CFC152B3AD15B00F31493 /* NIOTestUtils in Frameworks */,
 				5274B64F2B2AE8DF0007250C /* libbsm.tbd in Frameworks */,
+				526CFC0B2B3AD15B00F31493 /* NIO in Frameworks */,
 				C40A5C46229DD6A500627D50 /* NetworkExtension.framework in Frameworks */,
-				D144EC2D2B31FB4200000A9B /* NIOCore in Frameworks */,
+				526CFC112B3AD15B00F31493 /* NIOFoundationCompat in Frameworks */,
+				526CFC172B3AD15B00F31493 /* _NIOConcurrency in Frameworks */,
 				97E7B8AD2AFB565700138C6A /* Puppy in Frameworks */,
+				526CFC0D2B3AD15B00F31493 /* NIOConcurrencyHelpers in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,6 +147,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				526CFC342B3AD94A00F31493 /* Puppy in Frameworks */,
 				527F56B22B31B43B003E7DF7 /* Quick in Frameworks */,
 				527F56B42B31B440003E7DF7 /* Nimble in Frameworks */,
 			);
@@ -191,6 +202,7 @@
 		C4B45DDC2273A3450050C59B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				526CFC352B3ADD0600F31493 /* libproc.tbd */,
 				5274B64E2B2AE8DF0007250C /* libbsm.tbd */,
 				C4B45DDD2273A3450050C59B /* NetworkExtension.framework */,
 			);
@@ -232,8 +244,6 @@
 		D1D5B6B42B18F7200063363E /* IO */ = {
 			isa = PBXGroup;
 			children = (
-				D144EC302B31FC0900000A9B /* IODictionary.swift */,
-				D144EC312B31FC0900000A9B /* IODictionaryNIO.swift */,
 				D1D5B6AB2B18F1C50063363E /* TrafficManager.swift */,
 				D1D5B6AF2B18F2B10063363E /* TrafficManagerNIO.swift */,
 			);
@@ -268,8 +278,13 @@
 			name = SplitTunnelProxyExtension;
 			packageProductDependencies = (
 				97E7B8AC2AFB565700138C6A /* Puppy */,
-				D144EC2C2B31FB4200000A9B /* NIOCore */,
-				D144EC2E2B31FB4200000A9B /* NIOPosix */,
+				526CFC0A2B3AD15B00F31493 /* NIO */,
+				526CFC0C2B3AD15B00F31493 /* NIOConcurrencyHelpers */,
+				526CFC0E2B3AD15B00F31493 /* NIOCore */,
+				526CFC102B3AD15B00F31493 /* NIOFoundationCompat */,
+				526CFC122B3AD15B00F31493 /* NIOPosix */,
+				526CFC142B3AD15B00F31493 /* NIOTestUtils */,
+				526CFC162B3AD15B00F31493 /* _NIOConcurrency */,
 			);
 			productName = SplitTunnelProxyExtension;
 			productReference = 97E0D7C92B073427000B4997 /* com.privateinternetaccess.splittunnel.poc.extension.systemextension */;
@@ -314,6 +329,7 @@
 			packageProductDependencies = (
 				527F56B12B31B43B003E7DF7 /* Quick */,
 				527F56B32B31B440003E7DF7 /* Nimble */,
+				526CFC332B3AD94A00F31493 /* Puppy */,
 			);
 			productName = SplitTunnelProxyTests;
 			productReference = 97E0D7CA2B073427000B4997 /* SplitTunnelProxyTests.xctest */;
@@ -356,7 +372,7 @@
 				97E7B8AB2AFB565700138C6A /* XCRemoteSwiftPackageReference "Puppy" */,
 				527F56AF2B31B358003E7DF7 /* XCRemoteSwiftPackageReference "Quick" */,
 				527F56B02B31B37E003E7DF7 /* XCRemoteSwiftPackageReference "Nimble" */,
-				D144EC2B2B31FB4200000A9B /* XCRemoteSwiftPackageReference "swift-nio" */,
+				526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */,
 			);
 			productRefGroup = C4B45DAC22739FFF0050C59B;
 			projectDirPath = "";
@@ -429,8 +445,6 @@
 				976B8CD72B0B55F60097FE7F /* Logger.swift in Sources */,
 				D1D5B6B62B18F7DF0063363E /* ProcessUtilities.swift in Sources */,
 				D1D5B6AC2B18F1C50063363E /* TrafficManager.swift in Sources */,
-				D144EC332B31FC0900000A9B /* IODictionaryNIO.swift in Sources */,
-				D144EC322B31FC0900000A9B /* IODictionary.swift in Sources */,
 				D17F5D1C293E701D00FB8DAF /* STProxyProvider.swift in Sources */,
 				527F56A82B3180D6003E7DF7 /* AppPolicy.swift in Sources */,
 				D1D5B6B02B18F2B10063363E /* TrafficManagerNIO.swift in Sources */,
@@ -801,6 +815,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-nio.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.62.0;
+			};
+		};
 		527F56AF2B31B358003E7DF7 /* XCRemoteSwiftPackageReference "Quick" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Quick/Quick.git";
@@ -825,17 +847,49 @@
 				minimumVersion = 0.7.0;
 			};
 		};
-		D144EC2B2B31FB4200000A9B /* XCRemoteSwiftPackageReference "swift-nio" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/apple/swift-nio.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.62.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		526CFC0A2B3AD15B00F31493 /* NIO */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIO;
+		};
+		526CFC0C2B3AD15B00F31493 /* NIOConcurrencyHelpers */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOConcurrencyHelpers;
+		};
+		526CFC0E2B3AD15B00F31493 /* NIOCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOCore;
+		};
+		526CFC102B3AD15B00F31493 /* NIOFoundationCompat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOFoundationCompat;
+		};
+		526CFC122B3AD15B00F31493 /* NIOPosix */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOPosix;
+		};
+		526CFC142B3AD15B00F31493 /* NIOTestUtils */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOTestUtils;
+		};
+		526CFC162B3AD15B00F31493 /* _NIOConcurrency */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = _NIOConcurrency;
+		};
+		526CFC332B3AD94A00F31493 /* Puppy */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 97E7B8AB2AFB565700138C6A /* XCRemoteSwiftPackageReference "Puppy" */;
+			productName = Puppy;
+		};
 		527F56B12B31B43B003E7DF7 /* Quick */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 527F56AF2B31B358003E7DF7 /* XCRemoteSwiftPackageReference "Quick" */;
@@ -855,16 +909,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 97E7B8AB2AFB565700138C6A /* XCRemoteSwiftPackageReference "Puppy" */;
 			productName = Puppy;
-		};
-		D144EC2C2B31FB4200000A9B /* NIOCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D144EC2B2B31FB4200000A9B /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = NIOCore;
-		};
-		D144EC2E2B31FB4200000A9B /* NIOPosix */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D144EC2B2B31FB4200000A9B /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = NIOPosix;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
