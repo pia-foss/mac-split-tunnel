@@ -2,17 +2,6 @@ import Foundation
 import NetworkExtension
 import NIO
 
-// Generates a unique id every time generate() is called
-// Will wrap around when it reaches UInt64.max
-struct IDGenerator {
-    static var nextID: UInt64 = 0
-
-    static func generate() -> UInt64 {
-        nextID &+= 1 // Wrap around behaviour
-        return nextID
-    }
-}
-
 struct SessionConfig {
     let eventLoopGroup: MultiThreadedEventLoopGroup
     let interfaceAddress: String
@@ -20,8 +9,12 @@ struct SessionConfig {
 
 final class TrafficManagerNIO : TrafficManager {
     let sessionConfig: SessionConfig
+    var idGenerator: IDGenerator
 
     init(interfaceName: String) {
+        // Used to assign unique IDs to each session
+        idGenerator = IDGenerator()
+        // Fundamental config used to establish a session
         sessionConfig = SessionConfig(
             // Trying with just 1 thread for now, since we dont want to use too many resources on the user's machines.
             // According to SwiftNIO docs it is better to use MultiThreadedEventLoopGroup
@@ -35,8 +28,10 @@ final class TrafficManagerNIO : TrafficManager {
         try! sessionConfig.eventLoopGroup.syncShutdownGracefully()
     }
 
+    private func nextId() -> IDGenerator.ID {
+        idGenerator.generate()
+    }
 
-    // MARK: Static methods that we call also from outside this class
     // Drop a flow by closing it
     // We use a class method (rather than a static method) so we can call it using `Self`.
     // We also call this method from outside this class.
@@ -80,9 +75,9 @@ final class TrafficManagerNIO : TrafficManager {
     // MARK: Public instance methods
     func handleFlowIO(_ flow: NEAppProxyFlow) {
         if let tcpFlow = flow as? NEAppProxyTCPFlow {
-            ProxySessionTCP(flow: tcpFlow, sessionConfig: sessionConfig, id: IDGenerator.generate()).start()
+            ProxySessionTCP(flow: tcpFlow, sessionConfig: sessionConfig, id: nextId()).start()
         } else if let udpFlow = flow as? NEAppProxyUDPFlow {
-            ProxySessionUDP(flow: udpFlow, sessionConfig: sessionConfig, id: IDGenerator.generate()).start()
+            ProxySessionUDP(flow: udpFlow, sessionConfig: sessionConfig, id: nextId()).start()
         }
         // The first read has been scheduled on the flow.
         // The following ones will be scheduled in the socket write handler
