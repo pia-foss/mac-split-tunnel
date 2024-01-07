@@ -38,6 +38,7 @@ class ProxySessionTCP: ProxySession {
     }
 
     public func terminate() {
+        log(.error, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) Terminating the session.")
         TrafficManagerNIO.terminateProxySession(flow: flow, channel: channel)
     }
 
@@ -85,12 +86,12 @@ class ProxySessionTCP: ProxySession {
                         self.scheduleFlowRead(flow: flow, channel: channel)
                     case .failure(let error):
                         log(.error, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) \(error) while sending TCP data through the socket")
-                        TrafficManagerNIO.terminateProxySession(flow: flow, channel: channel)
+                        self.terminate()
                     }
                 }
             } else {
                 log(.error, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) \((flowError?.localizedDescription) ?? "Empty buffer") occurred during TCP flow.readData()")
-                TrafficManagerNIO.terminateProxySession(flow: flow, channel: channel)
+                self.terminate()
             }
         }
         log(.debug, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) A new TCP flow readData() has been scheduled")
@@ -128,8 +129,7 @@ final class InboundHandlerTCP: ChannelInboundHandler {
                 // this function will be called again automatically by the event loop
             } else {
                 log(.error, "id: \(self.id) \(self.flow.metaData.sourceAppSigningIdentifier) \(flowError!.localizedDescription) occurred when writing TCP data to the flow")
-
-                TrafficManagerNIO.terminateProxySession(flow: self.flow, context: context)
+                self.terminate(context: context)
             }
         }
     }
@@ -140,6 +140,11 @@ final class InboundHandlerTCP: ChannelInboundHandler {
 
     func errorCaught(context: ChannelHandlerContext, error: Error) {
         log(.error, "id: \(self.id) \(error) in InboundTCPHandler")
-        TrafficManagerNIO.terminateProxySession(flow: self.flow, context: context)
+        terminate(context: context)
+    }
+
+    func terminate(context: ChannelHandlerContext) {
+        log(.error, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) Terminating the session.")
+        TrafficManagerNIO.terminateProxySession(flow: flow, context: context)
     }
 }
