@@ -37,8 +37,6 @@ final class TrafficManagerNIO : TrafficManager {
     // We also call this method from outside this class.
     static func dropFlow(flow: NEAppProxyFlow) -> Void {
         let appID = flow.metaData.sourceAppSigningIdentifier
-        log(.debug, "\(appID) Dropping a flow")
-
         let error = NSError(domain: "com.privateinternetaccess.vpn", code: 100, userInfo: nil)
         flow.closeReadWithError(error)
         flow.closeWriteWithError(error)

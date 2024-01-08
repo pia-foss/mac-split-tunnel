@@ -31,7 +31,6 @@ extension STProxyProvider {
 
     func startProxySession(flow: NEAppProxyFlow) -> Bool {
         let appID = flow.metaData.sourceAppSigningIdentifier
-        log(.info, "\(appID) Proxying a new flow")
         flow.open(withLocalEndpoint: nil) { error in
             guard error == nil else {
                 log(.error, "\(appID) \"\(error!.localizedDescription)\" in \(String(describing: flow.self)) open()")

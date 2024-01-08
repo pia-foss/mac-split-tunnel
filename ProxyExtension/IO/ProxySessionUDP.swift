@@ -16,10 +16,40 @@ class ProxySessionUDP: ProxySession {
     let id: IDGenerator.ID // Unique identifier for this session
     var channel: Channel!
 
+    // Number of bytes transmitted and received
+    var _txBytes: UInt64 = 0
+    var _rxBytes: UInt64 = 0
+
+    var txBytes: UInt64 {
+        get { return _txBytes }
+        set(newTxBytes) { _txBytes = newTxBytes }
+    }
+
+    var rxBytes: UInt64 {
+        get { return _rxBytes }
+        set(newTxBytes) { _rxBytes = newTxBytes }
+    }
+
     init(flow: NEAppProxyUDPFlow, sessionConfig: SessionConfig, id: IDGenerator.ID) {
         self.flow = flow
         self.sessionConfig = sessionConfig
         self.id = id
+    }
+
+    deinit {
+        log(.debug, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) ProxySession closed. rxBytes=\(formatByteCount(rxBytes)) txBytes=\(formatByteCount(txBytes))")
+    }
+
+    private func formatByteCount(_ byteCount: UInt64) -> String {
+        let formatter = ByteCountFormatter()
+        formatter.allowedUnits = [.useMB] // Options are .useBytes, .useKB, .useMB, .useGB, etc.
+        formatter.countStyle = .file  // Options are .file (1024 bytes = 1KB) or .memory (1000 bytes = 1KB)
+        formatter.includesUnit = true // Whether to include the unit string (KB, MB, etc.)
+        formatter.isAdaptive = true
+
+        // Converting from UInt64 to Int64 - not ideal but not a problem in practice
+        // as Int64 can represent values up to 9 exabytes
+        return formatter.string(fromByteCount: Int64(byteCount))
     }
 
     public func start() -> EventLoopFuture<Channel> {
@@ -46,12 +76,15 @@ class ProxySessionUDP: ProxySession {
 
     // this function creates and bind a new UDP channel
     private func initChannel(flow: NEAppProxyUDPFlow) -> EventLoopFuture<Channel> {
-        log(.debug, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) creating and binding a new UDP socket")
+        log(.debug, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) Creating and binding a new UDP socket")
         let bootstrap = DatagramBootstrap(group: sessionConfig.eventLoopGroup)
             // Enable SO_REUSEADDR.
             .channelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)
             .channelInitializer { channel in
-                channel.pipeline.addHandler(InboundHandlerUDP(flow: flow, id: self.id))
+                let inboundHandler = InboundHandlerUDP(flow: flow, id: self.id) { (byteCount: UInt64) in
+                    self.rxBytes &+= byteCount
+                }
+                return channel.pipeline.addHandler(inboundHandler)
             }
 
         do {
@@ -71,8 +104,6 @@ class ProxySessionUDP: ProxySession {
     private func scheduleFlowRead(flow: NEAppProxyUDPFlow, channel: Channel) {
         flow.readDatagrams { outboundData, outboundEndpoints, flowError in
             if flowError == nil, let datas = outboundData, !datas.isEmpty, let endpoints = outboundEndpoints, !endpoints.isEmpty {
-                log(.debug, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) UDP flow.readDatagrams() has read: \(datas)")
-
                 var readIsScheduled = false
                 for (data, endpoint) in zip(datas, endpoints) {
                     // Kill the proxy session if we can't create a datagram
@@ -84,8 +115,6 @@ class ProxySessionUDP: ProxySession {
                     channel.writeAndFlush(datagram).whenComplete { result in
                         switch result {
                         case .success:
-                            log(.debug, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) UDP datagram successfully sent through the socket")
-
                             // Only schedule another read if we haven't already done so
                             if !readIsScheduled {
                                 self.scheduleFlowRead(flow: flow, channel: channel)
@@ -103,7 +132,7 @@ class ProxySessionUDP: ProxySession {
                 self.terminate()
             }
         }
-        log(.debug, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) A new UDP flow readDatagrams() has been scheduled")
+        //log(.debug, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) A new UDP flow readDatagrams() has been scheduled")
     }
 
     private func createDatagram(channel: Channel, data: Data, endpoint: NWEndpoint) -> AddressedEnvelope<ByteBuffer>? {
@@ -125,10 +154,16 @@ final class InboundHandlerUDP: ChannelInboundHandler {
 
     let flow: NEAppProxyUDPFlow
     let id: IDGenerator.ID
+    let onBytesReceived: (UInt64) -> Void
 
-    init(flow: NEAppProxyUDPFlow, id: IDGenerator.ID) {
+    init(flow: NEAppProxyUDPFlow, id: IDGenerator.ID, onBytesReceived: @escaping (UInt64) -> Void) {
         self.flow = flow
         self.id = id
+        self.onBytesReceived = onBytesReceived
+    }
+
+    deinit {
+        log(.debug, "id: \(self.id) Destructor called for InboundHandlerTCP")
     }
 
     func channelRead(context: ChannelHandlerContext, data: NIOAny) {
@@ -139,14 +174,12 @@ final class InboundHandlerUDP: ChannelInboundHandler {
         let address = input.remoteAddress.ipAddress
         let port = input.remoteAddress.port
         let endpoint = NWHostEndpoint(hostname: address!, port: String(port!))
-        log(.debug, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) There is a new inbound UDP socket datagram from address: \(address!)")
 
         // new traffic is ready to be read on the socket
         // we want to write that data to the flow
         flow.writeDatagrams([Data(bytes)], sentBy: [endpoint]) { flowError in
             if flowError == nil {
-                log(.debug, "id: \(self.id) \(self.flow.metaData.sourceAppSigningIdentifier) a UDP datagram has been successfully written to the flow")
-                // no op
+                self.onBytesReceived(UInt64(bytes.count))
                 // the next time data is available to read on the socket
                 // this function will be called again automatically by the event loop
             } else {

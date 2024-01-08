@@ -16,4 +16,7 @@ protocol ProxySession {
     func terminate() -> Void
     // Return the id for a given session (used for tracing)
     func identifier() -> IDGenerator.ID
+    // Number of bytes transmitted and received
+    var txBytes: UInt64 { get set }
+    var rxBytes: UInt64 { get set }
 }
