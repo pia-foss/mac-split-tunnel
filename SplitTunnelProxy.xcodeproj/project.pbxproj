@@ -25,6 +25,7 @@
 		9704D2AD2B03C97400A899D7 /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = 9704D2AC2B03C97400A899D7 /* Puppy */; };
 		976B8CD72B0B55F60097FE7F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976B8CD62B0B55F60097FE7F /* Logger.swift */; };
 		97B1169C2B0CEF910028B01E /* build.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 97B1169B2B0CEF910028B01E /* build.xcconfig */; };
+		97C8050B2B46E775005D814B /* com.privateinternetaccess.splittunnel.poc.extension.systemextension in Embed System Extensions */ = {isa = PBXBuildFile; fileRef = 97AD92092B35876200405E3A /* com.privateinternetaccess.splittunnel.poc.extension.systemextension */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		97E7B8AD2AFB565700138C6A /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = 97E7B8AC2AFB565700138C6A /* Puppy */; };
 		C40A5C46229DD6A500627D50 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4B45DDD2273A3450050C59B /* NetworkExtension.framework */; };
 		C40A5C4B229DD6A500627D50 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40A5C4A229DD6A500627D50 /* main.swift */; };
@@ -48,6 +49,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		97C8050C2B46E775005D814B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C4B45DAD22739FFF0050C59B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C40A5C44229DD6A500627D50;
+			remoteInfo = SplitTunnelProxyExtension;
+		};
 		C40A5C4E229DD6A500627D50 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C4B45DAD22739FFF0050C59B /* Project object */;
@@ -71,6 +79,7 @@
 			dstPath = "$(SYSTEM_EXTENSIONS_FOLDER_PATH)";
 			dstSubfolderSpec = 16;
 			files = (
+				97C8050B2B46E775005D814B /* com.privateinternetaccess.splittunnel.poc.extension.systemextension in Embed System Extensions */,
 			);
 			name = "Embed System Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -87,8 +96,8 @@
 		976B8CD62B0B55F60097FE7F /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		97AD92092B35876200405E3A /* com.privateinternetaccess.splittunnel.poc.extension.systemextension */ = {isa = PBXFileReference; explicitFileType = "wrapper.system-extension"; includeInIndex = 0; path = com.privateinternetaccess.splittunnel.poc.extension.systemextension; sourceTree = BUILT_PRODUCTS_DIR; };
 		97B1169B2B0CEF910028B01E /* build.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = build.xcconfig; sourceTree = "<group>"; };
-		97E0D7C82B073427000B4997 /* SplitTunnelProxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = SplitTunnelProxy.app; path = /Users/miguelgalindo/projects/xv_mac_split_tunnelling_poc/build/Debug/SplitTunnelProxy.app; sourceTree = "<absolute>"; };
-		97E0D7CA2B073427000B4997 /* SplitTunnelProxyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = SplitTunnelProxyTests.xctest; path = /Users/miguelgalindo/projects/xv_mac_split_tunnelling_poc/build/Debug/SplitTunnelProxyTests.xctest; sourceTree = "<absolute>"; };
+		97C805092B46BC63005D814B /* SplitTunnelProxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SplitTunnelProxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		97C8050A2B46BC63005D814B /* SplitTunnelProxyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SplitTunnelProxyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C40A5C4A229DD6A500627D50 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		C40A5C4C229DD6A500627D50 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C40A5C4D229DD6A500627D50 /* ProxyExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ProxyExtension.entitlements; sourceTree = "<group>"; };
@@ -178,6 +187,8 @@
 				D1FE4FB7295A1EA3002BBA20 /* ProxyTests */,
 				C4B45DDC2273A3450050C59B /* Frameworks */,
 				97AD92092B35876200405E3A /* com.privateinternetaccess.splittunnel.poc.extension.systemextension */,
+				97C805092B46BC63005D814B /* SplitTunnelProxy.app */,
+				97C8050A2B46BC63005D814B /* SplitTunnelProxyTests.xctest */,
 			);
 			sourceTree = "<group>";
 		};
@@ -299,13 +310,14 @@
 			);
 			dependencies = (
 				C40A5C4F229DD6A500627D50 /* PBXTargetDependency */,
+				97C8050D2B46E775005D814B /* PBXTargetDependency */,
 			);
 			name = SplitTunnelProxy;
 			packageProductDependencies = (
 				9704D2AC2B03C97400A899D7 /* Puppy */,
 			);
 			productName = SplitTunnelProxy;
-			productReference = 97E0D7C82B073427000B4997 /* SplitTunnelProxy.app */;
+			productReference = 97C805092B46BC63005D814B /* SplitTunnelProxy.app */;
 			productType = "com.apple.product-type.application";
 		};
 		D1FE4FB5295A1EA3002BBA20 /* SplitTunnelProxyTests */ = {
@@ -328,7 +340,7 @@
 				526CFC332B3AD94A00F31493 /* Puppy */,
 			);
 			productName = SplitTunnelProxyTests;
-			productReference = 97E0D7CA2B073427000B4997 /* SplitTunnelProxyTests.xctest */;
+			productReference = 97C8050A2B46BC63005D814B /* SplitTunnelProxyTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -474,6 +486,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		97C8050D2B46E775005D814B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C40A5C44229DD6A500627D50 /* SplitTunnelProxyExtension */;
+			targetProxy = 97C8050C2B46E775005D814B /* PBXContainerItemProxy */;
+		};
 		C40A5C4F229DD6A500627D50 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C40A5C44229DD6A500627D50 /* SplitTunnelProxyExtension */;
@@ -590,7 +607,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEPLOYMENT_LOCATION = NO;
+				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = "$(LOCAL_APPS_DIR)/$(PROJECT_NAME).dst";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -656,7 +673,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEPLOYMENT_LOCATION = NO;
+				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = "$(LOCAL_APPS_DIR)/$(PROJECT_NAME).dst";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
