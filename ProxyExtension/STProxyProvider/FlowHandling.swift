@@ -13,72 +13,51 @@ extension STProxyProvider {
     //     The flow of this app will NOT be managed.
     //     It will be routed through the system default network interface
     override func handleNewFlow(_ flow: NEAppProxyFlow) -> Bool {
-        return processFlow(flow) { appID in
-            Task.detached() {
-                flow.open(withLocalEndpoint: nil) { error in
-                    if (error != nil) {
-                        log(.error, "\(appID) \"\(error!.localizedDescription)\" in \(String(describing: flow.self)) open()")
-                        return
-                    }
-                    self.trafficManager!.handleFlowIO(flow)
-                }
-            }
-        }
-    }
-
-    // Process a new flow - whether it's an NEAppProxyTCPFlow or NEAppProxyUDPFlow
-    // This function applies the correct flow policy - whether that is to proxy, block, or ignore.
-    // If the policy type is proxy - then we also execute the associated lambda and pass in the appID.
-    private func processFlow(_ flow: NEAppProxyFlow, successHandler: (_ appID: String) -> Void) -> Bool {
         guard isFlowIPv4(flow) else {
             return false
         }
 
-        let appID = flow.metaData.sourceAppSigningIdentifier
-
-        switch policyFor(appFlow: flow) {
+        switch policyFor(flow: flow) {
         case .proxy:
-            log(.info, "\(appID) Proxying a new flow")
-            successHandler(appID)
-            return true
+            return startProxySession(flow: flow)
         case .block:
-            blockFlow(appFlow: flow)
-            log(.debug, "\(appID) Blocking a new flow")
-            // We return true to indicate to the OS we want to handle the flow
-            // but since we just closed it (in blockFlow) this should result in the app being blocked
+            TrafficManagerNIO.dropFlow(flow: flow)
+            // We return true to indicate to the OS we want to handle the flow, so the app is blocked.
             return true
         case .ignore:
             return false
         }
     }
 
-    // Block a flow by closing it
-    private func blockFlow(appFlow: NEAppProxyFlow) -> Void {
-        let appID = appFlow.metaData.sourceAppSigningIdentifier
-
-        let error = NSError(domain: "com.privateinternetaccess.vpn", code: 100, userInfo: nil)
-        appFlow.closeReadWithError(error)
-        appFlow.closeWriteWithError(error)
-
-        log(.warning, "Blocking the flow for appId: \(appID)")
+    func startProxySession(flow: NEAppProxyFlow) -> Bool {
+        let appID = flow.metaData.sourceAppSigningIdentifier
+        log(.info, "\(appID) Proxying a new flow")
+        flow.open(withLocalEndpoint: nil) { error in
+            guard error == nil else {
+                log(.error, "\(appID) \"\(error!.localizedDescription)\" in \(String(describing: flow.self)) open()")
+                return
+            }
+            self.trafficManager.handleFlowIO(flow)
+        }
+        return true
     }
 
     // Given a flow, return the app policy to apply (.proxy, .block. ignore)
-    private func policyFor(appFlow: NEAppProxyFlow) -> AppPolicy.Policy {
+    private func policyFor(flow: NEAppProxyFlow) -> AppPolicy.Policy {
         // First try to find a policy for the app using the appId
-        let appID = appFlow.metaData.sourceAppSigningIdentifier
+        let appID = flow.metaData.sourceAppSigningIdentifier
         let appIdPolicy = appPolicy.policyFor(appId: appID)
 
         // If we fail to find a policy from the appId
         // then try using the path (extracted from the audit token)
-        // Otherwise, if we do find a policy, return that policy
+        // Otherwise, if we find a policy from the appID, return that policy
         guard appIdPolicy == .ignore else {
             return appIdPolicy
         }
 
-        // We failed to find a policy based on appId - now let's try the app path
+        // We failed to find a policy based on appId - let's try the app path
         // In order to find the app path we first have to extract it from the flow's audit token
-        let auditToken = appFlow.metaData.sourceAppAuditToken
+        let auditToken = flow.metaData.sourceAppAuditToken
 
         guard let path = pathFromAuditToken(token: auditToken) else {
             return .ignore
