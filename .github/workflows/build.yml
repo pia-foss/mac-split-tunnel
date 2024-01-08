@@ -1,0 +1,30 @@
+name: pia_desktop/mac
+on:
+  push:
+
+jobs:
+  macos:
+    name: macos_universal_build
+    runs-on: macos-13
+    steps:
+    - uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: 15
+    - uses: actions/checkout@v3
+    - name: Setup signing
+      run: |
+        echo "${{ secrets.PIA_APPLE_DEVELOPER_ID_CERT_BASE64 }}" | base64 -d > ${{ github.workspace }}/pia_cert.p12
+        echo "${{ secrets.PIA_APPLE_PROVISIONING_PROFILE_BASE64 }}" | base64 -d > ${{ github.workspace }}/splittunnel.provisionprofile
+    - run: fastlane mac build --verbose
+      env:
+        PIA_DEVELOPER_ID_FILE: ${{ github.workspace }}/pia_cert.p12
+        PIA_DEVELOPER_ID_PASSWORD: ${{ secrets.PIA_APPLE_DEVELOPER_ID_PASSWORD }}
+        PIA_CODESIGN_IDENTITY: ${{ vars.PIA_CODESIGN_IDENTITY }}
+        PIA_APPLE_SPLIT_TUNNEL_PROVISION_PROFILE : ${{ github.workspace }}/splittunnel.provisionprofile
+        PIA_APPLE_TEAM_ID: ${{ vars.PIA_APPLE_TEAM_ID }}
+    - uses: actions/upload-artifact@v3
+      if: success()
+      with:
+        name: "splitTunnelExtension"
+        retention-days: 10
+        path: out/SplitTunnelExtension.xcarchive/Products/Applications
