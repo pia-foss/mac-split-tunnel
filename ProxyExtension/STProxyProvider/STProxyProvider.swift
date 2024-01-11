@@ -26,13 +26,7 @@ import Puppy
 final class STProxyProvider : NETransparentProxyProvider {
 
     // MARK: Proxy options
-    var bypassApps: [String]
-    var vpnOnlyApps: [String]
-    var networkInterface: String
-    var serverAddress: String
-    var routeVpn: Bool
-    var connected: Bool
-    var groupName: String
+    var proxyOptions: ProxyOptions!
     
     // MARK: Proxy components
     // The lazy initialization is triggered when the
@@ -44,21 +38,14 @@ final class STProxyProvider : NETransparentProxyProvider {
     // init() or startProxy() are called.
     // (We could use the options array, but it sounds janky)
     lazy var appPolicy: AppPolicy = {
-        return AppPolicy(bypassApps: bypassApps, vpnOnlyApps: vpnOnlyApps, routeVpn: routeVpn, connected: connected)
+        return AppPolicy(bypassApps: proxyOptions.bypassApps, vpnOnlyApps: proxyOptions.vpnOnlyApps, routeVpn: proxyOptions.routeVpn, connected: proxyOptions.connected)
     }()
     lazy var trafficManager: TrafficManager = {
-        return TrafficManagerNIO(interfaceName: networkInterface)
+        return TrafficManagerNIO(interfaceName: proxyOptions.networkInterface)
     }()
 
     // MARK: Proxy Functions
     override init() {
-        bypassApps = []
-        vpnOnlyApps = []
-        networkInterface = ""
-        serverAddress = ""
-        routeVpn = false
-        connected = false
-        groupName = ""
         super.init()
     }
     
@@ -71,12 +58,15 @@ final class STProxyProvider : NETransparentProxyProvider {
             return
         }
         
-        guard setProxyOptions(options: options) else {
+        guard let proxyOptions = ProxyOptions.create(options: options) else {
+            log(.error, "provided incorrect list of options. They might be missing or an incorrect type")
             return
         }
+        self.proxyOptions = proxyOptions
         
         // Whitelist this process in the firewall - error logging happens in function
-        guard setGidForFirewallWhitelist(groupName: groupName) else {
+        guard setGidForFirewallWhitelist(groupName: proxyOptions.groupName) else {
+            log(.error, "failed to set gid")
             return
         }
 
@@ -108,7 +98,7 @@ final class STProxyProvider : NETransparentProxyProvider {
         // for the proxy.
         // Official docs do not say much about it:
         // https://developer.apple.com/documentation/networkextension/netunnelnetworksettings/1406032-init
-        let settings = NETransparentProxyNetworkSettings(tunnelRemoteAddress: serverAddress)
+        let settings = NETransparentProxyNetworkSettings(tunnelRemoteAddress: proxyOptions.serverAddress)
         settings.includedNetworkRules = includedRules
         settings.excludedNetworkRules = excludedRules
 
@@ -127,59 +117,6 @@ final class STProxyProvider : NETransparentProxyProvider {
         log(.info, "Proxy started!")
     }
     
-    // This function returns true only if all options are present
-    // and are the expected type
-    func setProxyOptions(options: [String : Any]?) -> Bool {
-        // Checking that all the required settings have been passed
-        // to the extension
-        guard let _bypassApps = options!["bypassApps"] as? [String] else {
-            log(.error, "Error: Cannot find bypassApps in options")
-            return false
-        }
-        bypassApps = _bypassApps
-        log(.info, "Managing \(bypassApps)")
-
-        guard let _vpnOnlyApps = options!["vpnOnlyApps"] as? [String] else {
-            log(.error, "Error: Cannot find vpnOnlyApps in options")
-            return false
-        }
-        vpnOnlyApps = _vpnOnlyApps
-
-        guard let _networkInterface = options!["networkInterface"] as? String else {
-            log(.error, "Error: Cannot find networkInterface in options")
-            return false
-        }
-        networkInterface = _networkInterface
-        log(.info, "Sending flows to interface \(networkInterface)")
-
-        guard let _serverAddress = options!["serverAddress"] as? String else {
-            log(.error, "Error: Cannot find serverAddress in options")
-            return false
-        }
-        serverAddress = _serverAddress
-        log(.info, "Using server address \(serverAddress)")
-
-        guard let _routeVpn = options!["routeVpn"] as? Bool else {
-            log(.error, "Error: Cannot find routeVpn in options")
-            return false
-        }
-        routeVpn = _routeVpn
-
-        guard let _connected = options!["connected"] as? Bool else {
-            log(.error, "Error: Cannot find connected in options")
-            return false
-        }
-        connected = _connected
-        
-        guard let _groupName = options!["whitelistGroupName"] as? String else {
-            log(.error, "Error: Cannot find whitelistGroupName in options")
-            return false
-        }
-        groupName = _groupName
-        
-        return true
-    }
-    
     // Build a rule to match traffic from a subnet and a prefix - default to all protocols (TCP/UDP) and outbound only
     // A nil subnet implies remoteNetwork should be set to nil (which means it'll match all remote networks)
     private func subnetRule(subnet: String?, prefix: Int) -> NENetworkRule {
@@ -192,12 +129,11 @@ final class STProxyProvider : NETransparentProxyProvider {
             direction: .outbound
         )
     }
-    // ** ADD A BUILD RULE FUNCTION
     
     // Set the GID of the extension process to the whitelist group (likely "piavpn")
     // This GID is whitelisted by the firewall so we can route packets out
     // the physical interface even when the killswitch is active.
-    func setGidForFirewallWhitelist(groupName: String) -> Bool {
+    private func setGidForFirewallWhitelist(groupName: String) -> Bool {
         log(.info, "Trying to set gid of extension (pid: \(getpid()) at \(getProcessPath(pid: getpid())!) to \(groupName)")
         guard let whitelistGid = getGroupIdFromName(groupName: groupName) else {
             log(.error, "Error: unable to get gid for \(groupName) group!")
