@@ -48,6 +48,10 @@
 		D1795F732AE9CC50003B0DAE /* ExtensionBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1795F722AE9CC50003B0DAE /* ExtensionBundle.swift */; };
 		D17F5D1A293E1DC300FB8DAF /* ProxyAppDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D19293E1DC300FB8DAF /* ProxyAppDefault.swift */; };
 		D17F5D1C293E701D00FB8DAF /* STProxyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D1B293E701D00FB8DAF /* STProxyProvider.swift */; };
+		D19C05F22B50A67500E804DE /* ProxyOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19C05F12B50A67500E804DE /* ProxyOptions.swift */; };
+		D19C05F32B50A67500E804DE /* ProxyOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19C05F12B50A67500E804DE /* ProxyOptions.swift */; };
+		D19C05F42B50A74500E804DE /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976B8CD62B0B55F60097FE7F /* Logger.swift */; };
+		D19C05F62B50A8CB00E804DE /* ProxyOptionsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19C05F52B50A8CB00E804DE /* ProxyOptionsTest.swift */; };
 		D1D447042ABCE52400A69316 /* ExtensionRequestDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D447032ABCE52400A69316 /* ExtensionRequestDelegate.swift */; };
 		D1D5B6AC2B18F1C50063363E /* TrafficManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6AB2B18F1C50063363E /* TrafficManager.swift */; };
 		D1D5B6B02B18F2B10063363E /* TrafficManagerNIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6AF2B18F2B10063363E /* TrafficManagerNIO.swift */; };
@@ -128,6 +132,8 @@
 		D1795F722AE9CC50003B0DAE /* ExtensionBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionBundle.swift; sourceTree = "<group>"; };
 		D17F5D19293E1DC300FB8DAF /* ProxyAppDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyAppDefault.swift; sourceTree = "<group>"; };
 		D17F5D1B293E701D00FB8DAF /* STProxyProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STProxyProvider.swift; sourceTree = "<group>"; };
+		D19C05F12B50A67500E804DE /* ProxyOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyOptions.swift; sourceTree = "<group>"; };
+		D19C05F52B50A8CB00E804DE /* ProxyOptionsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyOptionsTest.swift; sourceTree = "<group>"; };
 		D1D447032ABCE52400A69316 /* ExtensionRequestDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionRequestDelegate.swift; sourceTree = "<group>"; };
 		D1D5B6AB2B18F1C50063363E /* TrafficManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrafficManager.swift; sourceTree = "<group>"; };
 		D1D5B6AF2B18F2B10063363E /* TrafficManagerNIO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrafficManagerNIO.swift; sourceTree = "<group>"; };
@@ -246,6 +252,7 @@
 				D17F5D1B293E701D00FB8DAF /* STProxyProvider.swift */,
 				D13B634C2970CC6E00839689 /* FlowHandling.swift */,
 				5274B64D2B2AE6880007250C /* STProxyProvider-Bridging-Header.h */,
+				D19C05F12B50A67500E804DE /* ProxyOptions.swift */,
 			);
 			path = STProxyProvider;
 			sourceTree = "<group>";
@@ -282,6 +289,7 @@
 			children = (
 				D1FE4FB8295A1EA3002BBA20 /* ProxyAppTests.swift */,
 				527F56A92B31A098003E7DF7 /* AppPolicyTest.swift */,
+				D19C05F52B50A8CB00E804DE /* ProxyOptionsTest.swift */,
 			);
 			path = ProxyTests;
 			sourceTree = "<group>";
@@ -477,6 +485,7 @@
 				5274A5E52B4AAC4500FD0A10 /* ProxySessionUDP.swift in Sources */,
 				976B8CD72B0B55F60097FE7F /* Logger.swift in Sources */,
 				D1D5B6B62B18F7DF0063363E /* ProcessUtilities.swift in Sources */,
+				D19C05F22B50A67500E804DE /* ProxyOptions.swift in Sources */,
 				D1D5B6AC2B18F1C50063363E /* TrafficManager.swift in Sources */,
 				D17F5D1C293E701D00FB8DAF /* STProxyProvider.swift in Sources */,
 				527F56A82B3180D6003E7DF7 /* AppPolicy.swift in Sources */,
@@ -505,9 +514,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D19C05F42B50A74500E804DE /* Logger.swift in Sources */,
 				527F56AE2B31A5DA003E7DF7 /* AppPolicy.swift in Sources */,
+				D19C05F32B50A67500E804DE /* ProxyOptions.swift in Sources */,
 				D1FE4FB9295A1EA3002BBA20 /* ProxyAppTests.swift in Sources */,
 				527F56AA2B31A098003E7DF7 /* AppPolicyTest.swift in Sources */,
+				D19C05F62B50A8CB00E804DE /* ProxyOptionsTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

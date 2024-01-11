@@ -1,10 +1,3 @@
-//
-//  AppPolicyTest.swift
-//  SplitTunnelProxyTests
-//
-//  Created by John Mair on 19/12/2023.
-//  Copyright © 2023 PIA. All rights reserved.
-//
 @testable import SplitTunnelProxy
 import Quick
 import Nimble
