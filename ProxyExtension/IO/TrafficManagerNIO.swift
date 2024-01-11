@@ -18,10 +18,10 @@ final class TrafficManagerNIO : TrafficManager {
         try! eventLoopGroup.syncShutdownGracefully()
     }
 
+
+    // MARK: Static methods that we call also from outside this class
     // Drop a flow by closing it
-    // We use a class method (rather than a static method) so we can call it using `Self`.
-    // We also call this method from outside this class.
-    class func dropFlow(flow: NEAppProxyFlow) -> Void {
+    static func dropFlow(_ flow: NEAppProxyFlow) {
         let appID = flow.metaData.sourceAppSigningIdentifier
         log(.debug, "\(appID) Dropping a flow")
 
@@ -30,8 +30,8 @@ final class TrafficManagerNIO : TrafficManager {
         flow.closeWriteWithError(error)
     }
 
-    class func terminateProxySession(flow: NEAppProxyFlow, channel: Channel) -> Void {
-        dropFlow(flow: flow)
+    static func terminateProxySession(flow: NEAppProxyFlow, channel: Channel) {
+        dropFlow(flow)
         // Ensure we execute the close in the same event loop as the channel
         channel.eventLoop.execute {
             guard channel.isActive else {
@@ -44,8 +44,8 @@ final class TrafficManagerNIO : TrafficManager {
         }
     }
 
-    class func terminateProxySession(flow: NEAppProxyFlow, context: ChannelHandlerContext) -> Void {
-        dropFlow(flow: flow)
+    static func terminateProxySession(flow: NEAppProxyFlow, context: ChannelHandlerContext) {
+        dropFlow(flow)
         // Ensure we execute the close in the same event loop as the channel
         context.eventLoop.execute {
             guard context.channel.isActive else {
@@ -57,7 +57,8 @@ final class TrafficManagerNIO : TrafficManager {
             }
         }
     }
-
+    
+    // MARK: Public instance methods
     func handleFlowIO(_ flow: NEAppProxyFlow) {
         if let tcpFlow = flow as? NEAppProxyTCPFlow {
             let channelFuture = initChannel(flow: tcpFlow)
@@ -67,7 +68,7 @@ final class TrafficManagerNIO : TrafficManager {
             }
             channelFuture.whenFailure { error in
                 log(.error, "Unable to TCP connect: \(error), dropping the flow.")
-                Self.dropFlow(flow: tcpFlow)
+                Self.dropFlow(tcpFlow)
             }
         } else if let udpFlow = flow as? NEAppProxyUDPFlow {
             let channelFuture = initChannel(flow: udpFlow)
@@ -77,7 +78,7 @@ final class TrafficManagerNIO : TrafficManager {
             }
             channelFuture.whenFailure { error in
                 log(.error, "Unable to establish UDP: \(error), dropping the flow.")
-                Self.dropFlow(flow: udpFlow)
+                Self.dropFlow(udpFlow)
             }
         }
         // The first read has been scheduled on the flow.
@@ -88,6 +89,7 @@ final class TrafficManagerNIO : TrafficManager {
         // - any new socket inboud traffic will trigger InboudHandler.channelRead()
     }
     
+    // MARK: Private instance methods
     // this function creates, binds and connects a new TCP channel
     private func initChannel(flow: NEAppProxyTCPFlow) -> EventLoopFuture<Channel> {
         log(.debug, "\(flow.metaData.sourceAppSigningIdentifier) creating, binding and connecting a new TCP socket")
@@ -198,7 +200,14 @@ final class TrafficManagerNIO : TrafficManager {
             } else {
                 log(.error, "\(flow.metaData.sourceAppSigningIdentifier) \((flowError?.localizedDescription) ?? "Empty buffer") occurred during UDP flow.readDatagrams()")
 
-                // TODO: Make an exception for "A read operation is already pending" - do not terminate the session
+                if let error = flowError as NSError? {
+                    // Error code 10 is "A read operation is already pending"
+                    // We don't want to terminate the session if that is the error we got
+                    if error.domain == "NEAppProxyFlowErrorDomain" && error.code == 10 {
+                        return
+                    }
+                }
+ 
                 Self.terminateProxySession(flow: flow, channel: channel)
             }
         }

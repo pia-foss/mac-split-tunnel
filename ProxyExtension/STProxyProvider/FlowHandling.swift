@@ -21,7 +21,7 @@ extension STProxyProvider {
         case .proxy:
             return startProxySession(flow: flow)
         case .block:
-            TrafficManagerNIO.dropFlow(flow: flow)
+            TrafficManagerNIO.dropFlow(flow)
             // We return true to indicate to the OS we want to handle the flow, so the app is blocked.
             return true
         case .ignore:
@@ -80,7 +80,7 @@ extension STProxyProvider {
     // the app generating the flow.
     private func pathFromAuditToken(token: Data?) -> String? {
         guard let auditToken = token else {
-            Logger.log.warning("Audit token is nil")
+            log(.warning, "Audit token is nil")
             return nil
         }
 
@@ -98,13 +98,13 @@ extension STProxyProvider {
         }
 
         guard pid != 0 else {
-            Logger.log.warning("Could not get a pid from the audit token")
+            log(.warning, "Could not get a pid from the audit token")
             return nil
         }
 
         // Get the executable path from the pid
         guard let path = getProcessPath(pid: pid) else {
-            Logger.log.warning("Found a process with pid \(pid) but could not convert to a path")
+            log(.warning, "Found a process with pid \(pid) but could not convert to a path")
             return nil
         }
 

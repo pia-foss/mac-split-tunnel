@@ -46,35 +46,35 @@ class STProxyProvider : NETransparentProxyProvider {
         // Checking that all the required settings have been passed to the
         // extension by the ProxyApp
         guard let bypassApps = options!["bypassApps"] as? [String] else {
-            Logger.log.error("Error: Cannot find bypassApps in options")
+            log(.error, "Error: Cannot find bypassApps in options")
             return
         }
-        Logger.log.info("Managing \(bypassApps)")
+        log(.info, "Managing \(bypassApps)")
 
         guard let vpnOnlyApps = options!["vpnOnlyApps"] as? [String] else {
-            Logger.log.error("Error: Cannot find vpnOnlyApps in options")
+            log(.error, "Error: Cannot find vpnOnlyApps in options")
             return
         }
 
         guard let networkInterface = options!["networkInterface"] as? String else {
-            Logger.log.error("Error: Cannot find networkInterface in options")
+            log(.error, "Error: Cannot find networkInterface in options")
             return
         }
-        Logger.log.info("Sending flows to interface \(networkInterface)")
+        log(.info, "Sending flows to interface \(networkInterface)")
 
         guard let serverAddress = options!["serverAddress"] as? String else {
-            Logger.log.error("Error: Cannot find serverAddress in options")
+            log(.error, "Error: Cannot find serverAddress in options")
             return
         }
-        Logger.log.info("Using server address \(serverAddress)")
+        log(.info, "Using server address \(serverAddress)")
 
         guard let routeVpn = options!["routeVpn"] as? Bool else {
-            Logger.log.error("Error: Cannot find routeVpn in options")
+            log(.error, "Error: Cannot find routeVpn in options")
             return
         }
 
         guard let connected = options!["connected"] as? Bool else {
-            Logger.log.error("Error: Cannot find connected in options")
+            log(.error, "Error: Cannot find connected in options")
             return
         }
 
@@ -140,7 +140,7 @@ class STProxyProvider : NETransparentProxyProvider {
         // If the setting are not correct, an error will be thrown.
         self.setTunnelNetworkSettings(settings) { [] error in
             if (error != nil) {
-                Logger.log.error("Error: \(error!.localizedDescription) in setTunnelNetworkSettings()")
+                log(.error, "Error: \(error!.localizedDescription) in setTunnelNetworkSettings()")
                 completionHandler(error)
                 return
             }
@@ -150,30 +150,30 @@ class STProxyProvider : NETransparentProxyProvider {
             completionHandler(nil)
         }
         
-        Logger.log.info("Proxy started!")
+        log(.info, "Proxy started!")
     }
     
     // Set the GID of the extension process to the whitelist group (likely "piavpn")
     // This GID is whitelisted by the firewall so we can route packets out
     // the physical interface even when the killswitch is active.
     func setGidForFirewallWhitelist(groupName: String) -> Bool {
-        Logger.log.info("Trying to set gid of extension (pid: \(getpid()) at \(getProcessPath(pid: getpid())!) to \(groupName)")
+        log(.info, "Trying to set gid of extension (pid: \(getpid()) at \(getProcessPath(pid: getpid())!) to \(groupName)")
         guard let whitelistGid = getGroupIdFromName(groupName: groupName) else {
-            Logger.log.error("Error: unable to get gid for \(groupName) group!")
+            log(.error, "Error: unable to get gid for \(groupName) group!")
             return false
         }
 
         // Setting either the egid or rgid successfully is a success
         guard (setEffectiveGroupID(groupID: whitelistGid) || setRealGroupID(groupID: whitelistGid)) else {
-            Logger.log.error("Error: unable to set group to \(groupName) with gid: \(whitelistGid)!")
+            log(.error, "Error: unable to set group to \(groupName) with gid: \(whitelistGid)!")
             return false
         }
         
-        Logger.log.info("Should have successfully set gid of extension to \(groupName) with gid: \(whitelistGid)")
+        log(.info, "Should have successfully set gid of extension to \(groupName) with gid: \(whitelistGid)")
         return true
     }
     
     override func stopProxy(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
-        Logger.log.info("Proxy stopped!")
+        log(.info, "Proxy stopped!")
     }
 }
