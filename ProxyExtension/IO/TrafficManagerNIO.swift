@@ -36,7 +36,6 @@ final class TrafficManagerNIO : TrafficManager {
     // We use a class method (rather than a static method) so we can call it using `Self`.
     // We also call this method from outside this class.
     static func dropFlow(flow: NEAppProxyFlow) -> Void {
-        let appID = flow.metaData.sourceAppSigningIdentifier
         let error = NSError(domain: "com.privateinternetaccess.vpn", code: 100, userInfo: nil)
         flow.closeReadWithError(error)
         flow.closeWriteWithError(error)
@@ -77,11 +76,5 @@ final class TrafficManagerNIO : TrafficManager {
         } else if let udpFlow = flow as? NEAppProxyUDPFlow {
             ProxySessionUDP(flow: udpFlow, sessionConfig: sessionConfig, id: nextId()).start()
         }
-        // The first read has been scheduled on the flow.
-        // The following ones will be scheduled in the socket write handler
-        //
-        // From this point on:
-        // - any new flow outbound traffic will trigger the flow read completion handler
-        // - any new socket inboud traffic will trigger InboudHandler.channelRead()
     }
 }

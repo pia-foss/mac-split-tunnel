@@ -40,18 +40,6 @@ class ProxySessionUDP: ProxySession {
         log(.debug, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) ProxySession closed. rxBytes=\(formatByteCount(rxBytes)) txBytes=\(formatByteCount(txBytes))")
     }
 
-    private func formatByteCount(_ byteCount: UInt64) -> String {
-        let formatter = ByteCountFormatter()
-        formatter.allowedUnits = [.useMB] // Options are .useBytes, .useKB, .useMB, .useGB, etc.
-        formatter.countStyle = .file  // Options are .file (1024 bytes = 1KB) or .memory (1000 bytes = 1KB)
-        formatter.includesUnit = true // Whether to include the unit string (KB, MB, etc.)
-        formatter.isAdaptive = true
-
-        // Converting from UInt64 to Int64 - not ideal but not a problem in practice
-        // as Int64 can represent values up to 9 exabytes
-        return formatter.string(fromByteCount: Int64(byteCount))
-    }
-
     public func start() -> EventLoopFuture<Channel> {
         let channelFuture = initChannel(flow: flow)
         channelFuture.whenSuccess { channel in
