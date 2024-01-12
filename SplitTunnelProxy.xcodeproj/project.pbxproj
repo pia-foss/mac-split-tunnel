@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		5235FB192B4FC43900F3B772 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB182B4FC43900F3B772 /* Formatters.swift */; };
 		5235FB1A2B4FC43900F3B772 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB182B4FC43900F3B772 /* Formatters.swift */; };
+		5235FB1D2B4FFCEB00F3B772 /* ProxySessionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB1B2B4FFCEB00F3B772 /* ProxySessionFactory.swift */; };
 		526CFC0B2B3AD15B00F31493 /* NIO in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC0A2B3AD15B00F31493 /* NIO */; };
 		526CFC0D2B3AD15B00F31493 /* NIOConcurrencyHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC0C2B3AD15B00F31493 /* NIOConcurrencyHelpers */; };
 		526CFC0F2B3AD15B00F31493 /* NIOCore in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC0E2B3AD15B00F31493 /* NIOCore */; };
@@ -96,6 +97,7 @@
 /* Begin PBXFileReference section */
 		03411C5003411ED000000001 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		5235FB182B4FC43900F3B772 /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
+		5235FB1B2B4FFCEB00F3B772 /* ProxySessionFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxySessionFactory.swift; sourceTree = "<group>"; };
 		526CFC352B3ADD0600F31493 /* libproc.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libproc.tbd; path = usr/lib/libproc.tbd; sourceTree = SDKROOT; };
 		5274A5E22B4AA5C600FD0A10 /* ProxySessionTCP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxySessionTCP.swift; sourceTree = "<group>"; };
 		5274A5E42B4AAC4500FD0A10 /* ProxySessionUDP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxySessionUDP.swift; sourceTree = "<group>"; };
@@ -270,6 +272,7 @@
 				5274A5E62B4AC5C600FD0A10 /* ProxySession.swift */,
 				5274A5E22B4AA5C600FD0A10 /* ProxySessionTCP.swift */,
 				5274A5E42B4AAC4500FD0A10 /* ProxySessionUDP.swift */,
+				5235FB1B2B4FFCEB00F3B772 /* ProxySessionFactory.swift */,
 			);
 			path = IO;
 			sourceTree = "<group>";
@@ -466,6 +469,7 @@
 			files = (
 				C40A5C56229DD92E00627D50 /* IPCConnection.swift in Sources */,
 				5274A5E72B4AC5C600FD0A10 /* ProxySession.swift in Sources */,
+				5235FB1D2B4FFCEB00F3B772 /* ProxySessionFactory.swift in Sources */,
 				5274A5EA2B4AD88100FD0A10 /* IDGenerator.swift in Sources */,
 				5235FB1A2B4FC43900F3B772 /* Formatters.swift in Sources */,
 				C40A5C4B229DD6A500627D50 /* main.swift in Sources */,

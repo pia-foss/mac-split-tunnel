@@ -9,19 +9,22 @@ struct SessionConfig {
 
 final class TrafficManagerNIO : TrafficManager {
     let sessionConfig: SessionConfig
+    let proxySessionFactory: ProxySessionFactory
     var idGenerator: IDGenerator
 
-    init(interfaceName: String) {
+    init(interfaceName: String, proxySessionFactory: ProxySessionFactory = DefaultProxySessionFactory()) {
         // Used to assign unique IDs to each session
-        idGenerator = IDGenerator()
+        self.idGenerator = IDGenerator()
         // Fundamental config used to establish a session
-        sessionConfig = SessionConfig(
+        self.sessionConfig = SessionConfig(
             // Trying with just 1 thread for now, since we dont want to use too many resources on the user's machines.
             // According to SwiftNIO docs it is better to use MultiThreadedEventLoopGroup
             // even in the case of just 1 thread
             eventLoopGroup: MultiThreadedEventLoopGroup(numberOfThreads: 1),
             interfaceAddress: getNetworkInterfaceIP(interfaceName: interfaceName)!
         )
+
+        self.proxySessionFactory = proxySessionFactory
     }
 
     deinit {
@@ -32,13 +35,24 @@ final class TrafficManagerNIO : TrafficManager {
         idGenerator.generate()
     }
 
+    func handleFlowIO(_ flow: NEAppProxyFlow) {
+        if let tcpFlow = flow as? NEAppProxyTCPFlow {
+            let tcpSession = proxySessionFactory.createTCP(flow: tcpFlow, config: sessionConfig, id: nextId())
+            tcpSession.start()
+        } else if let udpFlow = flow as? NEAppProxyUDPFlow {
+            let udpSession = proxySessionFactory.createUDP(flow: udpFlow, config: sessionConfig, id: nextId())
+            udpSession.start()
+        }
+    }
+}
+
+extension TrafficManagerNIO {
     // Drop a flow by closing it
     // We use a class method (rather than a static method) so we can call it using `Self`.
     // We also call this method from outside this class.
     static func dropFlow(flow: NEAppProxyFlow) -> Void {
-        let error = NSError(domain: "com.privateinternetaccess.vpn", code: 100, userInfo: nil)
-        flow.closeReadWithError(error)
-        flow.closeWriteWithError(error)
+        flow.closeReadWithError(nil)
+        flow.closeWriteWithError(nil)
     }
 
     static func terminateProxySession(flow: NEAppProxyFlow, channel: Channel) -> Void {
@@ -66,15 +80,6 @@ final class TrafficManagerNIO : TrafficManager {
                 // Not much we can do here other than trace it
                 log(.error, "Failed to close the channel: \(error)")
             }
-        }
-    }
-
-    // MARK: Public instance methods
-    func handleFlowIO(_ flow: NEAppProxyFlow) {
-        if let tcpFlow = flow as? NEAppProxyTCPFlow {
-            ProxySessionTCP(flow: tcpFlow, sessionConfig: sessionConfig, id: nextId()).start()
-        } else if let udpFlow = flow as? NEAppProxyUDPFlow {
-            ProxySessionUDP(flow: udpFlow, sessionConfig: sessionConfig, id: nextId()).start()
         }
     }
 }

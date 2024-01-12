@@ -11,7 +11,7 @@ import NIO
 
 protocol ProxySession {
     // Start a new proxy session
-    func start() -> EventLoopFuture<Channel>
+    func start() -> Void
     // End an existing proxy session
     func terminate() -> Void
     // Return the id for a given session (used for tracing)
@@ -20,4 +20,3 @@ protocol ProxySession {
     var txBytes: UInt64 { get set }
     var rxBytes: UInt64 { get set }
 }
-

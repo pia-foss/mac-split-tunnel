@@ -12,7 +12,7 @@ import NIO
 
 class ProxySessionUDP: ProxySession {
     let flow: NEAppProxyUDPFlow
-    let sessionConfig: SessionConfig
+    let config: SessionConfig
     let id: IDGenerator.ID // Unique identifier for this session
     var channel: Channel!
 
@@ -30,9 +30,9 @@ class ProxySessionUDP: ProxySession {
         set(newTxBytes) { _rxBytes = newTxBytes }
     }
 
-    init(flow: NEAppProxyUDPFlow, sessionConfig: SessionConfig, id: IDGenerator.ID) {
+    init(flow: NEAppProxyUDPFlow, config: SessionConfig, id: IDGenerator.ID) {
         self.flow = flow
-        self.sessionConfig = sessionConfig
+        self.config = config
         self.id = id
     }
 
@@ -40,7 +40,7 @@ class ProxySessionUDP: ProxySession {
         log(.debug, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) ProxySession closed. rxBytes=\(formatByteCount(rxBytes)) txBytes=\(formatByteCount(txBytes))")
     }
 
-    public func start() -> EventLoopFuture<Channel> {
+    public func start() {
         let channelFuture = initChannel(flow: flow)
         channelFuture.whenSuccess { channel in
             log(.debug, "id: \(self.id) \(self.flow.metaData.sourceAppSigningIdentifier) A new UDP socket has been initialized")
@@ -51,8 +51,6 @@ class ProxySessionUDP: ProxySession {
             log(.error, "id: \(self.id) Unable to establish UDP: \(error), dropping the flow.")
             TrafficManagerNIO.dropFlow(flow: self.flow)
         }
-
-        return channelFuture
     }
 
     public func terminate() {
@@ -65,7 +63,7 @@ class ProxySessionUDP: ProxySession {
     // this function creates and bind a new UDP channel
     private func initChannel(flow: NEAppProxyUDPFlow) -> EventLoopFuture<Channel> {
         log(.debug, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) Creating and binding a new UDP socket")
-        let bootstrap = DatagramBootstrap(group: sessionConfig.eventLoopGroup)
+        let bootstrap = DatagramBootstrap(group: config.eventLoopGroup)
             // Enable SO_REUSEADDR.
             .channelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)
             .channelInitializer { channel in
@@ -77,14 +75,14 @@ class ProxySessionUDP: ProxySession {
 
         do {
             // This is the only call that can throw an exception
-            let socketAddress = try SocketAddress(ipAddress: sessionConfig.interfaceAddress, port: 0)
+            let socketAddress = try SocketAddress(ipAddress: config.interfaceAddress, port: 0)
             // Not calling connect() on a UDP socket.
             // Doing that will turn the socket into a "connected datagram socket".
             // That will prevent the application from exchanging data with multiple endpoints
             let channelFuture = bootstrap.bind(to: socketAddress)
             return channelFuture
         } catch {
-            return sessionConfig.eventLoopGroup.next().makeFailedFuture(error)
+            return config.eventLoopGroup.next().makeFailedFuture(error)
         }
     }
 
@@ -116,7 +114,13 @@ class ProxySessionUDP: ProxySession {
                 }
             } else {
                 log(.error, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) \((flowError?.localizedDescription) ?? "Empty buffer") occurred during UDP flow.readDatagrams()")
-
+                if let error = flowError as NSError? {
+                    // Error code 10 is "A read operation is already pending"
+                    // We don't want to terminate the session if that is the error we got
+                    if error.domain == "NEAppProxyFlowErrorDomain" && error.code == 10 {
+                        return
+                    }
+                }
                 self.terminate()
             }
         }

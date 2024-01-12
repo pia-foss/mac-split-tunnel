@@ -3,5 +3,4 @@ import NetworkExtension
 
 protocol TrafficManager {
     func handleFlowIO(_ flow: NEAppProxyFlow)
-    static func dropFlow(_ flow: NEAppProxyFlow)
 }

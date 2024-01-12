@@ -21,7 +21,7 @@ extension STProxyProvider {
         case .proxy:
             return startProxySession(flow: flow)
         case .block:
-            TrafficManagerNIO.dropFlow(flow)
+            TrafficManagerNIO.dropFlow(flow: flow)
             // We return true to indicate to the OS we want to handle the flow, so the app is blocked.
             return true
         case .ignore:

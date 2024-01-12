@@ -12,7 +12,7 @@ import NIO
 
 class ProxySessionTCP: ProxySession {
     let flow: NEAppProxyTCPFlow
-    let sessionConfig: SessionConfig
+    let config: SessionConfig
     let id: IDGenerator.ID // Unique identifier for this session
     var channel: Channel!
 
@@ -30,9 +30,9 @@ class ProxySessionTCP: ProxySession {
         set(newTxBytes) { _rxBytes = newTxBytes }
     }
 
-    init(flow: NEAppProxyTCPFlow, sessionConfig: SessionConfig, id: IDGenerator.ID) {
+    init(flow: NEAppProxyTCPFlow, config: SessionConfig, id: IDGenerator.ID) {
         self.flow = flow
-        self.sessionConfig = sessionConfig
+        self.config = config
         self.id = id
     }
 
@@ -40,7 +40,7 @@ class ProxySessionTCP: ProxySession {
         log(.debug, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) ProxySession closed. rxBytes=\(formatByteCount(rxBytes)) txBytes=\(formatByteCount(txBytes))")
     }
 
-    public func start() -> EventLoopFuture<Channel> {
+    public func start() {
         let channelFuture = initChannel(flow: flow)
         channelFuture.whenSuccess { channel in
             self.channel = channel
@@ -50,8 +50,6 @@ class ProxySessionTCP: ProxySession {
             log(.error, "id: \(self.id) Unable to TCP connect: \(error), dropping the flow.")
             TrafficManagerNIO.dropFlow(flow: self.flow)
         }
-
-        return channelFuture
     }
 
     public func terminate() {
@@ -65,7 +63,7 @@ class ProxySessionTCP: ProxySession {
         let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: flow.remoteEndpoint as! NWHostEndpoint)
         log(.debug, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) Creating, binding and connecting a new TCP socket - remote address: \(endpointAddress!) remote port: \(endpointPort!)")
 
-        let bootstrap = ClientBootstrap(group: sessionConfig.eventLoopGroup)
+        let bootstrap = ClientBootstrap(group: config.eventLoopGroup)
             .channelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)
             .channelInitializer { channel in
                 let inboundHandler = InboundHandlerTCP(flow: flow, id: self.id) { (byteCount: UInt64) in
@@ -77,13 +75,13 @@ class ProxySessionTCP: ProxySession {
         // Bind to a local address and then connect
         do {
             // This is the only call that can throw an exception
-            let socketAddress = try SocketAddress(ipAddress: sessionConfig.interfaceAddress, port: 0)
+            let socketAddress = try SocketAddress(ipAddress: config.interfaceAddress, port: 0)
             let channelFuture = bootstrap.bind(to: socketAddress)
                 .connect(host: endpointAddress!, port: endpointPort!)
 
             return channelFuture
         } catch {
-            return sessionConfig.eventLoopGroup.next().makeFailedFuture(error)
+            return config.eventLoopGroup.next().makeFailedFuture(error)
         }
     }
 
@@ -108,7 +106,15 @@ class ProxySessionTCP: ProxySession {
                 }
             } else {
                 log(.error, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) \((flowError?.localizedDescription) ?? "Empty buffer") occurred during TCP flow.readData()")
-                self.terminate()
+                  if let error = flowError as NSError? {
+                    // Error code 10 is "A read operation is already pending"
+                    // We don't want to terminate the session if that is the error we got
+                    if error.domain == "NEAppProxyFlowErrorDomain" && error.code == 10 {
+                        return
+                    }
+                  }
+
+                  self.terminate()
             }
         }
     }
