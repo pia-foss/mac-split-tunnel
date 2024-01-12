@@ -35,51 +35,13 @@ final class TrafficManagerNIO : TrafficManager {
         idGenerator.generate()
     }
 
-    func handleFlowIO(_ flow: NEAppProxyFlow) {
-        if let tcpFlow = flow as? NEAppProxyTCPFlow {
-            let tcpSession = proxySessionFactory.createTCP(flow: tcpFlow, config: sessionConfig, id: nextId())
+    func handleFlowIO(_ flow: Flow) {
+        if let tcpFlow = flow as? FlowTCP {
+            let tcpSession = proxySessionFactory.create(flow: tcpFlow, config: sessionConfig, id: nextId())
             tcpSession.start()
-        } else if let udpFlow = flow as? NEAppProxyUDPFlow {
-            let udpSession = proxySessionFactory.createUDP(flow: udpFlow, config: sessionConfig, id: nextId())
+        } else if let udpFlow = flow as? FlowUDP {
+            let udpSession = proxySessionFactory.create(flow: udpFlow, config: sessionConfig, id: nextId())
             udpSession.start()
-        }
-    }
-}
-
-extension TrafficManagerNIO {
-    // Drop a flow by closing it
-    // We use a class method (rather than a static method) so we can call it using `Self`.
-    // We also call this method from outside this class.
-    static func dropFlow(flow: NEAppProxyFlow) -> Void {
-        flow.closeReadWithError(nil)
-        flow.closeWriteWithError(nil)
-    }
-
-    static func terminateProxySession(flow: NEAppProxyFlow, channel: Channel) -> Void {
-        dropFlow(flow: flow)
-        // Ensure we execute the close in the same event loop as the channel
-        channel.eventLoop.execute {
-            guard channel.isActive else {
-                return
-            }
-            channel.close().whenFailure { error in
-                // Not much we can do here other than trace it
-                log(.error, "Failed to close the channel: \(error)")
-            }
-        }
-    }
-
-    static func terminateProxySession(flow: NEAppProxyFlow, context: ChannelHandlerContext) -> Void {
-        dropFlow(flow: flow)
-        // Ensure we execute the close in the same event loop as the channel
-        context.eventLoop.execute {
-            guard context.channel.isActive else {
-                return
-            }
-            context.close().whenFailure { error in
-                // Not much we can do here other than trace it
-                log(.error, "Failed to close the channel: \(error)")
-            }
         }
     }
 }

@@ -10,6 +10,33 @@
 		5235FB192B4FC43900F3B772 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB182B4FC43900F3B772 /* Formatters.swift */; };
 		5235FB1A2B4FC43900F3B772 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB182B4FC43900F3B772 /* Formatters.swift */; };
 		5235FB1D2B4FFCEB00F3B772 /* ProxySessionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB1B2B4FFCEB00F3B772 /* ProxySessionFactory.swift */; };
+		5235FB202B510CEF00F3B772 /* TrafficManagerNIOTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB1E2B510CEF00F3B772 /* TrafficManagerNIOTest.swift */; };
+		5235FB212B510D3800F3B772 /* TrafficManagerNIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6AF2B18F2B10063363E /* TrafficManagerNIO.swift */; };
+		5235FB272B511DD700F3B772 /* NEAppProxyFlow+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB262B511DD700F3B772 /* NEAppProxyFlow+Extensions.swift */; };
+		5235FB292B512A5E00F3B772 /* FlowProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB282B512A5E00F3B772 /* FlowProtocols.swift */; };
+		5235FB332B51458800F3B772 /* _NIOConcurrency in Frameworks */ = {isa = PBXBuildFile; productRef = 5235FB322B51458800F3B772 /* _NIOConcurrency */; };
+		5235FB352B51458800F3B772 /* NIO in Frameworks */ = {isa = PBXBuildFile; productRef = 5235FB342B51458800F3B772 /* NIO */; };
+		5235FB372B51458800F3B772 /* NIOConcurrencyHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 5235FB362B51458800F3B772 /* NIOConcurrencyHelpers */; };
+		5235FB392B51458800F3B772 /* NIOCore in Frameworks */ = {isa = PBXBuildFile; productRef = 5235FB382B51458800F3B772 /* NIOCore */; };
+		5235FB3B2B51458800F3B772 /* NIOEmbedded in Frameworks */ = {isa = PBXBuildFile; productRef = 5235FB3A2B51458800F3B772 /* NIOEmbedded */; };
+		5235FB3D2B51458800F3B772 /* NIOFoundationCompat in Frameworks */ = {isa = PBXBuildFile; productRef = 5235FB3C2B51458800F3B772 /* NIOFoundationCompat */; };
+		5235FB3F2B51459200F3B772 /* NIOTestUtils in Frameworks */ = {isa = PBXBuildFile; productRef = 5235FB3E2B51459200F3B772 /* NIOTestUtils */; };
+		5235FB402B5145CE00F3B772 /* FlowProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB282B512A5E00F3B772 /* FlowProtocols.swift */; };
+		5235FB412B5145CE00F3B772 /* ProxySessionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB1B2B4FFCEB00F3B772 /* ProxySessionFactory.swift */; };
+		5235FB422B5145CE00F3B772 /* TrafficManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6AB2B18F1C50063363E /* TrafficManager.swift */; };
+		5235FB432B5145CE00F3B772 /* ProxySessionUDP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5274A5E42B4AAC4500FD0A10 /* ProxySessionUDP.swift */; };
+		5235FB442B5145CE00F3B772 /* NEAppProxyFlow+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB262B511DD700F3B772 /* NEAppProxyFlow+Extensions.swift */; };
+		5235FB452B5145CE00F3B772 /* ProxySession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5274A5E62B4AC5C600FD0A10 /* ProxySession.swift */; };
+		5235FB462B5145CE00F3B772 /* ProxySessionTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5274A5E22B4AA5C600FD0A10 /* ProxySessionTCP.swift */; };
+		5235FB472B5145FD00F3B772 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976B8CD62B0B55F60097FE7F /* Logger.swift */; };
+		5235FB482B5145FD00F3B772 /* IDGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5274A5E82B4AD88100FD0A10 /* IDGenerator.swift */; };
+		5235FB492B5145FD00F3B772 /* NetworkUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E9AEFD2AE31D4F007603BF /* NetworkUtilities.swift */; };
+		5235FB4A2B5145FD00F3B772 /* IPCConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B1415A227A396500B26560 /* IPCConnection.swift */; };
+		5235FB4B2B5145FD00F3B772 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB182B4FC43900F3B772 /* Formatters.swift */; };
+		5235FB4C2B5145FD00F3B772 /* ProcessUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6B52B18F7DF0063363E /* ProcessUtilities.swift */; };
+		5235FB4E2B51541F00F3B772 /* Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB4D2B51541F00F3B772 /* Mock.swift */; };
+		5235FB502B5157DF00F3B772 /* MockFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB4F2B5157DF00F3B772 /* MockFlow.swift */; };
+		5235FB522B51582C00F3B772 /* MockProxySession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB512B51582C00F3B772 /* MockProxySession.swift */; };
 		526CFC0B2B3AD15B00F31493 /* NIO in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC0A2B3AD15B00F31493 /* NIO */; };
 		526CFC0D2B3AD15B00F31493 /* NIOConcurrencyHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC0C2B3AD15B00F31493 /* NIOConcurrencyHelpers */; };
 		526CFC0F2B3AD15B00F31493 /* NIOCore in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC0E2B3AD15B00F31493 /* NIOCore */; };
@@ -102,6 +129,12 @@
 		03411C5003411ED000000001 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		5235FB182B4FC43900F3B772 /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
 		5235FB1B2B4FFCEB00F3B772 /* ProxySessionFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxySessionFactory.swift; sourceTree = "<group>"; };
+		5235FB1E2B510CEF00F3B772 /* TrafficManagerNIOTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrafficManagerNIOTest.swift; sourceTree = "<group>"; };
+		5235FB262B511DD700F3B772 /* NEAppProxyFlow+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NEAppProxyFlow+Extensions.swift"; sourceTree = "<group>"; };
+		5235FB282B512A5E00F3B772 /* FlowProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowProtocols.swift; sourceTree = "<group>"; };
+		5235FB4D2B51541F00F3B772 /* Mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mock.swift; sourceTree = "<group>"; };
+		5235FB4F2B5157DF00F3B772 /* MockFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFlow.swift; sourceTree = "<group>"; };
+		5235FB512B51582C00F3B772 /* MockProxySession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProxySession.swift; sourceTree = "<group>"; };
 		526CFC352B3ADD0600F31493 /* libproc.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libproc.tbd; path = usr/lib/libproc.tbd; sourceTree = SDKROOT; };
 		5274A5E22B4AA5C600FD0A10 /* ProxySessionTCP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxySessionTCP.swift; sourceTree = "<group>"; };
 		5274A5E42B4AAC4500FD0A10 /* ProxySessionUDP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxySessionUDP.swift; sourceTree = "<group>"; };
@@ -175,8 +208,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				526CFC342B3AD94A00F31493 /* Puppy in Frameworks */,
+				5235FB3D2B51458800F3B772 /* NIOFoundationCompat in Frameworks */,
+				5235FB392B51458800F3B772 /* NIOCore in Frameworks */,
 				527F56B22B31B43B003E7DF7 /* Quick in Frameworks */,
+				5235FB3B2B51458800F3B772 /* NIOEmbedded in Frameworks */,
+				5235FB3F2B51459200F3B772 /* NIOTestUtils in Frameworks */,
 				527F56B42B31B440003E7DF7 /* Nimble in Frameworks */,
+				5235FB372B51458800F3B772 /* NIOConcurrencyHelpers in Frameworks */,
+				5235FB332B51458800F3B772 /* _NIOConcurrency in Frameworks */,
+				5235FB352B51458800F3B772 /* NIO in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,6 +316,8 @@
 			children = (
 				D1D5B6AB2B18F1C50063363E /* TrafficManager.swift */,
 				D1D5B6AF2B18F2B10063363E /* TrafficManagerNIO.swift */,
+				5235FB282B512A5E00F3B772 /* FlowProtocols.swift */,
+				5235FB262B511DD700F3B772 /* NEAppProxyFlow+Extensions.swift */,
 				5274A5E62B4AC5C600FD0A10 /* ProxySession.swift */,
 				5274A5E22B4AA5C600FD0A10 /* ProxySessionTCP.swift */,
 				5274A5E42B4AAC4500FD0A10 /* ProxySessionUDP.swift */,
@@ -290,6 +332,10 @@
 				D1FE4FB8295A1EA3002BBA20 /* ProxyAppTests.swift */,
 				527F56A92B31A098003E7DF7 /* AppPolicyTest.swift */,
 				D19C05F52B50A8CB00E804DE /* ProxyOptionsTest.swift */,
+				5235FB1E2B510CEF00F3B772 /* TrafficManagerNIOTest.swift */,
+				5235FB4D2B51541F00F3B772 /* Mock.swift */,
+				5235FB4F2B5157DF00F3B772 /* MockFlow.swift */,
+				5235FB512B51582C00F3B772 /* MockProxySession.swift */,
 			);
 			path = ProxyTests;
 			sourceTree = "<group>";
@@ -366,6 +412,13 @@
 				527F56B12B31B43B003E7DF7 /* Quick */,
 				527F56B32B31B440003E7DF7 /* Nimble */,
 				526CFC332B3AD94A00F31493 /* Puppy */,
+				5235FB322B51458800F3B772 /* _NIOConcurrency */,
+				5235FB342B51458800F3B772 /* NIO */,
+				5235FB362B51458800F3B772 /* NIOConcurrencyHelpers */,
+				5235FB382B51458800F3B772 /* NIOCore */,
+				5235FB3A2B51458800F3B772 /* NIOEmbedded */,
+				5235FB3C2B51458800F3B772 /* NIOFoundationCompat */,
+				5235FB3E2B51459200F3B772 /* NIOTestUtils */,
 			);
 			productName = SplitTunnelProxyTests;
 			productReference = 97C8050A2B46BC63005D814B /* SplitTunnelProxyTests.xctest */;
@@ -484,6 +537,7 @@
 				D13B634E2970CE9600839689 /* FlowHandling.swift in Sources */,
 				5274A5E52B4AAC4500FD0A10 /* ProxySessionUDP.swift in Sources */,
 				976B8CD72B0B55F60097FE7F /* Logger.swift in Sources */,
+				5235FB272B511DD700F3B772 /* NEAppProxyFlow+Extensions.swift in Sources */,
 				D1D5B6B62B18F7DF0063363E /* ProcessUtilities.swift in Sources */,
 				D19C05F22B50A67500E804DE /* ProxyOptions.swift in Sources */,
 				D1D5B6AC2B18F1C50063363E /* TrafficManager.swift in Sources */,
@@ -492,6 +546,7 @@
 				D1D5B6B02B18F2B10063363E /* TrafficManagerNIO.swift in Sources */,
 				D1E9AEFE2AE31D4F007603BF /* NetworkUtilities.swift in Sources */,
 				5274A5E32B4AA5C600FD0A10 /* ProxySessionTCP.swift in Sources */,
+				5235FB292B512A5E00F3B772 /* FlowProtocols.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -515,11 +570,29 @@
 			buildActionMask = 2147483647;
 			files = (
 				D19C05F42B50A74500E804DE /* Logger.swift in Sources */,
+				5235FB412B5145CE00F3B772 /* ProxySessionFactory.swift in Sources */,
+				5235FB462B5145CE00F3B772 /* ProxySessionTCP.swift in Sources */,
+				5235FB482B5145FD00F3B772 /* IDGenerator.swift in Sources */,
+				5235FB422B5145CE00F3B772 /* TrafficManager.swift in Sources */,
 				527F56AE2B31A5DA003E7DF7 /* AppPolicy.swift in Sources */,
 				D19C05F32B50A67500E804DE /* ProxyOptions.swift in Sources */,
 				D1FE4FB9295A1EA3002BBA20 /* ProxyAppTests.swift in Sources */,
+				5235FB432B5145CE00F3B772 /* ProxySessionUDP.swift in Sources */,
+				5235FB492B5145FD00F3B772 /* NetworkUtilities.swift in Sources */,
+				5235FB4C2B5145FD00F3B772 /* ProcessUtilities.swift in Sources */,
+				5235FB442B5145CE00F3B772 /* NEAppProxyFlow+Extensions.swift in Sources */,
+				5235FB202B510CEF00F3B772 /* TrafficManagerNIOTest.swift in Sources */,
+				5235FB502B5157DF00F3B772 /* MockFlow.swift in Sources */,
+				5235FB522B51582C00F3B772 /* MockProxySession.swift in Sources */,
+				5235FB4A2B5145FD00F3B772 /* IPCConnection.swift in Sources */,
+				5235FB402B5145CE00F3B772 /* FlowProtocols.swift in Sources */,
+				5235FB472B5145FD00F3B772 /* Logger.swift in Sources */,
+				5235FB4E2B51541F00F3B772 /* Mock.swift in Sources */,
 				527F56AA2B31A098003E7DF7 /* AppPolicyTest.swift in Sources */,
 				D19C05F62B50A8CB00E804DE /* ProxyOptionsTest.swift in Sources */,
+				5235FB452B5145CE00F3B772 /* ProxySession.swift in Sources */,
+				5235FB212B510D3800F3B772 /* TrafficManagerNIO.swift in Sources */,
+				5235FB4B2B5145FD00F3B772 /* Formatters.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -903,6 +976,41 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		5235FB322B51458800F3B772 /* _NIOConcurrency */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = _NIOConcurrency;
+		};
+		5235FB342B51458800F3B772 /* NIO */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIO;
+		};
+		5235FB362B51458800F3B772 /* NIOConcurrencyHelpers */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOConcurrencyHelpers;
+		};
+		5235FB382B51458800F3B772 /* NIOCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOCore;
+		};
+		5235FB3A2B51458800F3B772 /* NIOEmbedded */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOEmbedded;
+		};
+		5235FB3C2B51458800F3B772 /* NIOFoundationCompat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOFoundationCompat;
+		};
+		5235FB3E2B51459200F3B772 /* NIOTestUtils */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOTestUtils;
+		};
 		526CFC0A2B3AD15B00F31493 /* NIO */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
