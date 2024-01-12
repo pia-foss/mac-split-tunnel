@@ -36,7 +36,7 @@
 		5235FB4C2B5145FD00F3B772 /* ProcessUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6B52B18F7DF0063363E /* ProcessUtilities.swift */; };
 		5235FB4E2B51541F00F3B772 /* Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB4D2B51541F00F3B772 /* Mock.swift */; };
 		5235FB502B5157DF00F3B772 /* MockFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB4F2B5157DF00F3B772 /* MockFlow.swift */; };
-		5235FB522B51582C00F3B772 /* MockProxySession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB512B51582C00F3B772 /* MockProxySession.swift */; };
+		5235FB522B51582C00F3B772 /* MockProxySessionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB512B51582C00F3B772 /* MockProxySessionFactory.swift */; };
 		526CFC0B2B3AD15B00F31493 /* NIO in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC0A2B3AD15B00F31493 /* NIO */; };
 		526CFC0D2B3AD15B00F31493 /* NIOConcurrencyHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC0C2B3AD15B00F31493 /* NIOConcurrencyHelpers */; };
 		526CFC0F2B3AD15B00F31493 /* NIOCore in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC0E2B3AD15B00F31493 /* NIOCore */; };
@@ -134,7 +134,7 @@
 		5235FB282B512A5E00F3B772 /* FlowProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowProtocols.swift; sourceTree = "<group>"; };
 		5235FB4D2B51541F00F3B772 /* Mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mock.swift; sourceTree = "<group>"; };
 		5235FB4F2B5157DF00F3B772 /* MockFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFlow.swift; sourceTree = "<group>"; };
-		5235FB512B51582C00F3B772 /* MockProxySession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProxySession.swift; sourceTree = "<group>"; };
+		5235FB512B51582C00F3B772 /* MockProxySessionFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProxySessionFactory.swift; sourceTree = "<group>"; };
 		526CFC352B3ADD0600F31493 /* libproc.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libproc.tbd; path = usr/lib/libproc.tbd; sourceTree = SDKROOT; };
 		5274A5E22B4AA5C600FD0A10 /* ProxySessionTCP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxySessionTCP.swift; sourceTree = "<group>"; };
 		5274A5E42B4AAC4500FD0A10 /* ProxySessionUDP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxySessionUDP.swift; sourceTree = "<group>"; };
@@ -335,7 +335,7 @@
 				5235FB1E2B510CEF00F3B772 /* TrafficManagerNIOTest.swift */,
 				5235FB4D2B51541F00F3B772 /* Mock.swift */,
 				5235FB4F2B5157DF00F3B772 /* MockFlow.swift */,
-				5235FB512B51582C00F3B772 /* MockProxySession.swift */,
+				5235FB512B51582C00F3B772 /* MockProxySessionFactory.swift */,
 			);
 			path = ProxyTests;
 			sourceTree = "<group>";
@@ -583,7 +583,7 @@
 				5235FB442B5145CE00F3B772 /* NEAppProxyFlow+Extensions.swift in Sources */,
 				5235FB202B510CEF00F3B772 /* TrafficManagerNIOTest.swift in Sources */,
 				5235FB502B5157DF00F3B772 /* MockFlow.swift in Sources */,
-				5235FB522B51582C00F3B772 /* MockProxySession.swift in Sources */,
+				5235FB522B51582C00F3B772 /* MockProxySessionFactory.swift in Sources */,
 				5235FB4A2B5145FD00F3B772 /* IPCConnection.swift in Sources */,
 				5235FB402B5145CE00F3B772 /* FlowProtocols.swift in Sources */,
 				5235FB472B5145FD00F3B772 /* Logger.swift in Sources */,
