@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5235FB192B4FC43900F3B772 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB182B4FC43900F3B772 /* Formatters.swift */; };
+		5235FB1A2B4FC43900F3B772 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB182B4FC43900F3B772 /* Formatters.swift */; };
+		5235FB1D2B4FFCEB00F3B772 /* ProxySessionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB1B2B4FFCEB00F3B772 /* ProxySessionFactory.swift */; };
 		526CFC0B2B3AD15B00F31493 /* NIO in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC0A2B3AD15B00F31493 /* NIO */; };
 		526CFC0D2B3AD15B00F31493 /* NIOConcurrencyHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC0C2B3AD15B00F31493 /* NIOConcurrencyHelpers */; };
 		526CFC0F2B3AD15B00F31493 /* NIOCore in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC0E2B3AD15B00F31493 /* NIOCore */; };
@@ -16,6 +19,11 @@
 		526CFC172B3AD15B00F31493 /* _NIOConcurrency in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC162B3AD15B00F31493 /* _NIOConcurrency */; };
 		526CFC342B3AD94A00F31493 /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC332B3AD94A00F31493 /* Puppy */; };
 		526CFC362B3ADD0600F31493 /* libproc.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 526CFC352B3ADD0600F31493 /* libproc.tbd */; };
+		5274A5E32B4AA5C600FD0A10 /* ProxySessionTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5274A5E22B4AA5C600FD0A10 /* ProxySessionTCP.swift */; };
+		5274A5E52B4AAC4500FD0A10 /* ProxySessionUDP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5274A5E42B4AAC4500FD0A10 /* ProxySessionUDP.swift */; };
+		5274A5E72B4AC5C600FD0A10 /* ProxySession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5274A5E62B4AC5C600FD0A10 /* ProxySession.swift */; };
+		5274A5E92B4AD88100FD0A10 /* IDGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5274A5E82B4AD88100FD0A10 /* IDGenerator.swift */; };
+		5274A5EA2B4AD88100FD0A10 /* IDGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5274A5E82B4AD88100FD0A10 /* IDGenerator.swift */; };
 		5274B64F2B2AE8DF0007250C /* libbsm.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5274B64E2B2AE8DF0007250C /* libbsm.tbd */; };
 		527F56A82B3180D6003E7DF7 /* AppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A72B3180D6003E7DF7 /* AppPolicy.swift */; };
 		527F56AA2B31A098003E7DF7 /* AppPolicyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A92B31A098003E7DF7 /* AppPolicyTest.swift */; };
@@ -88,7 +96,13 @@
 
 /* Begin PBXFileReference section */
 		03411C5003411ED000000001 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		5235FB182B4FC43900F3B772 /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
+		5235FB1B2B4FFCEB00F3B772 /* ProxySessionFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxySessionFactory.swift; sourceTree = "<group>"; };
 		526CFC352B3ADD0600F31493 /* libproc.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libproc.tbd; path = usr/lib/libproc.tbd; sourceTree = SDKROOT; };
+		5274A5E22B4AA5C600FD0A10 /* ProxySessionTCP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxySessionTCP.swift; sourceTree = "<group>"; };
+		5274A5E42B4AAC4500FD0A10 /* ProxySessionUDP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxySessionUDP.swift; sourceTree = "<group>"; };
+		5274A5E62B4AC5C600FD0A10 /* ProxySession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxySession.swift; sourceTree = "<group>"; };
+		5274A5E82B4AD88100FD0A10 /* IDGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDGenerator.swift; sourceTree = "<group>"; };
 		5274B64D2B2AE6880007250C /* STProxyProvider-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "STProxyProvider-Bridging-Header.h"; sourceTree = "<group>"; };
 		5274B64E2B2AE8DF0007250C /* libbsm.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbsm.tbd; path = usr/lib/libbsm.tbd; sourceTree = SDKROOT; };
 		527F56A72B3180D6003E7DF7 /* AppPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPolicy.swift; sourceTree = "<group>"; };
@@ -244,6 +258,8 @@
 				D1E9AEFD2AE31D4F007603BF /* NetworkUtilities.swift */,
 				D1D5B6B52B18F7DF0063363E /* ProcessUtilities.swift */,
 				527F56A72B3180D6003E7DF7 /* AppPolicy.swift */,
+				5274A5E82B4AD88100FD0A10 /* IDGenerator.swift */,
+				5235FB182B4FC43900F3B772 /* Formatters.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -253,6 +269,10 @@
 			children = (
 				D1D5B6AB2B18F1C50063363E /* TrafficManager.swift */,
 				D1D5B6AF2B18F2B10063363E /* TrafficManagerNIO.swift */,
+				5274A5E62B4AC5C600FD0A10 /* ProxySession.swift */,
+				5274A5E22B4AA5C600FD0A10 /* ProxySessionTCP.swift */,
+				5274A5E42B4AAC4500FD0A10 /* ProxySessionUDP.swift */,
+				5235FB1B2B4FFCEB00F3B772 /* ProxySessionFactory.swift */,
 			);
 			path = IO;
 			sourceTree = "<group>";
@@ -448,8 +468,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				C40A5C56229DD92E00627D50 /* IPCConnection.swift in Sources */,
+				5274A5E72B4AC5C600FD0A10 /* ProxySession.swift in Sources */,
+				5235FB1D2B4FFCEB00F3B772 /* ProxySessionFactory.swift in Sources */,
+				5274A5EA2B4AD88100FD0A10 /* IDGenerator.swift in Sources */,
+				5235FB1A2B4FC43900F3B772 /* Formatters.swift in Sources */,
 				C40A5C4B229DD6A500627D50 /* main.swift in Sources */,
 				D13B634E2970CE9600839689 /* FlowHandling.swift in Sources */,
+				5274A5E52B4AAC4500FD0A10 /* ProxySessionUDP.swift in Sources */,
 				976B8CD72B0B55F60097FE7F /* Logger.swift in Sources */,
 				D1D5B6B62B18F7DF0063363E /* ProcessUtilities.swift in Sources */,
 				D1D5B6AC2B18F1C50063363E /* TrafficManager.swift in Sources */,
@@ -457,6 +482,7 @@
 				527F56A82B3180D6003E7DF7 /* AppPolicy.swift in Sources */,
 				D1D5B6B02B18F2B10063363E /* TrafficManagerNIO.swift in Sources */,
 				D1E9AEFE2AE31D4F007603BF /* NetworkUtilities.swift in Sources */,
+				5274A5E32B4AA5C600FD0A10 /* ProxySessionTCP.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -466,6 +492,8 @@
 			files = (
 				D12A9EA02AE98D880009BA23 /* ProxyApp.swift in Sources */,
 				D17F5D1A293E1DC300FB8DAF /* ProxyAppDefault.swift in Sources */,
+				5235FB192B4FC43900F3B772 /* Formatters.swift in Sources */,
+				5274A5E92B4AD88100FD0A10 /* IDGenerator.swift in Sources */,
 				D1D447042ABCE52400A69316 /* ExtensionRequestDelegate.swift in Sources */,
 				C4B45DBB22739FFF0050C59B /* ViewController.swift in Sources */,
 				D1795F732AE9CC50003B0DAE /* ExtensionBundle.swift in Sources */,

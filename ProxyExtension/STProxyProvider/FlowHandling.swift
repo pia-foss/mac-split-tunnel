@@ -21,7 +21,7 @@ extension STProxyProvider {
         case .proxy:
             return startProxySession(flow: flow)
         case .block:
-            TrafficManagerNIO.dropFlow(flow)
+            TrafficManagerNIO.dropFlow(flow: flow)
             // We return true to indicate to the OS we want to handle the flow, so the app is blocked.
             return true
         case .ignore:
@@ -31,7 +31,6 @@ extension STProxyProvider {
 
     func startProxySession(flow: NEAppProxyFlow) -> Bool {
         let appID = flow.metaData.sourceAppSigningIdentifier
-        log(.info, "\(appID) Proxying a new flow")
         flow.open(withLocalEndpoint: nil) { error in
             guard error == nil else {
                 log(.error, "\(appID) \"\(error!.localizedDescription)\" in \(String(describing: flow.self)) open()")
