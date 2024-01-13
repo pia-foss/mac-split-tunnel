@@ -96,10 +96,12 @@ class ProxySessionTCP: ProxySession {
                 }
             } else {
                 log(.error, "id: \(self.id) \(flow.sourceAppSigningIdentifier) \((flowError?.localizedDescription) ?? "Empty buffer") occurred during TCP flow.readData()")
+
                 if let error = flowError as NSError? {
                     // Error code 10 is "A read operation is already pending"
                     // We don't want to terminate the session if that is the error we got
                     if error.domain == "NEAppProxyFlowErrorDomain" && error.code == 10 {
+                        log(.warning, "Got a 'read operation is already pending' error - ignoring \(flowError!)")
                         return
                     }
                 }
