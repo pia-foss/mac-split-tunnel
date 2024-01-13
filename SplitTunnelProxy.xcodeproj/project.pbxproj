@@ -57,6 +57,8 @@
 		527F56AE2B31A5DA003E7DF7 /* AppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A72B3180D6003E7DF7 /* AppPolicy.swift */; };
 		527F56B22B31B43B003E7DF7 /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = 527F56B12B31B43B003E7DF7 /* Quick */; };
 		527F56B42B31B440003E7DF7 /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = 527F56B32B31B440003E7DF7 /* Nimble */; };
+		52D4C8CE2B52FBEB0059F7DD /* InboundHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D4C8CD2B52FBEB0059F7DD /* InboundHandler.swift */; };
+		52D4C8CF2B52FBEB0059F7DD /* InboundHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D4C8CD2B52FBEB0059F7DD /* InboundHandler.swift */; };
 		9704D2AD2B03C97400A899D7 /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = 9704D2AC2B03C97400A899D7 /* Puppy */; };
 		976B8CD72B0B55F60097FE7F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976B8CD62B0B55F60097FE7F /* Logger.swift */; };
 		97B1169C2B0CEF910028B01E /* build.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 97B1169B2B0CEF910028B01E /* build.xcconfig */; };
@@ -144,6 +146,7 @@
 		5274B64E2B2AE8DF0007250C /* libbsm.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbsm.tbd; path = usr/lib/libbsm.tbd; sourceTree = SDKROOT; };
 		527F56A72B3180D6003E7DF7 /* AppPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPolicy.swift; sourceTree = "<group>"; };
 		527F56A92B31A098003E7DF7 /* AppPolicyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPolicyTest.swift; sourceTree = "<group>"; };
+		52D4C8CD2B52FBEB0059F7DD /* InboundHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboundHandler.swift; sourceTree = "<group>"; };
 		976B8CD62B0B55F60097FE7F /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		97AD92092B35876200405E3A /* com.privateinternetaccess.splittunnel.poc.extension.systemextension */ = {isa = PBXFileReference; explicitFileType = "wrapper.system-extension"; includeInIndex = 0; path = com.privateinternetaccess.splittunnel.poc.extension.systemextension; sourceTree = BUILT_PRODUCTS_DIR; };
 		97B1169B2B0CEF910028B01E /* build.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = build.xcconfig; sourceTree = "<group>"; };
@@ -315,6 +318,7 @@
 			isa = PBXGroup;
 			children = (
 				D1D5B6AB2B18F1C50063363E /* TrafficManager.swift */,
+				52D4C8CD2B52FBEB0059F7DD /* InboundHandler.swift */,
 				D1D5B6AF2B18F2B10063363E /* TrafficManagerNIO.swift */,
 				5235FB282B512A5E00F3B772 /* FlowProtocols.swift */,
 				5235FB262B511DD700F3B772 /* NEAppProxyFlow+Extensions.swift */,
@@ -542,6 +546,7 @@
 				D19C05F22B50A67500E804DE /* ProxyOptions.swift in Sources */,
 				D1D5B6AC2B18F1C50063363E /* TrafficManager.swift in Sources */,
 				D17F5D1C293E701D00FB8DAF /* STProxyProvider.swift in Sources */,
+				52D4C8CE2B52FBEB0059F7DD /* InboundHandler.swift in Sources */,
 				527F56A82B3180D6003E7DF7 /* AppPolicy.swift in Sources */,
 				D1D5B6B02B18F2B10063363E /* TrafficManagerNIO.swift in Sources */,
 				D1E9AEFE2AE31D4F007603BF /* NetworkUtilities.swift in Sources */,
@@ -583,6 +588,7 @@
 				5235FB442B5145CE00F3B772 /* NEAppProxyFlow+Extensions.swift in Sources */,
 				5235FB202B510CEF00F3B772 /* TrafficManagerNIOTest.swift in Sources */,
 				5235FB502B5157DF00F3B772 /* MockFlow.swift in Sources */,
+				52D4C8CF2B52FBEB0059F7DD /* InboundHandler.swift in Sources */,
 				5235FB522B51582C00F3B772 /* MockProxySessionFactory.swift in Sources */,
 				5235FB4A2B5145FD00F3B772 /* IPCConnection.swift in Sources */,
 				5235FB402B5145CE00F3B772 /* FlowProtocols.swift in Sources */,

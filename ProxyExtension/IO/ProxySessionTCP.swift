@@ -43,20 +43,7 @@ final class ProxySessionTCP: ProxySession {
     }
 
     public func terminate() {
-        log(.info, "id: \(self.id) Terminating the flow")
-        log(.info, "id: \(self.id) Trying to shutdown the flow")
-        flow.closeReadAndWrite()
-        if channel.isActive {
-            log(.info, "id: \(self.id) Trying to shutdown the channel")
-            let closeFuture = channel.close()
-            closeFuture.whenSuccess {
-                log(.info, "id: \(self.id) Successfully shutdown channel")
-            }
-            closeFuture.whenFailure { error in
-                // Not much we can do here other than trace it
-                log(.error, "Failed to close the channel: \(error)")
-            }
-        }
+        Self.terminateProxySession(id: id, channel: channel, flow: flow)
     }
 
     public func identifier() -> IDGenerator.ID { self.id }
@@ -126,7 +113,7 @@ final class ProxySessionTCP: ProxySession {
 
 // In this class we handle receiving data on a TCP socket and
 // writing that data to the flow
-final class InboundHandlerTCP: ChannelInboundHandler {
+final class InboundHandlerTCP: InboundHandler {
     typealias InboundIn = ByteBuffer
     typealias OutboundOut = ByteBuffer
 
@@ -162,31 +149,9 @@ final class InboundHandlerTCP: ChannelInboundHandler {
             } else {
                 log(.error, "id: \(self.id) \(self.flow.sourceAppSigningIdentifier) \(flowError!.localizedDescription) occurred when writing TCP data to the flow")
                 context.eventLoop.execute {
+                    log(.warning, "id: \(self.id) Closing channel for InboundHandlerTCP")
                     self.terminate(channel: context.channel)
                 }
-            }
-        }
-    }
-
-    func channelReadComplete(context: ChannelHandlerContext) {
-        context.flush()
-    }
-
-    func errorCaught(context: ChannelHandlerContext, error: Error) {
-        log(.error, "id: \(self.id) \(error) in InboundTCPHandler")
-        terminate(channel: context.channel)
-    }
-
-    func terminate(channel: Channel) {
-        log(.error, "id: \(self.id) \(flow.sourceAppSigningIdentifier) Terminating the channel in InboundHandlerTCP")
-        if channel.isActive {
-            let closeFuture = channel.close()
-            channel.close().whenSuccess {
-                log(.info, "id: \(self.id) Successfully shutdown channel")
-            }
-            channel.close().whenFailure { error in
-                // Not much we can do here other than trace it
-                log(.error, "Failed to close the channel: \(error)")
             }
         }
     }

@@ -44,20 +44,7 @@ final class ProxySessionUDP: ProxySession {
     }
 
     public func terminate() {
-        log(.info, "id: \(self.id) Terminating the flow")
-        log(.info, "id: \(self.id) Trying to shutdown the flow")
-        flow.closeReadAndWrite()
-        if channel.isActive {
-            log(.info, "id: \(self.id) Trying to shutdown the channel")
-            let closeFuture = channel.close()
-            closeFuture.whenSuccess {
-                log(.info, "id: \(self.id) Successfully shutdown channel")
-            }
-            closeFuture.whenFailure { error in
-                // Not much we can do here other than trace it
-                log(.error, "Failed to close the channel: \(error)")
-            }
-        }
+        Self.terminateProxySession(id: id, channel: channel, flow: flow)
     }
 
     public func identifier() -> IDGenerator.ID { self.id }
@@ -126,7 +113,6 @@ final class ProxySessionUDP: ProxySession {
                 self.terminate()
             }
         }
-        //log(.debug, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) A new UDP flow readDatagrams() has been scheduled")
     }
 
     private func createDatagram(channel: Channel, data: Data, endpoint: NWEndpoint) -> AddressedEnvelope<ByteBuffer>? {
@@ -142,7 +128,7 @@ final class ProxySessionUDP: ProxySession {
     }
 }
 
-final class InboundHandlerUDP: ChannelInboundHandler {
+final class InboundHandlerUDP: InboundHandler {
     typealias InboundIn = AddressedEnvelope<ByteBuffer>
     typealias OutboundOut = ByteBuffer
 
@@ -179,31 +165,9 @@ final class InboundHandlerUDP: ChannelInboundHandler {
             } else {
                 log(.error, "id: \(self.id) \(self.flow.sourceAppSigningIdentifier) \(flowError!.localizedDescription) occurred when writing a UDP datagram to the flow")
                 context.eventLoop.execute {
+                    log(.warning, "id: \(self.id) Closing channel for InboundHandlerUDP")
                     self.terminate(channel: context.channel)
                 }
-            }
-        }
-    }
-
-    func channelReadComplete(context: ChannelHandlerContext) {
-        context.flush()
-    }
-
-    func errorCaught(context: ChannelHandlerContext, error: Error) {
-        log(.error, "id: \(self.id) \(error) in InboundTCPHandler")
-        terminate(channel: context.channel)
-    }
-
-    func terminate(channel: Channel) {
-        log(.error, "id: \(self.id) \(flow.sourceAppSigningIdentifier) Terminating the channel in InboundHandlerUDP")
-        if channel.isActive {
-            let closeFuture = channel.close()
-            channel.close().whenSuccess {
-                log(.info, "id: \(self.id) Successfully shutdown channel")
-            }
-            channel.close().whenFailure { error in
-                // Not much we can do here other than trace it
-                log(.error, "Failed to close the channel: \(error)")
             }
         }
     }
