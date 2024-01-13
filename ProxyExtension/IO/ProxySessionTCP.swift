@@ -10,7 +10,7 @@ import Foundation
 import NetworkExtension
 import NIO
 
-class ProxySessionTCP: ProxySession {
+final class ProxySessionTCP: ProxySession {
     let flow: FlowTCP
     let config: SessionConfig
     let id: IDGenerator.ID // Unique identifier for this session
@@ -27,7 +27,7 @@ class ProxySessionTCP: ProxySession {
     }
 
     deinit {
-        log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) ProxySession closed. rxBytes=\(formatByteCount(rxBytes)) txBytes=\(formatByteCount(txBytes))")
+        log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) Destructor: ProxySession closed. rxBytes=\(formatByteCount(rxBytes)) txBytes=\(formatByteCount(txBytes))")
     }
 
     public func start() {
@@ -43,7 +43,20 @@ class ProxySessionTCP: ProxySession {
     }
 
     public func terminate() {
-        Self.terminateProxySession(flow: flow, channel: channel)
+        log(.info, "id: \(self.id) Terminating the flow")
+        log(.info, "id: \(self.id) Trying to shutdown the flow")
+        flow.closeReadAndWrite()
+        if channel.isActive {
+            log(.info, "id: \(self.id) Trying to shutdown the channel")
+            let closeFuture = channel.close()
+            closeFuture.whenSuccess {
+                log(.info, "id: \(self.id) Successfully shutdown channel")
+            }
+            closeFuture.whenFailure { error in
+                // Not much we can do here other than trace it
+                log(.error, "Failed to close the channel: \(error)")
+            }
+        }
     }
 
     public func identifier() -> IDGenerator.ID { self.id }
@@ -148,7 +161,9 @@ final class InboundHandlerTCP: ChannelInboundHandler {
                 // this function will be called again automatically by the event loop
             } else {
                 log(.error, "id: \(self.id) \(self.flow.sourceAppSigningIdentifier) \(flowError!.localizedDescription) occurred when writing TCP data to the flow")
-                self.terminate(channel: context.channel)
+                context.eventLoop.execute {
+                    self.terminate(channel: context.channel)
+                }
             }
         }
     }
@@ -163,7 +178,16 @@ final class InboundHandlerTCP: ChannelInboundHandler {
     }
 
     func terminate(channel: Channel) {
-        log(.info, "id: \(self.id) \(flow.sourceAppSigningIdentifier) Terminating the session.")
-        ProxySessionTCP.terminateProxySession(flow: flow, channel: channel)
+        log(.error, "id: \(self.id) \(flow.sourceAppSigningIdentifier) Terminating the channel in InboundHandlerTCP")
+        if channel.isActive {
+            let closeFuture = channel.close()
+            channel.close().whenSuccess {
+                log(.info, "id: \(self.id) Successfully shutdown channel")
+            }
+            channel.close().whenFailure { error in
+                // Not much we can do here other than trace it
+                log(.error, "Failed to close the channel: \(error)")
+            }
+        }
     }
 }

@@ -45,3 +45,19 @@ final class TrafficManagerNIO : TrafficManager {
         }
     }
 }
+
+extension TrafficManagerNIO {
+    static func terminateProxySession(flow: Flow, channel: Channel) -> Void {
+        flow.closeReadAndWrite()
+        // Ensure we execute the close in the same event loop as the channel
+        channel.eventLoop.execute {
+            guard channel.isActive else {
+                return
+            }
+            channel.close().whenFailure { error in
+                // Not much we can do here other than trace it
+                log(.error, "Failed to close the channel: \(error)")
+            }
+        }
+    }
+}

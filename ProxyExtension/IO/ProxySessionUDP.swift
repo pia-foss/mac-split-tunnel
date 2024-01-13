@@ -10,7 +10,7 @@ import Foundation
 import NetworkExtension
 import NIO
 
-class ProxySessionUDP: ProxySession {
+final class ProxySessionUDP: ProxySession {
     let flow: FlowUDP
     let config: SessionConfig
     let id: IDGenerator.ID // Unique identifier for this session
@@ -27,7 +27,7 @@ class ProxySessionUDP: ProxySession {
     }
 
     deinit {
-        log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) ProxySession closed. rxBytes=\(formatByteCount(rxBytes)) txBytes=\(formatByteCount(txBytes))")
+        log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) Destructor: ProxySession closed. rxBytes=\(formatByteCount(rxBytes)) txBytes=\(formatByteCount(txBytes))")
     }
 
     public func start() {
@@ -44,8 +44,20 @@ class ProxySessionUDP: ProxySession {
     }
 
     public func terminate() {
-        log(.error, "id: \(self.id) \(flow.sourceAppSigningIdentifier) Terminating the session.")
-        Self.terminateProxySession(flow: flow, channel: channel)
+        log(.info, "id: \(self.id) Terminating the flow")
+        log(.info, "id: \(self.id) Trying to shutdown the flow")
+        flow.closeReadAndWrite()
+        if channel.isActive {
+            log(.info, "id: \(self.id) Trying to shutdown the channel")
+            let closeFuture = channel.close()
+            closeFuture.whenSuccess {
+                log(.info, "id: \(self.id) Successfully shutdown channel")
+            }
+            closeFuture.whenFailure { error in
+                // Not much we can do here other than trace it
+                log(.error, "Failed to close the channel: \(error)")
+            }
+        }
     }
 
     public func identifier() -> IDGenerator.ID { self.id }
@@ -166,7 +178,9 @@ final class InboundHandlerUDP: ChannelInboundHandler {
                 // this function will be called again automatically by the event loop
             } else {
                 log(.error, "id: \(self.id) \(self.flow.sourceAppSigningIdentifier) \(flowError!.localizedDescription) occurred when writing a UDP datagram to the flow")
-                self.terminate(channel: context.channel)
+                context.eventLoop.execute {
+                    self.terminate(channel: context.channel)
+                }
             }
         }
     }
@@ -181,8 +195,17 @@ final class InboundHandlerUDP: ChannelInboundHandler {
     }
 
     func terminate(channel: Channel) {
-        log(.error, "id: \(self.id) \(flow.sourceAppSigningIdentifier) Terminating the session.")
-        ProxySessionUDP.terminateProxySession(flow: flow, channel: channel)
+        log(.error, "id: \(self.id) \(flow.sourceAppSigningIdentifier) Terminating the channel in InboundHandlerUDP")
+        if channel.isActive {
+            let closeFuture = channel.close()
+            channel.close().whenSuccess {
+                log(.info, "id: \(self.id) Successfully shutdown channel")
+            }
+            channel.close().whenFailure { error in
+                // Not much we can do here other than trace it
+                log(.error, "Failed to close the channel: \(error)")
+            }
+        }
     }
 }
 
