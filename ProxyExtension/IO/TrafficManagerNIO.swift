@@ -3,26 +3,23 @@ import NetworkExtension
 import NIO
 
 struct SessionConfig {
-    let eventLoopGroup: MultiThreadedEventLoopGroup
+    // We need to make this optional so that we can
+    // leave it nil in tests - tests do not use an EventLoopGroup
+    // Instead they just use an EmbeddedEventLoop
+    let eventLoopGroup: MultiThreadedEventLoopGroup!
     let interfaceAddress: String
 }
 
 final class TrafficManagerNIO : TrafficManager {
-    let sessionConfig: SessionConfig
+    let sessionConfig: SessionConfig!
     let proxySessionFactory: ProxySessionFactory
     var idGenerator: IDGenerator
 
-    init(interfaceName: String, proxySessionFactory: ProxySessionFactory = DefaultProxySessionFactory()) {
+    init(interfaceName: String, proxySessionFactory: ProxySessionFactory = DefaultProxySessionFactory(), 
+         config: SessionConfig? = nil) {
         // Used to assign unique IDs to each session
         self.idGenerator = IDGenerator()
-        // Fundamental config used to establish a session
-        self.sessionConfig = SessionConfig(
-            // Trying with just 1 thread for now, since we dont want to use too many resources on the user's machines.
-            // According to SwiftNIO docs it is better to use MultiThreadedEventLoopGroup
-            // even in the case of just 1 thread
-            eventLoopGroup: MultiThreadedEventLoopGroup(numberOfThreads: 1),
-            interfaceAddress: getNetworkInterfaceIP(interfaceName: interfaceName)!
-        )
+        self.sessionConfig = config ?? Self.defaultSessionConfig(interfaceName: interfaceName)
 
         self.proxySessionFactory = proxySessionFactory
     }
@@ -33,6 +30,17 @@ final class TrafficManagerNIO : TrafficManager {
 
     private func nextId() -> IDGenerator.ID {
         idGenerator.generate()
+    }
+
+    private static func defaultSessionConfig(interfaceName: String) -> SessionConfig {
+        // Fundamental config used to establish a session
+        SessionConfig(
+            // Trying with just 1 thread for now, since we dont want to use too many resources on the user's machines.
+            // According to SwiftNIO docs it is better to use MultiThreadedEventLoopGroup
+            // even in the case of just 1 thread
+            eventLoopGroup: MultiThreadedEventLoopGroup(numberOfThreads: 1),
+            interfaceAddress: getNetworkInterfaceIP(interfaceName: interfaceName)!
+        )
     }
 
     func handleFlowIO(_ flow: Flow) {
