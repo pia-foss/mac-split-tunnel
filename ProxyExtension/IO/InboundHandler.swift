@@ -11,11 +11,12 @@ import NIO
 
 protocol InboundHandler: ChannelInboundHandler {
     var id: IDGenerator.ID { get }
-    func terminate(channel: Channel)
-    func channelReadComplete(context: ChannelHandlerContext)
-    func errorCaught(context: ChannelHandlerContext, error: Error)
 }
 
+// Don't need to specify the methods below as part of the protocol
+// When you provide a default implementation for a method in a protocol extension, it's
+// not mandatory for the conforming types to implement that method. The default
+// implementation will be used unless the conforming type provides its own implementation.
 extension InboundHandler {
     func terminate(channel: Channel) {
         if channel.isActive {
