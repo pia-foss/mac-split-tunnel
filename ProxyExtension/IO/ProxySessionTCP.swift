@@ -13,8 +13,10 @@ import NIO
 final class ProxySessionTCP: ProxySession {
     let flow: FlowTCP
     let config: SessionConfig
-    let id: IDGenerator.ID // Unique identifier for this session
-    var channel: Channel!
+    // Unique identifier for this session
+    let id: IDGenerator.ID
+    // Made public to allow for mocking/stubbing in tests
+    public var channel: Channel!
 
     // Number of bytes transmitted and received
     var txBytes: UInt64 = 0
@@ -31,13 +33,22 @@ final class ProxySessionTCP: ProxySession {
     }
 
     public func start() {
-        let channelFuture = initChannel(flow: flow)
+        if let explicitChannel = self.channel {
+            self.channel = explicitChannel
+            self.scheduleFlowRead(flow: self.flow, channel: self.channel)
+        } else {
+            createChannelAndStartSession()
+        }
+    }
+
+    private func createChannelAndStartSession() {
+        let channelFuture = createChannel(flow: flow)
         channelFuture.whenSuccess { channel in
             self.channel = channel
             self.scheduleFlowRead(flow: self.flow, channel: self.channel)
         }
         channelFuture.whenFailure { error in
-            log(.error, "id: \(self.id) Unable to TCP connect: \(error), dropping the flow.")
+            log(.error, "id: \(self.id) Unable to create channel: \(error), dropping the flow.")
             self.flow.closeReadAndWrite()
         }
     }
@@ -48,7 +59,7 @@ final class ProxySessionTCP: ProxySession {
 
     public func identifier() -> IDGenerator.ID { self.id }
 
-    private func initChannel(flow: FlowTCP) -> EventLoopFuture<Channel> {
+    private func createChannel(flow: FlowTCP) -> EventLoopFuture<Channel> {
         // Assuming interfaceAddress is already defined
         let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: flow.remoteEndpoint as! NWHostEndpoint)
         log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) Creating, binding and connecting a new TCP socket - remote address: \(endpointAddress!) remote port: \(endpointPort!)")

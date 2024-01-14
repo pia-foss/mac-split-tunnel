@@ -13,8 +13,10 @@ import NIO
 final class ProxySessionUDP: ProxySession {
     let flow: FlowUDP
     let config: SessionConfig
-    let id: IDGenerator.ID // Unique identifier for this session
-    var channel: Channel!
+    // Unique identifier for this session
+    let id: IDGenerator.ID
+    // Made public to allow for mocking/stubbing in tests
+    public var channel: Channel!
 
     // Number of bytes transmitted and received
     var txBytes: UInt64 = 0
@@ -31,14 +33,22 @@ final class ProxySessionUDP: ProxySession {
     }
 
     public func start() {
+        if let explicitChannel = self.channel {
+            self.channel = explicitChannel
+            self.scheduleFlowRead(flow: self.flow, channel: self.channel)
+        } else {
+            createChannelAndStartSession()
+        }
+    }
+
+    private func createChannelAndStartSession() {
         let channelFuture = initChannel(flow: flow)
         channelFuture.whenSuccess { channel in
-            log(.debug, "id: \(self.id) \(self.flow.sourceAppSigningIdentifier) A new UDP socket has been initialized")
             self.channel = channel
             self.scheduleFlowRead(flow: self.flow, channel: self.channel)
         }
         channelFuture.whenFailure { error in
-            log(.error, "id: \(self.id) Unable to establish UDP: \(error), dropping the flow.")
+            log(.error, "id: \(self.id) Unable to create channel: \(error), dropping the flow.")
             self.flow.closeReadAndWrite()
         }
     }
@@ -143,7 +153,7 @@ final class InboundHandlerUDP: InboundHandler {
     }
 
     deinit {
-        log(.debug, "id: \(self.id) Destructor called for InboundHandlerTCP")
+        log(.debug, "id: \(self.id) Destructor called for InboundHandlerUDP")
     }
 
     func channelRead(context: ChannelHandlerContext, data: NIOAny) {
