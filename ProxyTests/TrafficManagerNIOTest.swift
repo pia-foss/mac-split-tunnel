@@ -35,6 +35,17 @@ class TrafficManagerNIOSpec: QuickSpec {
                     expect(mockFactory.didCall("createTCP")).to(equal(false))
                 }
             }
+            context("id generation") {
+                it("should generate a unique id each time") {
+                    let mockFactory = MockProxySessionFactory()
+                    let tm = TrafficManagerNIO(interfaceName: "en0", proxySessionFactory: mockFactory)
+                    tm.handleFlowIO(MockFlowTCP())
+                    tm.handleFlowIO(MockFlowUDP())
+
+                    expect(mockFactory.didCallWithArgAt("createTCP", index: 2, value: UInt64(1))).to(equal(true))
+                    expect(mockFactory.didCallWithArgAt("createUDP", index: 2, value: UInt64(2))).to(equal(true))
+                }
+            }
         }
     }
 }

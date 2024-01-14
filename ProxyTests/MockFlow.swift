@@ -12,6 +12,8 @@ import NetworkExtension
 class MockFlowTCP: FlowTCP, Mock {
     // Required by Mock
     var methodsCalled: Set<String> = []
+    var argumentsGiven: Dictionary<String, [Any]> = [:]
+
     // FlowTCP
     func closeReadAndWrite() {}
     var sourceAppSigningIdentifier: String { get {"quinn"} }
@@ -21,13 +23,19 @@ class MockFlowTCP: FlowTCP, Mock {
         }
     }
 
-    func readData(completionHandler: @escaping (Data?, Error?) -> Void) { record() }
-    func write(_ data: Data, withCompletionHandler completionHandler: @escaping (Error?) -> Void) { record() }
+    func readData(completionHandler: @escaping (Data?, Error?) -> Void) {
+        record(args: [completionHandler])
+    }
+    func write(_ data: Data, withCompletionHandler completionHandler: @escaping (Error?) -> Void) {
+        record(args: [data, completionHandler])
+    }
 }
 
 class MockFlowUDP: FlowUDP, Mock {
     // Required by Mock
     var methodsCalled: Set<String> = []
+    var argumentsGiven: Dictionary<String, [Any]> = [:]
+
     // FlowUDP
     func closeReadAndWrite() {}
     var sourceAppSigningIdentifier: String { get {"quinn"} }
@@ -37,6 +45,11 @@ class MockFlowUDP: FlowUDP, Mock {
         }
     }
 
-    func readDatagrams(completionHandler: @escaping ([Data]?, [NWEndpoint]?, Error?) -> Void) { record() }
-    func writeDatagrams(_ datagrams: [Data], sentBy remoteEndpoints: [NWEndpoint], completionHandler: @escaping (Error?) -> Void) { record() }
+    func readDatagrams(completionHandler: @escaping ([Data]?, [NWEndpoint]?, Error?) -> Void) {
+        record(args: [completionHandler])
+    }
+
+    func writeDatagrams(_ datagrams: [Data], sentBy remoteEndpoints: [NWEndpoint], completionHandler: @escaping (Error?) -> Void) {
+        record(args: [datagrams, remoteEndpoints, completionHandler])
+    }
 }
