@@ -8,7 +8,8 @@
 
 import Foundation
 
-class MockProxySessionFactory: ProxySessionFactory, Mock {
+// Mocks a ProxySessionFactory - for use in tests
+final class MockProxySessionFactory: ProxySessionFactory, Mock {
     // Required by Mock
     var methodsCalled: Set<String> = []
     var argumentsGiven: Dictionary<String, [Any]> = [:]

@@ -44,7 +44,8 @@ class ProxySessionTCPTest: QuickSpec {
                 // so a successful read from the flow should result in a corresponding write to the channel
                 it("should write to the channel") {
                     // A flow read will succeed when there's data available (so this one should succeed)
-                    let mockFlow = MockFlowTCP(data: Data([0x1]))
+                    let data = Data([0x1])
+                    let mockFlow = MockFlowTCP(data: data)
                     // Setup the mock with a failed write - to avoid infinite loops (i.e another readData being scheduled)
                     let mockChannel = MockChannel(isActive: true, successfulWrite: false)
                     let proxySession = ProxySessionTCP(flow: mockFlow, config: sessionConfig, id: 1)
@@ -52,7 +53,8 @@ class ProxySessionTCPTest: QuickSpec {
                     proxySession.channel = mockChannel
                     proxySession.start()
 
-                    expect(mockChannel.didCall("writeAndFlush")).to(equal(true))
+                    let expectedBytes = ByteBuffer(bytes: data)
+                    expect(mockChannel.didCallWithArgAt("writeAndFlush", index: 0, value: expectedBytes)).to(equal(true))
                 }
             }
 

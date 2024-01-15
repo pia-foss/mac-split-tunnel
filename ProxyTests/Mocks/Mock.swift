@@ -8,6 +8,7 @@
 
 import Foundation
 
+// Mock protocol - implemented by all our mocks.
 // AnyObject constrains the protocol to class types
 // This is necessary as record() is a mutating function
 // which struct types do not (easily) allow
@@ -16,7 +17,8 @@ protocol Mock: AnyObject {
     var argumentsGiven: Dictionary<String, [Any]> { get set }
 }
 
-// Default implementation
+// Default implementation - provides the didCall() and didCallWithArgsAt()
+// methods for verifying that methods were called with the correct arguments.
 extension Mock {
     // Indicates whether a function was called
     func didCall(_ name: String) -> Bool {

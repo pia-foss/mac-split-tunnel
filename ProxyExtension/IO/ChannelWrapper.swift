@@ -14,9 +14,7 @@ import NIO
 // are not exposed so we can't just extend them with our SessionChannel protocol
 // and we can't extend the NIO Channel (a protocol) with another protocol - only concrete classes
 // can be extended.
-class ChannelWrapper: SessionChannel {
-    // Since this is a 'let', there's no publicly exposed setter, just the
-    // getter is exposed publicly
+final class ChannelWrapper: SessionChannel {
     let channel: Channel
 
     // Delegate to underlying channel, these are computed properties
@@ -25,8 +23,8 @@ class ChannelWrapper: SessionChannel {
     var pipeline: ChannelPipeline { channel.pipeline }
     var isActive: Bool { channel.isActive }
 
-    init(_ nioChannel: Channel) {
-        self.channel = nioChannel
+    init(_ channel: Channel) {
+        self.channel = channel
     }
 
     func writeAndFlush<T>(_ any: T) -> EventLoopFuture<Void> {

@@ -9,7 +9,8 @@
 import Foundation
 import NetworkExtension
 
-class MockFlowTCP: FlowTCP, Mock {
+// Mocks a FlowTCP for use in tests
+final class MockFlowTCP: FlowTCP, Mock {
     // Required by Mock
     var methodsCalled: Set<String> = []
     var argumentsGiven: Dictionary<String, [Any]> = [:]
@@ -29,18 +30,23 @@ class MockFlowTCP: FlowTCP, Mock {
     // Required by FlowTCP
     var remoteEndpoint: NWEndpoint { NWHostEndpoint(hostname: "8.8.8.8", port: "1337") }
 
+    // Reads from our flow
+    // Unlike the real readData on NEAppProxyTCPFlow this does not dispatch the
+    // completion handler to another thread so we must be careful about how we
+    // use it to avoid infinite recursion.
     func readData(completionHandler: @escaping (Data?, Error?) -> Void) {
         record(args: [completionHandler])
-
         completionHandler(data, flowError)
     }
 
+    // Writes to our flow
     func write(_ data: Data, withCompletionHandler completionHandler: @escaping (Error?) -> Void) {
         record(args: [data, completionHandler])
     }
 }
 
-class MockFlowUDP: FlowUDP, Mock {
+// Mocks a FlowUDP for use in tests
+final class MockFlowUDP: FlowUDP, Mock {
     // Required by Mock
     var methodsCalled: Set<String> = []
     var argumentsGiven: Dictionary<String, [Any]> = [:]

@@ -16,13 +16,11 @@ extension NEAppProxyFlow: Flow {
         self.closeWriteWithError(nil)
     }
 
-    var sourceAppSigningIdentifier: String {
-        get { self.metaData.sourceAppSigningIdentifier }
-    }
+    var sourceAppSigningIdentifier: String { self.metaData.sourceAppSigningIdentifier }
 }
 
-// Force conformance of subclasses to the protocol too
-// This is also useful for testing - so we can pass in our own
-// mock/stubs which conform to the protocol
+// Enforce Flow protocol conformance for NEAppProxyTCPFlow and NEAppProxyUDPFlow subclasses.
+// This approach allows using Flow protocols universally instead of specific NEAppProxyFlow classes,
+// facilitating easier stubbing/mocking in tests as Flow protocols are simpler to satisfy.
 extension NEAppProxyTCPFlow: FlowTCP {}
 extension NEAppProxyUDPFlow: FlowUDP {}

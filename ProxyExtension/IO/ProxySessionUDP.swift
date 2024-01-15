@@ -10,6 +10,11 @@ import Foundation
 import NetworkExtension
 import NIO
 
+// Manages a single UDP proxy session from an originating app and proxying
+// it via the corresponding NIO Channel. Facilitates read and write
+// operations in both directions (app-to-proxy and proxy-to-destination and back again).
+// Uses the InboundHandlerUDP helper class (found further down) to handle packets
+// incoming from the remote endpoint.
 final class ProxySessionUDP: ProxySession {
     let flow: FlowUDP
     let config: SessionConfig

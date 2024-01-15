@@ -28,7 +28,6 @@
 		5235FB442B5145CE00F3B772 /* NEAppProxyFlow+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB262B511DD700F3B772 /* NEAppProxyFlow+Extensions.swift */; };
 		5235FB452B5145CE00F3B772 /* ProxySession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5274A5E62B4AC5C600FD0A10 /* ProxySession.swift */; };
 		5235FB462B5145CE00F3B772 /* ProxySessionTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5274A5E22B4AA5C600FD0A10 /* ProxySessionTCP.swift */; };
-		5235FB472B5145FD00F3B772 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976B8CD62B0B55F60097FE7F /* Logger.swift */; };
 		5235FB482B5145FD00F3B772 /* IDGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5274A5E82B4AD88100FD0A10 /* IDGenerator.swift */; };
 		5235FB492B5145FD00F3B772 /* NetworkUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E9AEFD2AE31D4F007603BF /* NetworkUtilities.swift */; };
 		5235FB4A2B5145FD00F3B772 /* IPCConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B1415A227A396500B26560 /* IPCConnection.swift */; };
@@ -93,7 +92,6 @@
 		D1D5B6B02B18F2B10063363E /* TrafficManagerNIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6AF2B18F2B10063363E /* TrafficManagerNIO.swift */; };
 		D1D5B6B62B18F7DF0063363E /* ProcessUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6B52B18F7DF0063363E /* ProcessUtilities.swift */; };
 		D1E9AEFE2AE31D4F007603BF /* NetworkUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E9AEFD2AE31D4F007603BF /* NetworkUtilities.swift */; };
-		D1FE4FB9295A1EA3002BBA20 /* ProxyAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1FE4FB8295A1EA3002BBA20 /* ProxyAppTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -187,7 +185,6 @@
 		D1D5B6AF2B18F2B10063363E /* TrafficManagerNIO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrafficManagerNIO.swift; sourceTree = "<group>"; };
 		D1D5B6B52B18F7DF0063363E /* ProcessUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessUtilities.swift; sourceTree = "<group>"; };
 		D1E9AEFD2AE31D4F007603BF /* NetworkUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkUtilities.swift; sourceTree = "<group>"; };
-		D1FE4FB8295A1EA3002BBA20 /* ProxyAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyAppTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -238,7 +235,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		52E84CF42B54397700B67912 /* TestHelpers */ = {
+		52E84CF42B54397700B67912 /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
 				5235FB4D2B51541F00F3B772 /* Mock.swift */,
@@ -246,7 +243,7 @@
 				5235FB512B51582C00F3B772 /* MockProxySessionFactory.swift */,
 				52E84CF52B5439CA00B67912 /* MockChannel.swift */,
 			);
-			path = TestHelpers;
+			path = Mocks;
 			sourceTree = "<group>";
 		};
 		C40A5C47229DD6A500627D50 /* ProxyExtension */ = {
@@ -358,8 +355,7 @@
 		D1FE4FB7295A1EA3002BBA20 /* ProxyTests */ = {
 			isa = PBXGroup;
 			children = (
-				52E84CF42B54397700B67912 /* TestHelpers */,
-				D1FE4FB8295A1EA3002BBA20 /* ProxyAppTests.swift */,
+				52E84CF42B54397700B67912 /* Mocks */,
 				527F56A92B31A098003E7DF7 /* AppPolicyTest.swift */,
 				D19C05F52B50A8CB00E804DE /* ProxyOptionsTest.swift */,
 				5235FB1E2B510CEF00F3B772 /* TrafficManagerNIOTest.swift */,
@@ -609,7 +605,6 @@
 				5235FB422B5145CE00F3B772 /* TrafficManager.swift in Sources */,
 				527F56AE2B31A5DA003E7DF7 /* AppPolicy.swift in Sources */,
 				D19C05F32B50A67500E804DE /* ProxyOptions.swift in Sources */,
-				D1FE4FB9295A1EA3002BBA20 /* ProxyAppTests.swift in Sources */,
 				52E84CF62B5439CA00B67912 /* MockChannel.swift in Sources */,
 				52E84CF92B54F22200B67912 /* SessionChannelProtocol.swift in Sources */,
 				5235FB432B5145CE00F3B772 /* ProxySessionUDP.swift in Sources */,

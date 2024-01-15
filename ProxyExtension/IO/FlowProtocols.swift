@@ -9,7 +9,7 @@
 import Foundation
 import NetworkExtension
 
-// A few extensions for convenience
+// Flow base protocol we use in place of NEAppProxyFlow, it also provides shortcuts for common functions.
 protocol Flow {
     // Shortcut to close both read and write ends of a flow
     func closeReadAndWrite()
@@ -17,6 +17,8 @@ protocol Flow {
     var sourceAppSigningIdentifier: String { get }
 }
 
+// FlowTCP and FlowUDP protocols abstract the relevant parts of NEAppProxyTCPFlow
+// and NEAppProxyUDPFlow for increased flexibility and improved testability.
 protocol FlowTCP: Flow {
     var remoteEndpoint: NWEndpoint { get }
     func readData(completionHandler: @escaping (Data?, Error?) -> Void)

@@ -9,21 +9,25 @@
 import Foundation
 import NIO
 
-class MockChannel: SessionChannel, Mock {
+// Mocks a NIO Channel
+final class MockChannel: SessionChannel, Mock {
+    // Required by Mock
     var methodsCalled: Set<String> = []
-
     var argumentsGiven: Dictionary<String, [Any]> = [:]
 
+    // Required by SessionChannel
     var allocator: NIOCore.ByteBufferAllocator = ByteBufferAllocator()
     var pipeline: NIOCore.ChannelPipeline = ChannelPipeline(channel: EmbeddedChannel())
     var isActive: Bool
     let eventLoop: EventLoop = EmbeddedEventLoop()
 
+    // A configurable option - determines whether the writeAndFlush() call succeeds. 
+    // This allows us to change mock behaviour in tests to verify success/failure code paths.
     let successfulWrite: Bool
 
-    // Allow the mock to be configurable
-    // isActive - whether the channel is active (this is checked when the channel is shutdown)
-    // successfulWrite - whether writeAndFlush returns a succeeded or failed future - a failed future
+    // Allow the mock to be configurable
+    // * isActive - whether the channel is active (this is checked when the channel is shutdown)
+    // * successfulWrite - whether writeAndFlush returns a succeeded or failed future - a failed future
     // is unrecoverable so should result in early-exits in tests
     init(isActive: Bool, successfulWrite: Bool) {
         self.isActive = isActive
@@ -36,7 +40,7 @@ class MockChannel: SessionChannel, Mock {
         case true:
             return eventLoop.makeSucceededVoidFuture()
         case false:
-            return eventLoop.makeFailedFuture(NSError(domain: "com.privateinternetaccess.vpn.error", code: 0, userInfo: nil))
+            return eventLoop.makeFailedFuture(NSError(domain: "com.pia.vpn.error", code: 0, userInfo: nil))
         }
     }
     
