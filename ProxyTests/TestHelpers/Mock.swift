@@ -61,7 +61,7 @@ extension Mock {
     }
 
     // Records the calling of a function
-    func record(args: [Any], name: String=#function) {
+    func record(args: [Any] = [], name: String=#function) {
         let elidedName = functionNameOnly(fullName: name)
         argumentsGiven[elidedName] = args
         methodsCalled.insert(elidedName)
