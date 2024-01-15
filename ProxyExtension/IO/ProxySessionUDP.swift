@@ -16,7 +16,7 @@ final class ProxySessionUDP: ProxySession {
     // Unique identifier for this session
     let id: IDGenerator.ID
     // Made public to allow for mocking/stubbing in tests
-    public var channel: Channel!
+    public var channel: SessionChannel!
 
     // Number of bytes transmitted and received
     var txBytes: UInt64 = 0
@@ -44,7 +44,7 @@ final class ProxySessionUDP: ProxySession {
     private func createChannelAndStartSession() {
         let channelFuture = initChannel(flow: flow)
         channelFuture.whenSuccess { channel in
-            self.channel = channel
+            self.channel = ChannelWrapper(channel)
             self.scheduleFlowRead(flow: self.flow, channel: self.channel)
         }
         channelFuture.whenFailure { error in
@@ -86,13 +86,13 @@ final class ProxySessionUDP: ProxySession {
     }
 
     // schedule a new read on a UDP flow
-    private func scheduleFlowRead(flow: FlowUDP, channel: Channel) {
+    private func scheduleFlowRead(flow: FlowUDP, channel: SessionChannel) {
         flow.readDatagrams { outboundData, outboundEndpoints, flowError in
             if flowError == nil, let datas = outboundData, !datas.isEmpty, let endpoints = outboundEndpoints, !endpoints.isEmpty {
                 var readIsScheduled = false
                 for (data, endpoint) in zip(datas, endpoints) {
                     // Kill the proxy session if we can't create a datagram
-                    guard let datagram = self.createDatagram(channel: channel, data: data, endpoint: endpoint) else {
+                    guard let datagram = self.createDatagram(data: data, endpoint: endpoint) else {
                         self.terminate()
                         return
                     }
@@ -125,7 +125,7 @@ final class ProxySessionUDP: ProxySession {
         }
     }
 
-    private func createDatagram(channel: Channel, data: Data, endpoint: NWEndpoint) -> AddressedEnvelope<ByteBuffer>? {
+    private func createDatagram(data: Data, endpoint: NWEndpoint) -> AddressedEnvelope<ByteBuffer>? {
         let buffer = channel.allocator.buffer(bytes: data)
         let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: endpoint as! NWHostEndpoint)
         do {

@@ -12,16 +12,14 @@ import NIO
 protocol ProxySession {
     // Start a new proxy session
     func start() -> Void
-    // End an existing proxy session
+    // End an existing proxy session (calls through to Self.terminateProxySession)
     func terminate() -> Void
     // Return the id for a given session (used for tracing)
     func identifier() -> IDGenerator.ID
-
-    static func terminateProxySession(id: IDGenerator.ID, channel: Channel, flow: Flow)
 }
 
 extension ProxySession {
-    static func terminateProxySession(id: IDGenerator.ID, channel: Channel, flow: Flow) {
+    static func terminateProxySession(id: IDGenerator.ID, channel: SessionChannel, flow: Flow) {
         log(.info, "id: \(id) Terminating the flow")
         log(.info, "id: \(id) Trying to shutdown the flow")
         flow.closeReadAndWrite()

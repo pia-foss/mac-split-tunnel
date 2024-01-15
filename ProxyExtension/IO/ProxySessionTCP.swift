@@ -16,7 +16,7 @@ final class ProxySessionTCP: ProxySession {
     // Unique identifier for this session
     let id: IDGenerator.ID
     // Made public to allow for mocking/stubbing in tests
-    public var channel: Channel!
+    public var channel: SessionChannel!
 
     // Number of bytes transmitted and received
     var txBytes: UInt64 = 0
@@ -44,7 +44,7 @@ final class ProxySessionTCP: ProxySession {
     private func createChannelAndStartSession() {
         let channelFuture = createChannel(flow: flow)
         channelFuture.whenSuccess { channel in
-            self.channel = channel
+            self.channel = ChannelWrapper(channel)
             self.scheduleFlowRead(flow: self.flow, channel: self.channel)
         }
         channelFuture.whenFailure { error in
@@ -87,7 +87,7 @@ final class ProxySessionTCP: ProxySession {
     }
 
     // schedule a new read on a TCP flow
-    private func scheduleFlowRead(flow: FlowTCP, channel: Channel) {
+    private func scheduleFlowRead(flow: FlowTCP, channel: SessionChannel) {
         flow.readData { outboundData, flowError in
             // when new data is available to read from a flow,
             // and no errors occurred
