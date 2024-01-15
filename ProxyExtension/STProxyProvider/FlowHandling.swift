@@ -29,7 +29,7 @@ extension STProxyProvider {
         }
     }
 
-    func startProxySession(flow: NEAppProxyFlow) -> Bool {
+    private func startProxySession(flow: NEAppProxyFlow) -> Bool {
         let appID = flow.metaData.sourceAppSigningIdentifier
         flow.open(withLocalEndpoint: nil) { error in
             guard error == nil else {

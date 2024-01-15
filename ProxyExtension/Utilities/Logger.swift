@@ -5,19 +5,10 @@ class Logger {
     static var log : Puppy = Puppy()
 }
 
-func initializeLogger(options: [String : Any]?) -> Bool {
-    guard let logLevel = options!["logLevel"] as? String else {
-        return false
-    }
-    
+func initializeLogger(logLevel: String, logFile: String) -> Bool {
     // Initialize the Console logger first
     let console = ConsoleLogger(Bundle.main.bundleIdentifier! + ".console", logLevel: logLevelFromString(logLevel))
     Logger.log.add(console)
-    
-    guard let logFile = options!["logFile"] as? String else {
-        Logger.log.error("Error: Cannot find logFile in options")
-        return false
-    }
     
     // Now configure the File logger
     let fileURL = URL(fileURLWithPath: logFile).absoluteURL
