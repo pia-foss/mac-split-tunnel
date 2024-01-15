@@ -5,7 +5,6 @@ import NIO
 struct SessionConfig {
     // We need to make this optional so that we can
     // leave it nil in tests - tests do not use an EventLoopGroup
-    // Instead they just use an EmbeddedEventLoop
     let eventLoopGroup: MultiThreadedEventLoopGroup!
     let interfaceAddress: String
 }

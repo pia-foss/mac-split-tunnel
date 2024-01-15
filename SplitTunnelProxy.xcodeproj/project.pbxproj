@@ -57,6 +57,7 @@
 		527F56AE2B31A5DA003E7DF7 /* AppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A72B3180D6003E7DF7 /* AppPolicy.swift */; };
 		527F56B22B31B43B003E7DF7 /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = 527F56B12B31B43B003E7DF7 /* Quick */; };
 		527F56B42B31B440003E7DF7 /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = 527F56B32B31B440003E7DF7 /* Nimble */; };
+		52A5F9E02B5524560095095D /* ProxySessionUDPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A5F9DF2B5524560095095D /* ProxySessionUDPTest.swift */; };
 		52D4C8CE2B52FBEB0059F7DD /* InboundHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D4C8CD2B52FBEB0059F7DD /* InboundHandler.swift */; };
 		52D4C8CF2B52FBEB0059F7DD /* InboundHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D4C8CD2B52FBEB0059F7DD /* InboundHandler.swift */; };
 		52E84CF32B5406B200B67912 /* ProxySessionTCPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E84CF22B5406B200B67912 /* ProxySessionTCPTest.swift */; };
@@ -152,6 +153,7 @@
 		5274B64E2B2AE8DF0007250C /* libbsm.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbsm.tbd; path = usr/lib/libbsm.tbd; sourceTree = SDKROOT; };
 		527F56A72B3180D6003E7DF7 /* AppPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPolicy.swift; sourceTree = "<group>"; };
 		527F56A92B31A098003E7DF7 /* AppPolicyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPolicyTest.swift; sourceTree = "<group>"; };
+		52A5F9DF2B5524560095095D /* ProxySessionUDPTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxySessionUDPTest.swift; sourceTree = "<group>"; };
 		52D4C8CD2B52FBEB0059F7DD /* InboundHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboundHandler.swift; sourceTree = "<group>"; };
 		52E84CF22B5406B200B67912 /* ProxySessionTCPTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxySessionTCPTest.swift; sourceTree = "<group>"; };
 		52E84CF52B5439CA00B67912 /* MockChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockChannel.swift; sourceTree = "<group>"; };
@@ -362,6 +364,7 @@
 				D19C05F52B50A8CB00E804DE /* ProxyOptionsTest.swift */,
 				5235FB1E2B510CEF00F3B772 /* TrafficManagerNIOTest.swift */,
 				52E84CF22B5406B200B67912 /* ProxySessionTCPTest.swift */,
+				52A5F9DF2B5524560095095D /* ProxySessionUDPTest.swift */,
 			);
 			path = ProxyTests;
 			sourceTree = "<group>";
@@ -623,6 +626,7 @@
 				5235FB4E2B51541F00F3B772 /* Mock.swift in Sources */,
 				527F56AA2B31A098003E7DF7 /* AppPolicyTest.swift in Sources */,
 				D19C05F62B50A8CB00E804DE /* ProxyOptionsTest.swift in Sources */,
+				52A5F9E02B5524560095095D /* ProxySessionUDPTest.swift in Sources */,
 				5235FB452B5145CE00F3B772 /* ProxySession.swift in Sources */,
 				5235FB212B510D3800F3B772 /* TrafficManagerNIO.swift in Sources */,
 				5235FB4B2B5145FD00F3B772 /* Formatters.swift in Sources */,
