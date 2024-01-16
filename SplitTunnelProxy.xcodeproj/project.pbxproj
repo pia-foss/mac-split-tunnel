@@ -36,6 +36,7 @@
 		5235FB4E2B51541F00F3B772 /* Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB4D2B51541F00F3B772 /* Mock.swift */; };
 		5235FB502B5157DF00F3B772 /* MockFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB4F2B5157DF00F3B772 /* MockFlow.swift */; };
 		5235FB522B51582C00F3B772 /* MockProxySessionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB512B51582C00F3B772 /* MockProxySessionFactory.swift */; };
+		526208122B5709B500C5C0E4 /* libbsm.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5274B64E2B2AE8DF0007250C /* libbsm.tbd */; };
 		52699E602B56AC22004FBF20 /* SplitTunnelProxyProviderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52699E5F2B56AC22004FBF20 /* SplitTunnelProxyProviderTest.swift */; };
 		52699E622B56BBEE004FBF20 /* ProxyEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52699E612B56BBEE004FBF20 /* ProxyEngine.swift */; };
 		52699E632B56BBEE004FBF20 /* ProxyEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52699E612B56BBEE004FBF20 /* ProxyEngine.swift */; };
@@ -235,6 +236,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				526CFC342B3AD94A00F31493 /* Puppy in Frameworks */,
+				526208122B5709B500C5C0E4 /* libbsm.tbd in Frameworks */,
 				5235FB3D2B51458800F3B772 /* NIOFoundationCompat in Frameworks */,
 				5235FB392B51458800F3B772 /* NIOCore in Frameworks */,
 				527F56B22B31B43B003E7DF7 /* Quick in Frameworks */,
