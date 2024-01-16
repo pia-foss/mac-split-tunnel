@@ -38,8 +38,7 @@ final class ProxySessionUDP: ProxySession {
     }
 
     public func start() {
-        if let explicitChannel = self.channel {
-            self.channel = explicitChannel
+        if self.channel != nil {
             self.scheduleFlowRead(flow: self.flow, channel: self.channel)
         } else {
             createChannelAndStartSession()

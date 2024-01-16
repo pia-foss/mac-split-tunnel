@@ -1,45 +1,45 @@
 import Puppy
 import Foundation
 
-class Logger {
+struct Logger {
     static var log : Puppy = Puppy()
-}
 
-func initializeLogger(logLevel: String, logFile: String) -> Bool {
-    // Initialize the Console logger first
-    let console = ConsoleLogger(Bundle.main.bundleIdentifier! + ".console", logLevel: logLevelFromString(logLevel))
-    Logger.log.add(console)
-    
-    // Now configure the File logger
-    let fileURL = URL(fileURLWithPath: logFile).absoluteURL
+    static func initializeLogger(logLevel: String, logFile: String) -> Bool {
+        // Initialize the Console logger first
+        let console = ConsoleLogger(Bundle.main.bundleIdentifier! + ".console", logLevel: logLevelFromString(logLevel))
+        Logger.log.add(console)
 
-    do {
-        let file = try FileLogger("com.privateinternetaccess.vpn.splittunnel.systemextension.logfile",
-                              logLevel: logLevelFromString(logLevel),
-                              fileURL: fileURL,
-                              filePermission: "777")
-        Logger.log.add(file)
+        // Now configure the File logger
+        let fileURL = URL(fileURLWithPath: logFile).absoluteURL
+
+        do {
+            let file = try FileLogger("com.privateinternetaccess.vpn.splittunnel.systemextension.logfile",
+                                      logLevel: logLevelFromString(logLevel),
+                                      fileURL: fileURL,
+                                      filePermission: "777")
+            Logger.log.add(file)
+        }
+        catch {
+            Logger.log.warning("Could not start File Logger, will log only to console.")
+        }
+        Logger.log.info("######################################################\n######################################################\nLogger initialized. Writing to \(fileURL)")
+
+        return true
     }
-    catch {
-        Logger.log.warning("Could not start File Logger, will log only to console.")
-    }
-    Logger.log.info("######################################################\n######################################################\nLogger initialized. Writing to \(fileURL)")
-    
-    return true
-}
 
-func logLevelFromString(_ levelString: String) -> LogLevel {
-    switch levelString.lowercased() {
-    case "debug":
-        return .debug
-    case "info":
-        return .info
-    case "warning":
-        return .warning
-    case "error":
-        return .error
-    default:
-        return .error
+    static func logLevelFromString(_ levelString: String) -> LogLevel {
+        switch levelString.lowercased() {
+        case "debug":
+            return .debug
+        case "info":
+            return .info
+        case "warning":
+            return .warning
+        case "error":
+            return .error
+        default:
+            return .error
+        }
     }
 }
 

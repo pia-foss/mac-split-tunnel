@@ -16,7 +16,12 @@ extension NEAppProxyFlow: Flow {
         self.closeWriteWithError(nil)
     }
 
+    func openFlow(completionHandler: @escaping (Error?) -> Void) {
+        open(withLocalEndpoint: nil, completionHandler: completionHandler)
+    }
+
     var sourceAppSigningIdentifier: String { self.metaData.sourceAppSigningIdentifier }
+    var sourceAppAuditToken: Data? { self.metaData.sourceAppAuditToken }
 }
 
 // Enforce Flow protocol conformance for NEAppProxyTCPFlow and NEAppProxyUDPFlow subclasses.

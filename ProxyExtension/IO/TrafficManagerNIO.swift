@@ -10,7 +10,7 @@ struct SessionConfig {
 }
 
 final class TrafficManagerNIO : TrafficManager {
-    let sessionConfig: SessionConfig!
+    var sessionConfig: SessionConfig!
     let proxySessionFactory: ProxySessionFactory
     var idGenerator: IDGenerator
 
@@ -21,6 +21,10 @@ final class TrafficManagerNIO : TrafficManager {
         self.sessionConfig = config ?? Self.defaultSessionConfig(interfaceName: interfaceName)
 
         self.proxySessionFactory = proxySessionFactory
+    }
+
+    func updateSessionConfig(sessionConfig: SessionConfig) {
+        self.sessionConfig = sessionConfig
     }
 
     deinit {

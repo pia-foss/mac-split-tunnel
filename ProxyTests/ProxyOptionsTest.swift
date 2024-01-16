@@ -7,7 +7,7 @@ class ProxyOptionsSpec: QuickSpec {
         describe("ProxyOptions") {
             context("when an option array is created") {
                 // This is needed because ProxyOptions.create() contains log calls
-                initializeLogger(logLevel: "error", logFile: "/tmp/STProxy.log")
+                Logger.initializeLogger(logLevel: "error", logFile: "/tmp/STProxy.log")
 
                 it("should return the object if all required options are present") {
                     let correctOptions: [String : Any]? =

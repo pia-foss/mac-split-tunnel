@@ -25,7 +25,10 @@ final class MockFlowTCP: FlowTCP, Mock {
 
     // Required by Flow
     func closeReadAndWrite() { record() }
+    func openFlow(completionHandler: @escaping (Error?) -> Void) { record(args: [completionHandler]) }
     var sourceAppSigningIdentifier: String { "quinn" }
+    var remoteHostname: String? { nil }
+    var sourceAppAuditToken: Data? { nil }
 
     // Required by FlowTCP
     var remoteEndpoint: NWEndpoint { NWHostEndpoint(hostname: "8.8.8.8", port: "1337") }
@@ -63,7 +66,10 @@ final class MockFlowUDP: FlowUDP, Mock {
 
     // Required by Flow
     func closeReadAndWrite() { record() }
+    func openFlow(completionHandler: @escaping (Error?) -> Void) { record(args: [completionHandler]) }
     var sourceAppSigningIdentifier: String { "quinn"}
+    var remoteHostname: String? { nil }
+    var sourceAppAuditToken: Data? { nil }
 
     // Required by FlowUDP
     func readDatagrams(completionHandler: @escaping ([Data]?, [NWEndpoint]?, Error?) -> Void) {
