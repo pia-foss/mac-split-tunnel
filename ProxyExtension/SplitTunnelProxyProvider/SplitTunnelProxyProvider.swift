@@ -23,7 +23,7 @@ import Puppy
 // STProxyProvider class to a NEAppProxyProvider and return false
 // in handleNewFlow, then verify that no app can connect to the internet.
 
-final class STProxyProvider : NETransparentProxyProvider {
+final class SplitTunnelProxyProvider : NETransparentProxyProvider {
 
     // MARK: Proxy options
     var proxyOptions: ProxyOptions!

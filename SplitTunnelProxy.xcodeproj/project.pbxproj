@@ -87,7 +87,7 @@
 		D13B634E2970CE9600839689 /* FlowHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = D13B634C2970CC6E00839689 /* FlowHandling.swift */; };
 		D1795F732AE9CC50003B0DAE /* ExtensionBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1795F722AE9CC50003B0DAE /* ExtensionBundle.swift */; };
 		D17F5D1A293E1DC300FB8DAF /* ProxyAppDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D19293E1DC300FB8DAF /* ProxyAppDefault.swift */; };
-		D17F5D1C293E701D00FB8DAF /* STProxyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D1B293E701D00FB8DAF /* STProxyProvider.swift */; };
+		D17F5D1C293E701D00FB8DAF /* SplitTunnelProxyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D1B293E701D00FB8DAF /* SplitTunnelProxyProvider.swift */; };
 		D19C05F22B50A67500E804DE /* ProxyOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19C05F12B50A67500E804DE /* ProxyOptions.swift */; };
 		D19C05F32B50A67500E804DE /* ProxyOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19C05F12B50A67500E804DE /* ProxyOptions.swift */; };
 		D19C05F42B50A74500E804DE /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976B8CD62B0B55F60097FE7F /* Logger.swift */; };
@@ -145,7 +145,7 @@
 		5274A5E42B4AAC4500FD0A10 /* ProxySessionUDP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxySessionUDP.swift; sourceTree = "<group>"; };
 		5274A5E62B4AC5C600FD0A10 /* ProxySession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxySession.swift; sourceTree = "<group>"; };
 		5274A5E82B4AD88100FD0A10 /* IDGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDGenerator.swift; sourceTree = "<group>"; };
-		5274B64D2B2AE6880007250C /* STProxyProvider-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "STProxyProvider-Bridging-Header.h"; sourceTree = "<group>"; };
+		5274B64D2B2AE6880007250C /* SplitTunnelProxyProvider-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SplitTunnelProxyProvider-Bridging-Header.h"; sourceTree = "<group>"; };
 		5274B64E2B2AE8DF0007250C /* libbsm.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbsm.tbd; path = usr/lib/libbsm.tbd; sourceTree = SDKROOT; };
 		527F56A72B3180D6003E7DF7 /* AppPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPolicy.swift; sourceTree = "<group>"; };
 		527F56A92B31A098003E7DF7 /* AppPolicyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPolicyTest.swift; sourceTree = "<group>"; };
@@ -181,7 +181,7 @@
 		D13B634C2970CC6E00839689 /* FlowHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowHandling.swift; sourceTree = "<group>"; };
 		D1795F722AE9CC50003B0DAE /* ExtensionBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionBundle.swift; sourceTree = "<group>"; };
 		D17F5D19293E1DC300FB8DAF /* ProxyAppDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyAppDefault.swift; sourceTree = "<group>"; };
-		D17F5D1B293E701D00FB8DAF /* STProxyProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STProxyProvider.swift; sourceTree = "<group>"; };
+		D17F5D1B293E701D00FB8DAF /* SplitTunnelProxyProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitTunnelProxyProvider.swift; sourceTree = "<group>"; };
 		D19C05F12B50A67500E804DE /* ProxyOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyOptions.swift; sourceTree = "<group>"; };
 		D19C05F52B50A8CB00E804DE /* ProxyOptionsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyOptionsTest.swift; sourceTree = "<group>"; };
 		D1D447032ABCE52400A69316 /* ExtensionRequestDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionRequestDelegate.swift; sourceTree = "<group>"; };
@@ -275,7 +275,7 @@
 			children = (
 				D1D5B6B42B18F7200063363E /* IO */,
 				D1D5B6B22B18F67B0063363E /* Utilities */,
-				D1D5B6B12B18F64E0063363E /* STProxyProvider */,
+				D1D5B6B12B18F64E0063363E /* SplitTunnelProxyProvider */,
 				C40A5C4A229DD6A500627D50 /* main.swift */,
 				97B1169B2B0CEF910028B01E /* build.xcconfig */,
 				C40A5C4C229DD6A500627D50 /* Info.plist */,
@@ -335,15 +335,15 @@
 			path = UI;
 			sourceTree = "<group>";
 		};
-		D1D5B6B12B18F64E0063363E /* STProxyProvider */ = {
+		D1D5B6B12B18F64E0063363E /* SplitTunnelProxyProvider */ = {
 			isa = PBXGroup;
 			children = (
-				D17F5D1B293E701D00FB8DAF /* STProxyProvider.swift */,
+				D17F5D1B293E701D00FB8DAF /* SplitTunnelProxyProvider.swift */,
 				D13B634C2970CC6E00839689 /* FlowHandling.swift */,
-				5274B64D2B2AE6880007250C /* STProxyProvider-Bridging-Header.h */,
+				5274B64D2B2AE6880007250C /* SplitTunnelProxyProvider-Bridging-Header.h */,
 				D19C05F12B50A67500E804DE /* ProxyOptions.swift */,
 			);
-			path = STProxyProvider;
+			path = SplitTunnelProxyProvider;
 			sourceTree = "<group>";
 		};
 		D1D5B6B22B18F67B0063363E /* Utilities */ = {
@@ -634,7 +634,7 @@
 				D1D5B6B62B18F7DF0063363E /* ProcessUtilities.swift in Sources */,
 				D19C05F22B50A67500E804DE /* ProxyOptions.swift in Sources */,
 				D1D5B6AC2B18F1C50063363E /* TrafficManager.swift in Sources */,
-				D17F5D1C293E701D00FB8DAF /* STProxyProvider.swift in Sources */,
+				D17F5D1C293E701D00FB8DAF /* SplitTunnelProxyProvider.swift in Sources */,
 				52E84CFB2B54F77400B67912 /* ChannelWrapper.swift in Sources */,
 				52D4C8CE2B52FBEB0059F7DD /* InboundHandler.swift in Sources */,
 				527F56A82B3180D6003E7DF7 /* AppPolicy.swift in Sources */,
@@ -811,7 +811,7 @@
 				PRODUCT_NAME = "$(PRODUCT_BUNDLE_IDENTIFIER)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = NO;
-				SWIFT_OBJC_BRIDGING_HEADER = "ProxyExtension/STProxyProvider/STProxyProvider-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "ProxyExtension/SplitTunnelProxyProvider/SplitTunnelProxyProvider-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -840,7 +840,7 @@
 				PRODUCT_NAME = "$(PRODUCT_BUNDLE_IDENTIFIER)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = NO;
-				SWIFT_OBJC_BRIDGING_HEADER = "ProxyExtension/STProxyProvider/STProxyProvider-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "ProxyExtension/SplitTunnelProxyProvider/SplitTunnelProxyProvider-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;

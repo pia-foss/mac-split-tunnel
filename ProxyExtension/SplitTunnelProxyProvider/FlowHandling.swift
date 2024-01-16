@@ -1,7 +1,7 @@
 import Foundation
 import NetworkExtension
 
-extension STProxyProvider {
+extension SplitTunnelProxyProvider {
 
     // MARK: Managing flows
     // handleNewFlow() is called whenever an application
