@@ -10,58 +10,64 @@ import Foundation
 import NetworkExtension
 import NIO
 
-class ProxySessionTCP: ProxySession {
-    let flow: NEAppProxyTCPFlow
+// Manages a single TCP proxy session from an originating app and proxying
+// it to remote endpoint via the corresponding NIO Channel. Facilitates read and write
+// operations in both directions (app-to-proxy and proxy-to-destination and back again).
+// Uses the InboundHandlerTCP helper class (found further down) to handle packets
+// incoming from the remote endpoint.
+final class ProxySessionTCP: ProxySession {
+    let flow: FlowTCP
     let config: SessionConfig
-    let id: IDGenerator.ID // Unique identifier for this session
-    var channel: Channel!
+    // Unique identifier for this session
+    let id: IDGenerator.ID
+    // Made public to allow for mocking/stubbing in tests
+    public var channel: SessionChannel!
 
     // Number of bytes transmitted and received
-    var _txBytes: UInt64 = 0
-    var _rxBytes: UInt64 = 0
+    var txBytes: UInt64 = 0
+    var rxBytes: UInt64 = 0
 
-    var txBytes: UInt64 {
-        get { return _txBytes }
-        set(newTxBytes) { _txBytes = newTxBytes }
-    }
-
-    var rxBytes: UInt64 {
-        get { return _rxBytes }
-        set(newTxBytes) { _rxBytes = newTxBytes }
-    }
-
-    init(flow: NEAppProxyTCPFlow, config: SessionConfig, id: IDGenerator.ID) {
+    init(flow: FlowTCP, config: SessionConfig, id: IDGenerator.ID) {
         self.flow = flow
         self.config = config
         self.id = id
     }
 
     deinit {
-        log(.debug, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) ProxySession closed. rxBytes=\(formatByteCount(rxBytes)) txBytes=\(formatByteCount(txBytes))")
+        log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) Destructor: ProxySession closed. rxBytes=\(formatByteCount(rxBytes)) txBytes=\(formatByteCount(txBytes))")
     }
 
     public func start() {
-        let channelFuture = initChannel(flow: flow)
+        if let explicitChannel = self.channel {
+            self.channel = explicitChannel
+            self.scheduleFlowRead(flow: self.flow, channel: self.channel)
+        } else {
+            createChannelAndStartSession()
+        }
+    }
+
+    private func createChannelAndStartSession() {
+        let channelFuture = createChannel(flow: flow)
         channelFuture.whenSuccess { channel in
-            self.channel = channel
+            self.channel = ChannelWrapper(channel)
             self.scheduleFlowRead(flow: self.flow, channel: self.channel)
         }
         channelFuture.whenFailure { error in
-            log(.error, "id: \(self.id) Unable to TCP connect: \(error), dropping the flow.")
-            TrafficManagerNIO.dropFlow(flow: self.flow)
+            log(.error, "id: \(self.id) Unable to create channel: \(error), dropping the flow.")
+            self.flow.closeReadAndWrite()
         }
     }
 
     public func terminate() {
-        TrafficManagerNIO.terminateProxySession(flow: flow, channel: channel)
+        Self.terminateProxySession(id: id, channel: channel, flow: flow)
     }
 
     public func identifier() -> IDGenerator.ID { self.id }
 
-    private func initChannel(flow: NEAppProxyTCPFlow) -> EventLoopFuture<Channel> {
+    private func createChannel(flow: FlowTCP) -> EventLoopFuture<Channel> {
         // Assuming interfaceAddress is already defined
         let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: flow.remoteEndpoint as! NWHostEndpoint)
-        log(.debug, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) Creating, binding and connecting a new TCP socket - remote address: \(endpointAddress!) remote port: \(endpointPort!)")
+        log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) Creating, binding and connecting a new TCP socket - remote address: \(endpointAddress!) remote port: \(endpointPort!)")
 
         let bootstrap = ClientBootstrap(group: config.eventLoopGroup)
             .channelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)
@@ -86,7 +92,7 @@ class ProxySessionTCP: ProxySession {
     }
 
     // schedule a new read on a TCP flow
-    private func scheduleFlowRead(flow: NEAppProxyTCPFlow, channel: Channel) {
+    private func scheduleFlowRead(flow: FlowTCP, channel: SessionChannel) {
         flow.readData { outboundData, flowError in
             // when new data is available to read from a flow,
             // and no errors occurred
@@ -100,21 +106,22 @@ class ProxySessionTCP: ProxySession {
                         // since everything worked as expected, we schedule another read on the flow
                         self.scheduleFlowRead(flow: flow, channel: channel)
                     case .failure(let error):
-                        log(.error, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) \(error) while sending TCP data through the socket")
+                        log(.error, "id: \(self.id) \(flow.sourceAppSigningIdentifier) \(error) while sending TCP data through the socket")
                         self.terminate()
                     }
                 }
             } else {
-                log(.error, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) \((flowError?.localizedDescription) ?? "Empty buffer") occurred during TCP flow.readData()")
-                  if let error = flowError as NSError? {
+                log(.error, "id: \(self.id) \(flow.sourceAppSigningIdentifier) \((flowError?.localizedDescription) ?? "Empty buffer") occurred during TCP flow.readData()")
+
+                if let error = flowError as NSError? {
                     // Error code 10 is "A read operation is already pending"
                     // We don't want to terminate the session if that is the error we got
                     if error.domain == "NEAppProxyFlowErrorDomain" && error.code == 10 {
+                        log(.warning, "Got a 'read operation is already pending' error - ignoring \(flowError!)")
                         return
                     }
-                  }
-
-                  self.terminate()
+                }
+                self.terminate()
             }
         }
     }
@@ -122,15 +129,15 @@ class ProxySessionTCP: ProxySession {
 
 // In this class we handle receiving data on a TCP socket and
 // writing that data to the flow
-final class InboundHandlerTCP: ChannelInboundHandler {
+final class InboundHandlerTCP: InboundHandler {
     typealias InboundIn = ByteBuffer
     typealias OutboundOut = ByteBuffer
 
-    let flow: NEAppProxyTCPFlow
+    let flow: FlowTCP
     let id: IDGenerator.ID
     let onBytesReceived: (UInt64) -> Void
 
-    init(flow: NEAppProxyTCPFlow, id: IDGenerator.ID, onBytesReceived: @escaping (UInt64) -> Void) {
+    init(flow: FlowTCP, id: IDGenerator.ID, onBytesReceived: @escaping (UInt64) -> Void) {
         self.flow = flow
         self.id = id
         self.onBytesReceived = onBytesReceived
@@ -156,23 +163,12 @@ final class InboundHandlerTCP: ChannelInboundHandler {
                 // the next time data is available to read on the socket
                 // this function will be called again automatically by the event loop
             } else {
-                log(.error, "id: \(self.id) \(self.flow.metaData.sourceAppSigningIdentifier) \(flowError!.localizedDescription) occurred when writing TCP data to the flow")
-                self.terminate(context: context)
+                log(.error, "id: \(self.id) \(self.flow.sourceAppSigningIdentifier) \(flowError!.localizedDescription) occurred when writing TCP data to the flow")
+                context.eventLoop.execute {
+                    log(.warning, "id: \(self.id) Closing channel for InboundHandlerTCP")
+                    self.terminate(channel: context.channel)
+                }
             }
         }
-    }
-
-    func channelReadComplete(context: ChannelHandlerContext) {
-        context.flush()
-    }
-
-    func errorCaught(context: ChannelHandlerContext, error: Error) {
-        log(.error, "id: \(self.id) \(error) in InboundTCPHandler")
-        terminate(context: context)
-    }
-
-    func terminate(context: ChannelHandlerContext) {
-        log(.info, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) Terminating the session.")
-        TrafficManagerNIO.terminateProxySession(flow: flow, context: context)
     }
 }

@@ -10,59 +10,63 @@ import Foundation
 import NetworkExtension
 import NIO
 
-class ProxySessionUDP: ProxySession {
-    let flow: NEAppProxyUDPFlow
+// Manages a single UDP proxy session from an originating app and proxying
+// it via the corresponding NIO Channel. Facilitates read and write
+// operations in both directions (app-to-proxy and proxy-to-destination and back again).
+// Uses the InboundHandlerUDP helper class (found further down) to handle packets
+// incoming from the remote endpoint.
+final class ProxySessionUDP: ProxySession {
+    let flow: FlowUDP
     let config: SessionConfig
-    let id: IDGenerator.ID // Unique identifier for this session
-    var channel: Channel!
+    // Unique identifier for this session
+    let id: IDGenerator.ID
+    // Made public to allow for mocking/stubbing in tests
+    public var channel: SessionChannel!
 
     // Number of bytes transmitted and received
-    var _txBytes: UInt64 = 0
-    var _rxBytes: UInt64 = 0
+    var txBytes: UInt64 = 0
+    var rxBytes: UInt64 = 0
 
-    var txBytes: UInt64 {
-        get { return _txBytes }
-        set(newTxBytes) { _txBytes = newTxBytes }
-    }
-
-    var rxBytes: UInt64 {
-        get { return _rxBytes }
-        set(newTxBytes) { _rxBytes = newTxBytes }
-    }
-
-    init(flow: NEAppProxyUDPFlow, config: SessionConfig, id: IDGenerator.ID) {
+    init(flow: FlowUDP, config: SessionConfig, id: IDGenerator.ID) {
         self.flow = flow
         self.config = config
         self.id = id
     }
 
     deinit {
-        log(.debug, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) ProxySession closed. rxBytes=\(formatByteCount(rxBytes)) txBytes=\(formatByteCount(txBytes))")
+        log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) Destructor: ProxySession closed. rxBytes=\(formatByteCount(rxBytes)) txBytes=\(formatByteCount(txBytes))")
     }
 
     public func start() {
+        if let explicitChannel = self.channel {
+            self.channel = explicitChannel
+            self.scheduleFlowRead(flow: self.flow, channel: self.channel)
+        } else {
+            createChannelAndStartSession()
+        }
+    }
+
+    private func createChannelAndStartSession() {
         let channelFuture = initChannel(flow: flow)
         channelFuture.whenSuccess { channel in
-            log(.debug, "id: \(self.id) \(self.flow.metaData.sourceAppSigningIdentifier) A new UDP socket has been initialized")
-            self.channel = channel
+            self.channel = ChannelWrapper(channel)
             self.scheduleFlowRead(flow: self.flow, channel: self.channel)
         }
         channelFuture.whenFailure { error in
-            log(.error, "id: \(self.id) Unable to establish UDP: \(error), dropping the flow.")
-            TrafficManagerNIO.dropFlow(flow: self.flow)
+            log(.error, "id: \(self.id) Unable to create channel: \(error), dropping the flow.")
+            self.flow.closeReadAndWrite()
         }
     }
 
     public func terminate() {
-        log(.error, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) Terminating the session.")
-        TrafficManagerNIO.terminateProxySession(flow: flow, channel: channel)
+        Self.terminateProxySession(id: id, channel: channel, flow: flow)
     }
 
     public func identifier() -> IDGenerator.ID { self.id }
 
     // this function creates and bind a new UDP channel
-    private func initChannel(flow: NEAppProxyUDPFlow) -> EventLoopFuture<Channel> {
-        log(.debug, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) Creating and binding a new UDP socket")
+    private func initChannel(flow: FlowUDP) -> EventLoopFuture<Channel> {
+        log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) Creating and binding a new UDP socket")
         let bootstrap = DatagramBootstrap(group: config.eventLoopGroup)
             // Enable SO_REUSEADDR.
             .channelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)
@@ -87,13 +91,13 @@ class ProxySessionUDP: ProxySession {
     }
 
     // schedule a new read on a UDP flow
-    private func scheduleFlowRead(flow: NEAppProxyUDPFlow, channel: Channel) {
+    private func scheduleFlowRead(flow: FlowUDP, channel: SessionChannel) {
         flow.readDatagrams { outboundData, outboundEndpoints, flowError in
             if flowError == nil, let datas = outboundData, !datas.isEmpty, let endpoints = outboundEndpoints, !endpoints.isEmpty {
                 var readIsScheduled = false
                 for (data, endpoint) in zip(datas, endpoints) {
                     // Kill the proxy session if we can't create a datagram
-                    guard let datagram = self.createDatagram(channel: channel, data: data, endpoint: endpoint) else {
+                    guard let datagram = self.createDatagram(data: data, endpoint: endpoint) else {
                         self.terminate()
                         return
                     }
@@ -107,13 +111,13 @@ class ProxySessionUDP: ProxySession {
                                 readIsScheduled = true
                             }
                         case .failure(let error):
-                            log(.error, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) \(error) while sending a UDP datagram through the socket")
+                            log(.error, "id: \(self.id) \(flow.sourceAppSigningIdentifier) \(error) while sending a UDP datagram through the socket")
                             self.terminate()
                         }
                     }
                 }
             } else {
-                log(.error, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) \((flowError?.localizedDescription) ?? "Empty buffer") occurred during UDP flow.readDatagrams()")
+                log(.error, "id: \(self.id) \(flow.sourceAppSigningIdentifier) \((flowError?.localizedDescription) ?? "Empty buffer") occurred during UDP flow.readDatagrams()")
                 if let error = flowError as NSError? {
                     // Error code 10 is "A read operation is already pending"
                     // We don't want to terminate the session if that is the error we got
@@ -124,10 +128,9 @@ class ProxySessionUDP: ProxySession {
                 self.terminate()
             }
         }
-        //log(.debug, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) A new UDP flow readDatagrams() has been scheduled")
     }
 
-    private func createDatagram(channel: Channel, data: Data, endpoint: NWEndpoint) -> AddressedEnvelope<ByteBuffer>? {
+    private func createDatagram(data: Data, endpoint: NWEndpoint) -> AddressedEnvelope<ByteBuffer>? {
         let buffer = channel.allocator.buffer(bytes: data)
         let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: endpoint as! NWHostEndpoint)
         do {
@@ -140,22 +143,22 @@ class ProxySessionUDP: ProxySession {
     }
 }
 
-final class InboundHandlerUDP: ChannelInboundHandler {
+final class InboundHandlerUDP: InboundHandler {
     typealias InboundIn = AddressedEnvelope<ByteBuffer>
     typealias OutboundOut = ByteBuffer
 
-    let flow: NEAppProxyUDPFlow
+    let flow: FlowUDP
     let id: IDGenerator.ID
     let onBytesReceived: (UInt64) -> Void
 
-    init(flow: NEAppProxyUDPFlow, id: IDGenerator.ID, onBytesReceived: @escaping (UInt64) -> Void) {
+    init(flow: FlowUDP, id: IDGenerator.ID, onBytesReceived: @escaping (UInt64) -> Void) {
         self.flow = flow
         self.id = id
         self.onBytesReceived = onBytesReceived
     }
 
     deinit {
-        log(.debug, "id: \(self.id) Destructor called for InboundHandlerTCP")
+        log(.debug, "id: \(self.id) Destructor called for InboundHandlerUDP")
     }
 
     func channelRead(context: ChannelHandlerContext, data: NIOAny) {
@@ -175,24 +178,13 @@ final class InboundHandlerUDP: ChannelInboundHandler {
                 // the next time data is available to read on the socket
                 // this function will be called again automatically by the event loop
             } else {
-                log(.error, "id: \(self.id) \(self.flow.metaData.sourceAppSigningIdentifier) \(flowError!.localizedDescription) occurred when writing a UDP datagram to the flow")
-                self.terminate(context: context)
+                log(.error, "id: \(self.id) \(self.flow.sourceAppSigningIdentifier) \(flowError!.localizedDescription) occurred when writing a UDP datagram to the flow")
+                context.eventLoop.execute {
+                    log(.warning, "id: \(self.id) Closing channel for InboundHandlerUDP")
+                    self.terminate(channel: context.channel)
+                }
             }
         }
-    }
-
-    func channelReadComplete(context: ChannelHandlerContext) {
-        context.flush()
-    }
-
-    func errorCaught(context: ChannelHandlerContext, error: Error) {
-        log(.error, "id: \(self.id) \(error) in InboundTCPHandler")
-        terminate(context: context)
-    }
-
-    func terminate(context: ChannelHandlerContext) {
-        log(.error, "id: \(self.id) \(flow.metaData.sourceAppSigningIdentifier) Terminating the session.")
-        TrafficManagerNIO.terminateProxySession(flow: flow, context: context)
     }
 }
 
