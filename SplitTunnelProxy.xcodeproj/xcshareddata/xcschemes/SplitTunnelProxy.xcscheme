@@ -33,7 +33,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C40A5C44229DD6A500627D50"
-            BuildableName = "com.privateinternetaccess.splittunnel.poc.extension.systemextension"
+            BuildableName = "com.privateinternetaccess.vpn.splittunnel.systemextension"
             BlueprintName = "SplitTunnelProxyExtension"
             ReferencedContainer = "container:SplitTunnelProxy.xcodeproj">
          </BuildableReference>
