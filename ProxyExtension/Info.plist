@@ -27,7 +27,7 @@
 	<key>NetworkExtension</key>
 	<dict>
 		<key>NEMachServiceName</key>
-		<string>$(TeamIdentifierPrefix)com.privateinternetaccess.splittunnel.poc.extension</string>
+		<string>$(TeamIdentifierPrefix)com.privateinternetaccess.vpn.splittunnel</string>
 		<key>NEProviderClasses</key>
 		<dict>
 			<key>com.apple.networkextension.app-proxy</key>

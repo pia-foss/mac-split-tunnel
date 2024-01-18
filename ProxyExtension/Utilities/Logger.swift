@@ -14,7 +14,7 @@ func initializeLogger(logLevel: String, logFile: String) -> Bool {
     let fileURL = URL(fileURLWithPath: logFile).absoluteURL
 
     do {
-        let file = try FileLogger("com.privateinternetaccess.splittunnel.poc.extension.systemextension.logfile",
+        let file = try FileLogger("com.privateinternetaccess.vpn.splittunnel.systemextension.logfile",
                               logLevel: logLevelFromString(logLevel),
                               fileURL: fileURL,
                               filePermission: "777")
