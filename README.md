@@ -19,6 +19,7 @@ To achieve runnable builds in GHA, we use the `build.sh` script.
 `build.sh` is written to be generic for any app+extension use-case, so we pass our specific values from environment variables.
 To work on that script, modify `sample.env` and set the variables there for your specific development environment.
 
+The aim is for `build.sh` to be as self-explanatory as possible, so prefer to document relevant things there.
 
 ## Debugging
 

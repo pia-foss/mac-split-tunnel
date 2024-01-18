@@ -1,13 +1,27 @@
 #!/bin/bash
 set -ex
 
+# This build script is mainly aimed at CI. It takes a bunch of environment variables as input.
+# Optionally, we can use the .env work to help during debugging or if we want to work without XCode.
+#
+# APP_BUILD_TARGET -> application XCode target 
+# APP_PROVISION_PROFILE -> path to the provision profile to use for the final app build. Obtained from Apple developers site.
+# CODESIGN_IDENTITY -> name of the installed certificate to use for signing. You can find yours with `security find-identity -v -p codesigning`. It's obtained from Apple.
+# EXTENSION_BUILD_TARGET -> extension XCode target
+# EXTENSION_ID -> bundle id of the extension
+# NOTARIZATION_EMAIL -> email to use for notarization. Only used for release builds, ignore during dev work
+# NOTARIZATION_PASSWORD -> password to use for notarization. It's a token password obtained from apple
+# PACKAGE_FOR_RELEASE -> boolean-ish flag. When 0 this will be a development build, when 1 it will be a distributable build using a Developer ID certificate.
+# PROJECT -> Name of the project file (without extension)
+# SEXT_PROVISION_PROFILE -> path to the provision profile to use for the final extension build. Obtained from Apple developers site.
+# TEAM_ID -> Team Id, obtained from Apple to your dev account
+
 # For dev work, set any project vars in .env
 if [ -f .env ]
 then
     source .env
 fi
 
-# EXTENSION_ID is the bundle id of the extension
 extension_id=${EXTENSION_ID}
 extension_bundle="${extension_id}.systemextension"
 app_name="${APP_BUILD_TARGET}"
@@ -26,6 +40,7 @@ ditto "$app_provision_profile_path" "$HOME/Library/MobileDevice/Provisioning Pro
 ditto "$extension_provision_profile_path" "$HOME/Library/MobileDevice/Provisioning Profiles/${extension_profile_uuid}.provisionprofile"
 
 # For release, change network entitlements for their Developer ID variant with the `-systemextension` suffix.
+# Otherwise, xcodebuild will fail with a mismatch between entitlements and the provision profile.
 # Careful if you run this locally, as the entitlement files will change
 if [ $PACKAGE_FOR_RELEASE -ne 0 ]
 then
