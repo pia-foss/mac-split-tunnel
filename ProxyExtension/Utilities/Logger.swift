@@ -1,13 +1,25 @@
 import Puppy
 import Foundation
 
-struct Logger {
-    static var log : Puppy = Puppy()
+protocol LoggerProtocol {
+    func initializeLogger(logLevel: String, logFile: String) -> Bool
+    func logLevelFromString(_ levelString: String) -> LogLevel
+    func debug(_ message: String)
+    func info(_ message: String)
+    func warning(_ message: String)
+    func error(_ message: String)
+}
 
-    static func initializeLogger(logLevel: String, logFile: String) -> Bool {
+class Logger: LoggerProtocol {
+    static let instance = Logger()
+
+    // Private implementation
+    var pimpl : Puppy = Puppy()
+
+    func initializeLogger(logLevel: String, logFile: String) -> Bool {
         // Initialize the Console logger first
         let console = ConsoleLogger(Bundle.main.bundleIdentifier! + ".console", logLevel: logLevelFromString(logLevel))
-        Logger.log.add(console)
+        pimpl.add(console)
 
         // Now configure the File logger
         let fileURL = URL(fileURLWithPath: logFile).absoluteURL
@@ -17,17 +29,23 @@ struct Logger {
                                       logLevel: logLevelFromString(logLevel),
                                       fileURL: fileURL,
                                       filePermission: "777")
-            Logger.log.add(file)
+            pimpl.add(file)
         }
         catch {
-            Logger.log.warning("Could not start File Logger, will log only to console.")
+            warning("Could not start File Logger, will log only to console.")
         }
-        Logger.log.info("######################################################\n######################################################\nLogger initialized. Writing to \(fileURL)")
+
+        info("######################################################\n######################################################\nLogger initialized. Writing to \(fileURL)")
 
         return true
     }
 
-    static func logLevelFromString(_ levelString: String) -> LogLevel {
+    func debug(_ message: String) { pimpl.debug(message) }
+    func info(_ message: String) { pimpl.info(message) }
+    func warning(_ message: String) { pimpl.warning(message) }
+    func error(_ message: String) { pimpl.error(message) }
+
+    func logLevelFromString(_ levelString: String) -> LogLevel {
         switch levelString.lowercased() {
         case "debug":
             return .debug
@@ -52,15 +70,15 @@ func log(_ type: LogLevel, _ text: String, file: String = #file, line: Int = #li
 
     switch type {
     case .debug:
-        Logger.log.debug("[\(currentTimeString)] [\(fileName):\(line)] debug: \(text)")
+        Logger.instance.debug("[\(currentTimeString)] [\(fileName):\(line)] debug: \(text)")
     case .info:
-        Logger.log.info("[\(currentTimeString)] [\(fileName):\(line)] info: \(text)")
+        Logger.instance.info("[\(currentTimeString)] [\(fileName):\(line)] info: \(text)")
     case .warning:
-        Logger.log.warning("[\(currentTimeString)] [\(fileName):\(line)] warning: \(text)")
+        Logger.instance.warning("[\(currentTimeString)] [\(fileName):\(line)] warning: \(text)")
     case .error:
-        Logger.log.error("[\(currentTimeString)] [\(fileName):\(line)] error: \(text)")
+        Logger.instance.error("[\(currentTimeString)] [\(fileName):\(line)] error: \(text)")
     default:
-        Logger.log.info("[\(currentTimeString)] [\(fileName):\(line)] info: \(text)")
+        Logger.instance.info("[\(currentTimeString)] [\(fileName):\(line)] info: \(text)")
     }
 }
 
