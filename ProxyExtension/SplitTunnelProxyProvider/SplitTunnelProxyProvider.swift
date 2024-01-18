@@ -26,7 +26,7 @@ import Puppy
 final class SplitTunnelProxyProvider : NETransparentProxyProvider {
 
     // MARK: Proxy options
-    public var proxyOptionsFactory: ProxyOptionsFactoryProtocol!
+    public var vpnStateFactory: VpnStateFactoryProtocol!
 
     // The engine
     public var engine: ProxyEngineProtocol!
@@ -40,29 +40,29 @@ final class SplitTunnelProxyProvider : NETransparentProxyProvider {
 
         self.logger = self.logger ?? Logger.instance
         self.engine = self.engine ?? ProxyEngine()
-        self.proxyOptionsFactory = self.proxyOptionsFactory ?? ProxyOptionsFactory()
+        self.vpnStateFactory = self.vpnStateFactory ?? VpnStateFactory()
 
         // Ensure the logger is initialized first
         guard logger.initializeLogger(logLevel: logLevel, logFile: logFile) else {
             return
         }
 
-        guard let proxyOptions = proxyOptionsFactory.create(options: options) else {
+        guard let vpnState = vpnStateFactory.create(options: options) else {
             log(.error, "provided incorrect list of options. They might be missing or an incorrect type")
             return
         }
+        // Contains connection state, routing, interface, and bypass/vpnOnly app information
+        engine.vpnState = vpnState
 
         // Whitelist this process in the firewall - error logging happens in function
-        guard engine.whitelistProxyInFirewall(groupName: proxyOptions.groupName) else {
+        guard engine.whitelistProxyInFirewall(groupName: vpnState.groupName) else {
             log(.error, "failed to set gid")
             return
         }
 
-        engine.setTunnelNetworkSettings(serverAddress: proxyOptions.serverAddress, provider: self, completionHandler: completionHandler)
+        engine.setTunnelNetworkSettings(serverAddress: vpnState.serverAddress, provider: self, completionHandler: completionHandler)
 
-        engine.appPolicy = AppPolicy(bypassApps: proxyOptions.bypassApps, vpnOnlyApps: proxyOptions.vpnOnlyApps, routeVpn: proxyOptions.routeVpn, connected: proxyOptions.connected)
-
-        engine.trafficManager = TrafficManagerNIO(interfaceName: proxyOptions.networkInterface)
+        engine.trafficManager = TrafficManagerNIO(interfaceName: vpnState.networkInterface)
 
         log(.info, "Proxy started!")
     }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-class VpnStateFactory: VpnStateFactoryProtocol, Mock {
+class MockVpnStateFactory: VpnStateFactoryProtocol, Mock {
     // Required by Mock
     var methodsCalled: Set<String> = []
     var argumentsGiven: Dictionary<String, [Any]> = [:]

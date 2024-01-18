@@ -16,8 +16,8 @@ class MockProxyEngine: ProxyEngineProtocol, Mock {
 
     // Required by ProxyEngineProtocol
     var trafficManager: TrafficManager!
-    var appPolicy: AppPolicy!
-    
+    var vpnState: VpnState!
+
     public func whitelistProxyInFirewall(groupName: String) -> Bool {
         record(args: [groupName])
         return true

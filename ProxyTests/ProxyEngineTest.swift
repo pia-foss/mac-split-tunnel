@@ -6,4 +6,11 @@
 //  Copyright © 2024 PIA. All rights reserved.
 //
 
-import Foundation
+@testable import SplitTunnelProxy
+import Quick
+import Nimble
+import NetworkExtension
+
+final class ProxyEngineTest: QuickSpec {
+
+}

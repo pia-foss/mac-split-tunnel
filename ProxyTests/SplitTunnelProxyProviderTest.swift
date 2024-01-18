@@ -11,7 +11,7 @@ import Quick
 import Nimble
 import NetworkExtension
 
-class SplitTunnelProxyProviderTest: QuickSpec {
+final class SplitTunnelProxyProviderTest: QuickSpec {
     static let validOptions: Dictionary<String, Any> = [
         "bypassApps" : ["/Applications/Foo.app"],
         "vpnOnlyApps" : ["/Applications/Bar.app"],
@@ -28,16 +28,16 @@ class SplitTunnelProxyProviderTest: QuickSpec {
 
     static let invalidOptions: Dictionary<String, Any> = [:]
 
-    static func setupTestEnvironment() -> (MockProxyEngine, MockLogger, MockProxyOptionsFactory, SplitTunnelProxyProvider) {
+    static func setupTestEnvironment() -> (MockProxyEngine, MockLogger, MockVpnStateFactory, SplitTunnelProxyProvider) {
         let mockEngine = MockProxyEngine()
         let mockLogger = MockLogger()
-        let mockProxyOptionsFactory = MockProxyOptionsFactory()
+        let mockVpnStateFactory = MockVpnStateFactory()
         let provider = SplitTunnelProxyProvider()
         provider.engine = mockEngine
         provider.logger = mockLogger
-        provider.proxyOptionsFactory = mockProxyOptionsFactory
+        provider.vpnStateFactory = mockVpnStateFactory
 
-        return (mockEngine, mockLogger, mockProxyOptionsFactory, provider)
+        return (mockEngine, mockLogger, mockVpnStateFactory, provider)
     }
 
     override class func spec() {
@@ -45,7 +45,7 @@ class SplitTunnelProxyProviderTest: QuickSpec {
             context("with invalid options") {
                 context("when starting proxy") {
                     it("early exits after failing to create ProxyOptions") {
-                        let (mockEngine, mockLogger, mockProxyOptionsFactory, provider) = setupTestEnvironment()
+                        let (mockEngine, mockLogger, mockVpnStateFactory, provider) = setupTestEnvironment()
                         let completionHandler: (Error?) -> Void = { (error: Error?) in }
 
                         provider.startProxy(options: invalidOptions, completionHandler: completionHandler)
@@ -58,7 +58,7 @@ class SplitTunnelProxyProviderTest: QuickSpec {
                         // Specifically the call to mockProxyOptionsFactory.create should happen -
                         // but it should fail, and this will trigger an early exit, causing the subsequent
                         // method calls not to happen
-                        expect(mockProxyOptionsFactory.didCall("create")).to(equal(true))
+                        expect(mockVpnStateFactory.didCall("create")).to(equal(true))
 
                         // Fails to call subsequent methods (as the failure above causes an early exit)
                         expect(mockEngine.didCall("whitelistProxyInFirewall")).to(equal(false))
@@ -79,12 +79,12 @@ class SplitTunnelProxyProviderTest: QuickSpec {
                     }
 
                     it("creates a ProxyOptions instance") {
-                        let (_, _, mockProxyOptionsFactory, provider) = setupTestEnvironment()
+                        let (_, _, mockVpnStateFactory, provider) = setupTestEnvironment()
                         let completionHandler: (Error?) -> Void = { (error: Error?) in }
 
                         provider.startProxy(options: Self.validOptions, completionHandler: completionHandler)
 
-                        expect(mockProxyOptionsFactory.didCall("create")).to(equal(true))
+                        expect(mockVpnStateFactory.didCall("create")).to(equal(true))
                     }
 
                     it("whitelists the proxy in the firewall") {
