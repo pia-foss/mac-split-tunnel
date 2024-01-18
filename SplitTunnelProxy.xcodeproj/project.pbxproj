@@ -60,6 +60,7 @@
 		5278E5952B5954BA00210466 /* ProxyEngineTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5942B5954BA00210466 /* ProxyEngineTest.swift */; };
 		5278E59A2B59582700210466 /* FlowPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5992B59582700210466 /* FlowPolicy.swift */; };
 		5278E59B2B59582700210466 /* FlowPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5992B59582700210466 /* FlowPolicy.swift */; };
+		5278E59D2B59804B00210466 /* MockTrafficManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E59C2B59804B00210466 /* MockTrafficManager.swift */; };
 		527F56A82B3180D6003E7DF7 /* AppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A72B3180D6003E7DF7 /* AppPolicy.swift */; };
 		527F56AA2B31A098003E7DF7 /* AppPolicyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A92B31A098003E7DF7 /* AppPolicyTest.swift */; };
 		527F56AE2B31A5DA003E7DF7 /* AppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A72B3180D6003E7DF7 /* AppPolicy.swift */; };
@@ -162,6 +163,7 @@
 		5274B64E2B2AE8DF0007250C /* libbsm.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbsm.tbd; path = usr/lib/libbsm.tbd; sourceTree = SDKROOT; };
 		5278E5942B5954BA00210466 /* ProxyEngineTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyEngineTest.swift; sourceTree = "<group>"; };
 		5278E5992B59582700210466 /* FlowPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowPolicy.swift; sourceTree = "<group>"; };
+		5278E59C2B59804B00210466 /* MockTrafficManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockTrafficManager.swift; sourceTree = "<group>"; };
 		527F56A72B3180D6003E7DF7 /* AppPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPolicy.swift; sourceTree = "<group>"; };
 		527F56A92B31A098003E7DF7 /* AppPolicyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPolicyTest.swift; sourceTree = "<group>"; };
 		52A5F9DF2B5524560095095D /* ProxySessionUDPTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxySessionUDPTest.swift; sourceTree = "<group>"; };
@@ -274,6 +276,7 @@
 				5220075B2B57F3850034BCEA /* MockProxyEngine.swift */,
 				52EA0A6F2B58F8DC00CD8EFE /* MockVpnStateFactory.swift */,
 				52EA0A732B59205200CD8EFE /* MockLogger.swift */,
+				5278E59C2B59804B00210466 /* MockTrafficManager.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -723,6 +726,7 @@
 				D19C05F62B50A8CB00E804DE /* VpnStateTest.swift in Sources */,
 				52A5F9E02B5524560095095D /* ProxySessionUDPTest.swift in Sources */,
 				5235FB452B5145CE00F3B772 /* ProxySession.swift in Sources */,
+				5278E59D2B59804B00210466 /* MockTrafficManager.swift in Sources */,
 				5235FB212B510D3800F3B772 /* TrafficManagerNIO.swift in Sources */,
 				5235FB4B2B5145FD00F3B772 /* Formatters.swift in Sources */,
 			);

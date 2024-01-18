@@ -44,7 +44,7 @@ final class SplitTunnelProxyProviderTest: QuickSpec {
         describe("SplitTunnelProxyProviderTest") {
             context("with invalid options") {
                 context("when starting proxy") {
-                    it("early exits after failing to create ProxyOptions") {
+                    it("early exits after failing to create VpnState") {
                         let (mockEngine, mockLogger, mockVpnStateFactory, provider) = setupTestEnvironment()
                         let completionHandler: (Error?) -> Void = { (error: Error?) in }
 
