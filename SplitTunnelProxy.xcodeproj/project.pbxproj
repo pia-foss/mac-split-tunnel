@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5220075C2B57F3850034BCEA /* MockProxyEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5220075B2B57F3850034BCEA /* MockProxyEngine.swift */; };
+		5220075D2B57F5E70034BCEA /* SplitTunnelProxyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D1B293E701D00FB8DAF /* SplitTunnelProxyProvider.swift */; };
 		5235FB192B4FC43900F3B772 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB182B4FC43900F3B772 /* Formatters.swift */; };
 		5235FB1A2B4FC43900F3B772 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB182B4FC43900F3B772 /* Formatters.swift */; };
 		5235FB1D2B4FFCEB00F3B772 /* ProxySessionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB1B2B4FFCEB00F3B772 /* ProxySessionFactory.swift */; };
@@ -69,6 +71,8 @@
 		52E84CF92B54F22200B67912 /* SessionChannelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E84CF72B54F22200B67912 /* SessionChannelProtocol.swift */; };
 		52E84CFB2B54F77400B67912 /* ChannelWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E84CFA2B54F77400B67912 /* ChannelWrapper.swift */; };
 		52E84CFC2B54F77400B67912 /* ChannelWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E84CFA2B54F77400B67912 /* ChannelWrapper.swift */; };
+		52EA0A702B58F8DC00CD8EFE /* MockProxyOptionsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52EA0A6F2B58F8DC00CD8EFE /* MockProxyOptionsFactory.swift */; };
+		52EA0A742B59205200CD8EFE /* MockLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52EA0A732B59205200CD8EFE /* MockLogger.swift */; };
 		9704D2AD2B03C97400A899D7 /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = 9704D2AC2B03C97400A899D7 /* Puppy */; };
 		971DE35C2B59173E008CE5C2 /* com.privateinternetaccess.vpn.splittunnel.systemextension in Copy Files */ = {isa = PBXBuildFile; fileRef = 97AD92092B35876200405E3A /* com.privateinternetaccess.vpn.splittunnel.systemextension */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		976B8CD72B0B55F60097FE7F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976B8CD62B0B55F60097FE7F /* Logger.swift */; };
@@ -135,6 +139,7 @@
 
 /* Begin PBXFileReference section */
 		03411C5003411ED000000001 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		5220075B2B57F3850034BCEA /* MockProxyEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProxyEngine.swift; sourceTree = "<group>"; };
 		5235FB182B4FC43900F3B772 /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
 		5235FB1B2B4FFCEB00F3B772 /* ProxySessionFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxySessionFactory.swift; sourceTree = "<group>"; };
 		5235FB1E2B510CEF00F3B772 /* TrafficManagerNIOTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrafficManagerNIOTest.swift; sourceTree = "<group>"; };
@@ -160,6 +165,8 @@
 		52E84CF52B5439CA00B67912 /* MockChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockChannel.swift; sourceTree = "<group>"; };
 		52E84CF72B54F22200B67912 /* SessionChannelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionChannelProtocol.swift; sourceTree = "<group>"; };
 		52E84CFA2B54F77400B67912 /* ChannelWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelWrapper.swift; sourceTree = "<group>"; };
+		52EA0A6F2B58F8DC00CD8EFE /* MockProxyOptionsFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProxyOptionsFactory.swift; sourceTree = "<group>"; };
+		52EA0A732B59205200CD8EFE /* MockLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLogger.swift; sourceTree = "<group>"; };
 		976B8CD62B0B55F60097FE7F /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		9785C0C72B5921A6002A982D /* RequestDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RequestDelegate.swift; path = ProxyCLI/RequestDelegate.swift; sourceTree = SOURCE_ROOT; };
 		9785C0C82B5921A6002A982D /* Proxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Proxy.swift; path = ProxyCLI/Proxy.swift; sourceTree = SOURCE_ROOT; };
@@ -259,6 +266,9 @@
 				5235FB4F2B5157DF00F3B772 /* MockFlow.swift */,
 				5235FB512B51582C00F3B772 /* MockProxySessionFactory.swift */,
 				52E84CF52B5439CA00B67912 /* MockChannel.swift */,
+				5220075B2B57F3850034BCEA /* MockProxyEngine.swift */,
+				52EA0A6F2B58F8DC00CD8EFE /* MockProxyOptionsFactory.swift */,
+				52EA0A732B59205200CD8EFE /* MockLogger.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -679,12 +689,14 @@
 				52699E632B56BBEE004FBF20 /* ProxyEngine.swift in Sources */,
 				5235FB482B5145FD00F3B772 /* IDGenerator.swift in Sources */,
 				5235FB422B5145CE00F3B772 /* TrafficManager.swift in Sources */,
+				5220075D2B57F5E70034BCEA /* SplitTunnelProxyProvider.swift in Sources */,
 				527F56AE2B31A5DA003E7DF7 /* AppPolicy.swift in Sources */,
 				D19C05F32B50A67500E804DE /* ProxyOptions.swift in Sources */,
 				52E84CF62B5439CA00B67912 /* MockChannel.swift in Sources */,
 				52E84CF92B54F22200B67912 /* SessionChannelProtocol.swift in Sources */,
 				5235FB432B5145CE00F3B772 /* ProxySessionUDP.swift in Sources */,
 				5235FB492B5145FD00F3B772 /* NetworkUtilities.swift in Sources */,
+				5220075C2B57F3850034BCEA /* MockProxyEngine.swift in Sources */,
 				52E84CFC2B54F77400B67912 /* ChannelWrapper.swift in Sources */,
 				5235FB4C2B5145FD00F3B772 /* ProcessUtilities.swift in Sources */,
 				5235FB442B5145CE00F3B772 /* NEAppProxyFlow+Extensions.swift in Sources */,
@@ -693,6 +705,8 @@
 				52D4C8CF2B52FBEB0059F7DD /* InboundHandler.swift in Sources */,
 				5235FB522B51582C00F3B772 /* MockProxySessionFactory.swift in Sources */,
 				5235FB4A2B5145FD00F3B772 /* IPCConnection.swift in Sources */,
+				52EA0A702B58F8DC00CD8EFE /* MockProxyOptionsFactory.swift in Sources */,
+				52EA0A742B59205200CD8EFE /* MockLogger.swift in Sources */,
 				5235FB402B5145CE00F3B772 /* FlowProtocols.swift in Sources */,
 				5235FB4E2B51541F00F3B772 /* Mock.swift in Sources */,
 				527F56AA2B31A098003E7DF7 /* AppPolicyTest.swift in Sources */,

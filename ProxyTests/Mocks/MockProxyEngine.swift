@@ -7,3 +7,34 @@
 //
 
 import Foundation
+import NetworkExtension
+
+class MockProxyEngine: ProxyEngineProtocol, Mock {
+    // Required by Mock
+    var methodsCalled: Set<String> = []
+    var argumentsGiven: Dictionary<String, [Any]> = [:]
+
+    // Required by ProxyEngineProtocol
+    var trafficManager: TrafficManager!
+    var appPolicy: AppPolicy!
+    
+    public func initializeLogger(logLevel: String, logFile: String) -> Bool {
+        record(args: [logLevel, logFile])
+        return true
+    }
+    
+    public func whitelistProxyInFirewall(groupName: String) -> Bool {
+        record(args: [groupName])
+        return true
+    }
+
+    public func setTunnelNetworkSettings(serverAddress: String, provider: NETransparentProxyProvider, completionHandler: @escaping (Error?) -> Void) {
+        record(args: [serverAddress, provider, completionHandler])
+    }
+
+    public func handleNewFlow(_ flow: Flow) -> Bool {
+        record(args: [flow])
+        return true
+    }
+}
+

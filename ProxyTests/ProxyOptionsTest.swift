@@ -7,7 +7,7 @@ class ProxyOptionsSpec: QuickSpec {
         describe("ProxyOptions") {
             context("when an option array is created") {
                 // This is needed because ProxyOptions.create() contains log calls
-                Logger.initializeLogger(logLevel: "error", logFile: "/tmp/STProxy.log")
+                Logger.instance.initializeLogger(logLevel: "error", logFile: "/tmp/STProxy.log")
 
                 it("should return the object if all required options are present") {
                     let correctOptions: [String : Any]? =
@@ -20,7 +20,7 @@ class ProxyOptionsSpec: QuickSpec {
                         "routeVpn" : true,
                         "connected" : true,
                         "whitelistGroupName" : "group1"]
-                    expect(ProxyOptions.create(options: correctOptions)).toNot(beNil())
+                    expect(ProxyOptionsFactory().create(options: correctOptions)).toNot(beNil())
                 }
                 
                 it("should return nil if some required options are missing") {
@@ -28,7 +28,7 @@ class ProxyOptionsSpec: QuickSpec {
                         ["routeVpn" : true,
                         "connected" : true,
                         "whitelistGroupName" : "group1"]
-                    expect(ProxyOptions.create(options: missingOptions)).to(beNil())
+                    expect(ProxyOptionsFactory().create(options: missingOptions)).to(beNil())
                 }
 
                 it("should return nil if some required options are the wrong type") {
@@ -42,7 +42,7 @@ class ProxyOptionsSpec: QuickSpec {
                     "routeVpn" : true,
                     "connected" : true,
                     "whitelistGroupName" : "group1"]
-                    expect(ProxyOptions.create(options: wrongTypeOptions)).to(beNil())
+                    expect(ProxyOptionsFactory().create(options: wrongTypeOptions)).to(beNil())
                 }
             }
         }
