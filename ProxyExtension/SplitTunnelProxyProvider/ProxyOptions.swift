@@ -1,15 +1,11 @@
-struct ProxyOptions {
-    var bypassApps: [String] = []
-    var vpnOnlyApps: [String] = []
-    var networkInterface: String = ""
-    var serverAddress: String = ""
-    var routeVpn: Bool = false
-    var connected: Bool = false
-    var groupName: String = ""
+protocol ProxyOptionsFactoryProtocol {
+    func create(options: [String : Any]?) -> ProxyOptions?
+}
 
+struct ProxyOptionsFactory: ProxyOptionsFactoryProtocol {
     // This function returns a not nil value only if all options are present
     // and are the expected type
-    static func create(options: [String : Any]?) -> ProxyOptions? {
+    func create(options: [String : Any]?) -> ProxyOptions? {
         var proxyOptions = ProxyOptions()
         guard let bypassApps = options!["bypassApps"] as? [String] else {
             log(.error, "Error: Cannot find bypassApps in options")
@@ -49,13 +45,23 @@ struct ProxyOptions {
             return nil
         }
         proxyOptions.connected = connected
-        
+
         guard let groupName = options!["whitelistGroupName"] as? String else {
             log(.error, "Error: Cannot find whitelistGroupName in options")
             return nil
         }
         proxyOptions.groupName = groupName
-        
+
         return proxyOptions
     }
+}
+
+struct ProxyOptions {
+    var bypassApps: [String] = []
+    var vpnOnlyApps: [String] = []
+    var networkInterface: String = ""
+    var serverAddress: String = ""
+    var routeVpn: Bool = false
+    var connected: Bool = false
+    var groupName: String = ""
 }
