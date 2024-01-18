@@ -18,11 +18,6 @@ class MockProxyEngine: ProxyEngineProtocol, Mock {
     var trafficManager: TrafficManager!
     var appPolicy: AppPolicy!
     
-    public func initializeLogger(logLevel: String, logFile: String) -> Bool {
-        record(args: [logLevel, logFile])
-        return true
-    }
-    
     public func whitelistProxyInFirewall(groupName: String) -> Bool {
         record(args: [groupName])
         return true
