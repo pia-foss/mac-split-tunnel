@@ -9,17 +9,18 @@
 import Foundation
 import NetworkExtension
 
-class ProxyEngine {
+protocol ProxyEngineProtocol {
+    var trafficManager: TrafficManager! { get set }
+    var appPolicy: AppPolicy! { get set }
+
+    func handleNewFlow(_ flow: Flow) -> Bool
+    func whitelistProxyInFirewall(groupName: String) -> Bool
+    func setTunnelNetworkSettings(serverAddress: String, provider: NETransparentProxyProvider, completionHandler: @escaping (Error?) -> Void)
+}
+
+final class ProxyEngine: ProxyEngineProtocol {
     public var trafficManager: TrafficManager!
     public var appPolicy: AppPolicy!
-
-    public func initializeLogger(logLevel: String, logFile: String) -> Bool {
-        guard Logger.initializeLogger(logLevel: logLevel, logFile: logFile) else {
-            return false
-        }
-
-        return true
-    }
 
     public func handleNewFlow(_ flow: Flow) -> Bool {
         guard isFlowIPv4(flow) else {
@@ -96,7 +97,7 @@ class ProxyEngine {
         var pid: pid_t = 0
 
         // An audit token is opaque Data - but we can use it to extract the pid (and other things)
-        // by converting it to an audit_token_t and then using libbsm APis to extract what we want.
+        // by converting it to an audit_token_t and then using libbsm APIs to extract what we want.
         auditToken.withUnsafeBytes { bytes in
             let auditTokenValue = bytes.bindMemory(to: audit_token_t.self).baseAddress!.pointee
 

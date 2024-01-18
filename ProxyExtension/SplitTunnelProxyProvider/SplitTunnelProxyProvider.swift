@@ -26,28 +26,32 @@ import Puppy
 final class SplitTunnelProxyProvider : NETransparentProxyProvider {
 
     // MARK: Proxy options
-    public var proxyOptions: ProxyOptions!
+    public var proxyOptionsFactory: ProxyOptionsFactoryProtocol!
 
     // The engine
-    public var engine: ProxyEngine!
+    public var engine: ProxyEngineProtocol!
+
+    // The logger
+    public var logger: LoggerProtocol!
 
     override func startProxy(options: [String : Any]?, completionHandler: @escaping (Error?) -> Void) {
         let logLevel: String = options?["logLevel"] as? String ?? "error"
         let logFile: String = options?["logFile"] as? String ?? "/tmp/STProxy.log"
 
-        self.engine = ProxyEngine()
+        self.logger = self.logger ?? Logger.instance
+        self.engine = self.engine ?? ProxyEngine()
+        self.proxyOptionsFactory = self.proxyOptionsFactory ?? ProxyOptionsFactory()
 
         // Ensure the logger is initialized first
-        guard engine.initializeLogger(logLevel: logLevel, logFile: logFile) else {
+        guard logger.initializeLogger(logLevel: logLevel, logFile: logFile) else {
             return
         }
 
-        guard let proxyOptions = ProxyOptions.create(options: options) else {
+        guard let proxyOptions = proxyOptionsFactory.create(options: options) else {
             log(.error, "provided incorrect list of options. They might be missing or an incorrect type")
             return
         }
-        self.proxyOptions = proxyOptions
-        
+
         // Whitelist this process in the firewall - error logging happens in function
         guard engine.whitelistProxyInFirewall(groupName: proxyOptions.groupName) else {
             log(.error, "failed to set gid")
@@ -60,7 +64,6 @@ final class SplitTunnelProxyProvider : NETransparentProxyProvider {
 
         engine.trafficManager = TrafficManagerNIO(interfaceName: proxyOptions.networkInterface)
 
-        
         log(.info, "Proxy started!")
     }
 
