@@ -15,7 +15,7 @@ final class ProxyEngineTest: QuickSpec {
     override class func spec() {
         describe("ProxyEngineTest") {
             context("handleNewFlow") {
-                context("when the app is not in vpnOnly or bypass lists") {
+                context("when the app is not in either the vpnOnly or bypass lists") {
                     it("ignores a new TCP flow") {
                         let vpnState = VpnState(bypassApps: [], vpnOnlyApps: [""], networkInterface: "en0", serverAddress: "127.0.01", routeVpn: true, connected: false, groupName: "piavpn")
 
@@ -28,8 +28,8 @@ final class ProxyEngineTest: QuickSpec {
                         let flow = MockFlowTCP()
                         flow.sourceAppSigningIdentifier = "com.foo.bar"
 
-                        let result = engine.handleNewFlow(flow)
-                        expect(result).to(equal(false))
+                        let willHandleFlow = engine.handleNewFlow(flow)
+                        expect(willHandleFlow).to(equal(false))
                     }
 
                     it("ignores a new UDP flow") {
@@ -44,8 +44,8 @@ final class ProxyEngineTest: QuickSpec {
                         let flow = MockFlowUDP()
                         flow.sourceAppSigningIdentifier = "com.foo.bar"
 
-                        let result = engine.handleNewFlow(flow)
-                        expect(result).to(equal(false))
+                        let willHandleFlow = engine.handleNewFlow(flow)
+                        expect(willHandleFlow).to(equal(false))
                     }
                 }
                 context("when the app is in the vpnOnly list and vpn is disconnected") {
@@ -62,9 +62,9 @@ final class ProxyEngineTest: QuickSpec {
                         flow.sourceAppSigningIdentifier = "com.apple.curl"
 
                         // We still expect a true here (even though we block the flow) as we need to tell the OS we're taking control of the flow to be able to block it - a return value of true indicates we want control over it
-                        let result = engine.handleNewFlow(flow)
-                        expect(result).to(equal(true))
-
+                        let willHandleFlow = engine.handleNewFlow(flow)
+                        expect(willHandleFlow).to(equal(true))
+                        // The flow is killed
                         expect(flow.didCall("closeReadAndWrite")).to(equal(true))
                     }
                     it("blocks a new UDP flow") {
@@ -79,10 +79,9 @@ final class ProxyEngineTest: QuickSpec {
                         let flow = MockFlowUDP()
                         flow.sourceAppSigningIdentifier = "com.apple.curl"
 
-                        // We still expect a true here (even though we block the flow) as we need to tell the OS we're taking control of the flow to be able to block it - a return value of true indicates we want control over it
-                        let result = engine.handleNewFlow(flow)
-                        expect(result).to(equal(true))
-
+                        let willHandleFlow = engine.handleNewFlow(flow)
+                        expect(willHandleFlow).to(equal(true))
+                        // The flow is killed
                         expect(flow.didCall("closeReadAndWrite")).to(equal(true))
                     }
                 }
@@ -100,9 +99,8 @@ final class ProxyEngineTest: QuickSpec {
                         let flow = MockFlowTCP()
                         flow.sourceAppSigningIdentifier = "com.apple.curl"
 
-                        let result = engine.handleNewFlow(flow)
-                        expect(result).to(equal(true))
-
+                        let willHandleFlow = engine.handleNewFlow(flow)
+                        expect(willHandleFlow).to(equal(true))
                         expect(flow.didCall("openFlow")).to(equal(true))
                         expect(mockTrafficManager.didCall("handleFlowIO")).to(equal(true))
                     }
@@ -119,9 +117,8 @@ final class ProxyEngineTest: QuickSpec {
                         let flow = MockFlowUDP()
                         flow.sourceAppSigningIdentifier = "com.apple.curl"
 
-                        let result = engine.handleNewFlow(flow)
-                        expect(result).to(equal(true))
-
+                        let willHandleFlow = engine.handleNewFlow(flow)
+                        expect(willHandleFlow).to(equal(true))
                         expect(flow.didCall("openFlow")).to(equal(true))
                         expect(mockTrafficManager.didCall("handleFlowIO")).to(equal(true))
                     }

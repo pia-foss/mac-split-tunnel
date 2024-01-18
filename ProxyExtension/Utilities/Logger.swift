@@ -11,10 +11,10 @@ protocol LoggerProtocol {
 }
 
 class Logger: LoggerProtocol {
-    static let instance = Logger()
+    static var instance: LoggerProtocol = Logger()
 
     // Private implementation
-    var pimpl : Puppy = Puppy()
+    var pimpl = Puppy()
 
     func initializeLogger(logLevel: String, logFile: String) -> Bool {
         // Initialize the Console logger first
