@@ -10,9 +10,15 @@
 - Open xv_mac_split_tunnelling_poc/SplitTunnelProxy.xcodeproj using XCode.
 - Check both targets Signing & Capabilities settings, making sure that:
 	1. for both targets team is "Private Internet Access, Inc." (check Apple account certificates)
-	2. target SplitTunnelProxy bundle identifier is "com.privateinternetaccess.splittunnel.poc"
-	3. target SplitTunnelProxyExtension bundle identifier is "com.privateinternetaccess.splittunnel.poc.extension"
+	2. target SplitTunnelProxy bundle identifier is "com.privateinternetaccess.vpn.splittunnel"
+	3. target SplitTunnelProxyExtension bundle identifier is "com.privateinternetaccess.vpn.splittunnel"
 - (optional) To change the debugging scheme settings click on the top center bar on SplitTunnelProxy, "Edit Scheme..."
+
+### CI Building
+To achieve runnable builds in GHA, we use the `build.sh` script. 
+`build.sh` is written to be generic for any app+extension use-case, so we pass our specific values from environment variables.
+To work on that script, modify `sample.env` and set the variables there for your specific development environment.
+
 
 ## Debugging
 
@@ -29,7 +35,7 @@
   Repeat this step for every debug session. 
 - You can also attach the debugger to the extension using its PID.  
   Open the activity monitor, a process named  
-  "com.privateinternetaccess.splittunnel.poc.extension" owned by root  
+  "com.privateinternetaccess.vpn.splittunnel" owned by root  
   should be present.  
   Check its PID, in XCode select "Debug" and "Attach to process  
   by PID or name...".

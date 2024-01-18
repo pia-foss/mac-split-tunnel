@@ -11,20 +11,51 @@ jobs:
       with:
         xcode-version: 15
     - uses: actions/checkout@v3
-    - name: Setup signing
+    - name: Install PIA's signing certificate
       run: |
-        echo "${{ secrets.PIA_APPLE_DEVELOPER_ID_CERT_BASE64 }}" | base64 -d > ${{ github.workspace }}/pia_cert.p12
-        echo "${{ secrets.PIA_APPLE_PROVISIONING_PROFILE_BASE64 }}" | base64 -d > ${{ github.workspace }}/splittunnel.provisionprofile
-    - run: fastlane mac build --verbose
-      env:
-        PIA_DEVELOPER_ID_FILE: ${{ github.workspace }}/pia_cert.p12
-        PIA_DEVELOPER_ID_PASSWORD: ${{ secrets.PIA_APPLE_DEVELOPER_ID_PASSWORD }}
-        PIA_CODESIGN_IDENTITY: ${{ vars.PIA_CODESIGN_IDENTITY }}
-        PIA_APPLE_SPLIT_TUNNEL_PROVISION_PROFILE : ${{ github.workspace }}/splittunnel.provisionprofile
-        PIA_APPLE_TEAM_ID: ${{ vars.PIA_APPLE_TEAM_ID }}
+        CERTIFICATE_PATH=${{ github.workspace }}/build_certificate.p12
+        KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+
+        echo "importing certificate from secrets"
+        echo -n "${{ secrets.PIA_APPLE_DEVELOPER_ID_CERT_BASE64 }}" | base64 -d -o "$CERTIFICATE_PATH"
+
+        echo "write app profile from secrets"
+        echo -n "${{ secrets.PIA_APPLE_CLI_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode -o ${{ github.workspace }}/app.provisionprofile
+        echo "write extension profile from secrets"
+        echo -n "${{ secrets.PIA_APPLE_SYSTEM_EXTENSION_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode -o ${{ github.workspace }}/sext.provisionprofile
+        
+        echo "creating temporary keychain"
+        security create-keychain -p "" $KEYCHAIN_PATH
+        security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+        security unlock-keychain -p "" $KEYCHAIN_PATH
+
+        echo "importing certificate to keychain"
+        security import $CERTIFICATE_PATH -P "${{ secrets.PIA_APPLE_DEVELOPER_ID_PASSWORD }}" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+        security list-keychain -d user -s $KEYCHAIN_PATH
+
+        echo "Done importing certificates"
+
+    - env:
+        APP_BUILD_TARGET: ProxyCLI
+        APP_PROVISION_PROFILE: ${{ github.workspace }}/app.provisionprofile
+        CODESIGN_IDENTITY: ${{ vars.PIA_CODESIGN_IDENTITY }}
+        EXTENSION_BUILD_TARGET: SplitTunnelProxyExtension
+        EXTENSION_ID: com.privateinternetaccess.vpn.splittunnel
+        NOTARIZATION_EMAIL: ${{ secrets.PIA_APPLE_NOTARIZATION_EMAIL }}
+        NOTARIZATION_PASSWORD: ${{ secrets.PIA_APPLE_NOTARIZATION_PASSWORD }}
+        PACKAGE_FOR_RELEASE: 1
+        PROJECT: SplitTunnelProxy
+        SEXT_PROVISION_PROFILE: ${{ github.workspace }}/sext.provisionprofile
+        TEAM_ID: ${{ vars.PIA_APPLE_TEAM_ID }}
+      name: Build, sign, package
+      run: ./build.sh
+    - name: Zip app bundle
+      run: |
+        # We zip it manually using ditto. Github Actions may break things in the bundle if we let it zip on upload.
+        ditto -ck --rsrc --keepParent --sequesterRsrc "out/ProxyCLI.app" out/ProxyCLI.zip
     - uses: actions/upload-artifact@v3
       if: success()
       with:
-        name: "splitTunnelExtension"
+        name: "ProxyCLI"
         retention-days: 10
-        path: out/SplitTunnelExtension.xcarchive/Products/Applications
+        path: out/ProxyCLI.zip
