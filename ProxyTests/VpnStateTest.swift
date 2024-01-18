@@ -2,7 +2,7 @@
 import Quick
 import Nimble
 
-class ProxyOptionsSpec: QuickSpec {
+class VpnStateSpec: QuickSpec {
     override class func spec() {
         describe("ProxyOptions") {
             context("when an option array is created") {
@@ -20,7 +20,7 @@ class ProxyOptionsSpec: QuickSpec {
                         "routeVpn" : true,
                         "connected" : true,
                         "whitelistGroupName" : "group1"]
-                    expect(ProxyOptionsFactory().create(options: correctOptions)).toNot(beNil())
+                    expect(VpnStateFactory().create(options: correctOptions)).toNot(beNil())
                 }
                 
                 it("should return nil if some required options are missing") {
@@ -28,7 +28,7 @@ class ProxyOptionsSpec: QuickSpec {
                         ["routeVpn" : true,
                         "connected" : true,
                         "whitelistGroupName" : "group1"]
-                    expect(ProxyOptionsFactory().create(options: missingOptions)).to(beNil())
+                    expect(VpnStateFactory().create(options: missingOptions)).to(beNil())
                 }
 
                 it("should return nil if some required options are the wrong type") {
@@ -42,7 +42,7 @@ class ProxyOptionsSpec: QuickSpec {
                     "routeVpn" : true,
                     "connected" : true,
                     "whitelistGroupName" : "group1"]
-                    expect(ProxyOptionsFactory().create(options: wrongTypeOptions)).to(beNil())
+                    expect(VpnStateFactory().create(options: wrongTypeOptions)).to(beNil())
                 }
             }
         }

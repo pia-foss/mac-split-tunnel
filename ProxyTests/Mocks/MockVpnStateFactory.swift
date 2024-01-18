@@ -8,16 +8,16 @@
 
 import Foundation
 
-class MockProxyOptionsFactory: ProxyOptionsFactoryProtocol, Mock {
+class VpnStateFactory: VpnStateFactoryProtocol, Mock {
     // Required by Mock
     var methodsCalled: Set<String> = []
     var argumentsGiven: Dictionary<String, [Any]> = [:]
 
-    func create(options: [String : Any]?) -> ProxyOptions? {
+    func create(options: [String : Any]?) -> VpnState? {
         record(args: [options as Any])
 
         // Delegate to the original implementation - this is because when mocking this particular class
         // as part of testing another class, a valid result may be relied on
-        return ProxyOptionsFactory().create(options: options)
+        return VpnStateFactory().create(options: options)
     }
 }
