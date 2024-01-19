@@ -21,7 +21,7 @@ enum UnsupportedProtocol: Error {
 extension ProxySession {
     // Called by a ProxySession class to kill a session.
     static func terminateProxySession(id: IDGenerator.ID, channel: SessionChannel, flow: Flow) {
-        log(.info, "id: \(id) Terminating the flow")
+        log(.info, "id: \(id) Terminating the session")
         log(.info, "id: \(id) Trying to shutdown the flow")
         // Kill the flow
         flow.closeReadAndWrite()
