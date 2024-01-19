@@ -98,7 +98,7 @@ extension ProxyCLI.Proxy {
                     semaphore.signal()
                 }
             }
-            semaphore.wait()
+            _ = semaphore.wait(timeout: .now() + 120)
         }
     }
 
@@ -156,7 +156,7 @@ func loadProxyManagerSynchronously() throws -> NETransparentProxyManager {
         semaphore.signal()
     }
 
-    _ = semaphore.wait(timeout: .distantFuture)
+    _ = semaphore.wait(timeout: .now() + 120)
     if proxyManager == nil {
         throw ManagerLoadingError.oopsie
     }
