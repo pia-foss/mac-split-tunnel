@@ -61,7 +61,7 @@ final class MockFlowUDP: FlowUDP, Mock {
     let endpoints: [NWEndpoint]?
     let flowError: Error?
 
-    init(data: [Data]? = nil, endpoints: [NWEndpoint]? = nil, flowError: NSError? = nil) {
+    init(data: [Data]? = nil, endpoints: [NWEndpoint]? = nil, flowError: Error? = nil) {
         self.data = data
         self.endpoints = endpoints
         self.flowError = flowError
@@ -84,5 +84,6 @@ final class MockFlowUDP: FlowUDP, Mock {
 
     func writeDatagrams(_ datagrams: [Data], sentBy remoteEndpoints: [NWEndpoint], completionHandler: @escaping (Error?) -> Void) {
         record(args: [datagrams, remoteEndpoints, completionHandler])
+        completionHandler(flowError)
     }
 }

@@ -12,18 +12,18 @@ import Nimble
 import NetworkExtension
 import NIO
 
-class InboundHandlerTCPTest: QuickSpec {
-    private static func setupTestEnvironment(onBytesReceived: @escaping (UInt64) -> Void = { _ in }, flowError: Error? = nil) -> (EmbeddedChannel, MockFlowTCP, (UInt64) -> Void) {
-        let mockFlow = MockFlowTCP(data: nil, flowError: flowError)
+class InboundHandlerUDPTest: QuickSpec {
+    private static func setupTestEnvironment(onBytesReceived: @escaping (UInt64) -> Void = { _ in }, flowError: Error? = nil) -> (EmbeddedChannel, MockFlowUDP, (UInt64) -> Void) {
+        let mockFlow = MockFlowUDP(data: nil, flowError: flowError)
         let channel = EmbeddedChannel()
-        let handler = InboundHandlerTCP(flow: mockFlow, id: 1, onBytesReceived: onBytesReceived)
+        let handler = InboundHandlerUDP(flow: mockFlow, id: 1, onBytesReceived: onBytesReceived)
         try! channel.pipeline.addHandler(handler).wait()
 
         return (channel, mockFlow, onBytesReceived)
     }
 
     override class func spec() {
-        describe("InboundHandlerTCP") {
+        describe("InboundHandlerUDP") {
             context("when new data arrives on the channel") {
                 it("writes the new data to the corresponding flow") {
                     let (channel, mockFlow, _) = setupTestEnvironment()
@@ -31,10 +31,19 @@ class InboundHandlerTCPTest: QuickSpec {
                     var buffer = channel.allocator.buffer(capacity: 10)
                     buffer.writeString("Hello world")
 
-                    let expectedData = Data(buffer.readableBytesView)
-                    try channel.writeInbound(buffer)
+                    let host = "1.1.1.1"
+                    let port = 1337
 
-                    expect(mockFlow.didCallWithArgAt("write", index: 0, value: expectedData)).to(equal(true))
+                    // Note this are arrays for UDP
+                    let expectedData = [Data(buffer.readableBytesView)]
+                    let expectedEndpoints = [NWHostEndpoint(hostname: host, port: String(port))]
+                    // UDP also requires an endpoint
+                    let endpoint = try SocketAddress(ipAddress: host, port: port)
+                    let envelope = AddressedEnvelope<ByteBuffer>(remoteAddress: endpoint, data: buffer)
+                    try channel.writeInbound(envelope)
+
+                    expect(mockFlow.didCallWithArgAt("writeDatagrams", index: 0, value: expectedData)).to(equal(true))
+                    expect(mockFlow.didCallWithArgAt("writeDatagrams", index: 1, value: expectedEndpoints)).to(equal(true))
                 }
 
                 it("updates bytesReceived") {
@@ -46,7 +55,14 @@ class InboundHandlerTCPTest: QuickSpec {
 
                     let stringToWrite = "Hello world"
                     buffer.writeString(stringToWrite)
-                    try channel.writeInbound(buffer)
+
+                    let host = "1.1.1.1"
+                    let port = 1337
+
+                    // UDP also requires an endpoint
+                    let endpoint = try SocketAddress(ipAddress: host, port: port)
+                    let envelope = AddressedEnvelope<ByteBuffer>(remoteAddress: endpoint, data: buffer)
+                    try channel.writeInbound(envelope)
 
                     expect(count).to(equal(UInt64(stringToWrite.count)))
                 }
@@ -61,7 +77,13 @@ class InboundHandlerTCPTest: QuickSpec {
 
                     var buffer = channel.allocator.buffer(capacity: 10)
                     buffer.writeString("Hello world")
-                    try channel.writeInbound(buffer)
+                    let host = "1.1.1.1"
+                    let port = 1337
+
+                    // UDP also requires an endpoint
+                    let endpoint = try SocketAddress(ipAddress: host, port: port)
+                    let envelope = AddressedEnvelope<ByteBuffer>(remoteAddress: endpoint, data: buffer)
+                    try channel.writeInbound(envelope)
 
                     // Bytecount not updated as the write failed
                     expect(count).to(equal(UInt64(0)))
