@@ -11,7 +11,7 @@ final class ProxySessionTCP: ProxySession {
     let flow: FlowTCP
     let config: SessionConfig
     // Unique identifier for this session
-    let id: IDGenerator.ID
+    public let id: IDGenerator.ID
     // Made public to allow for mocking/stubbing in tests
     public var channel: SessionChannel!
 
@@ -53,19 +53,12 @@ final class ProxySessionTCP: ProxySession {
         Self.terminateProxySession(id: id, channel: channel, flow: flow)
     }
 
-    public func identifier() -> IDGenerator.ID { self.id }
-
     private func createChannel(flow: FlowTCP) -> EventLoopFuture<Channel> {
-        // Assuming interfaceAddress is already defined
-        let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: flow.remoteEndpoint as! NWHostEndpoint)
-
-        // Return a friendly error on IPv6 addresses
-        // TODO: Properly support IPv6 for the beta
-        if (endpointAddress ?? "").contains(":") {
-            return config.eventLoopGroup.next().makeFailedFuture(UnsupportedProtocol.IPv6("IPv6 is not yet supported"))
+        guard let endpoint = flow.remoteEndpoint as? NWHostEndpoint else {
+            return config.eventLoopGroup.next().makeFailedFuture(ProxySessionError.BadEndpoint("flow.remoteEndpoint is not an NWHostEndpoint"))
         }
 
-        log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) Creating, binding and connecting a new TCP socket - remote address: \(endpointAddress!) remote port: \(endpointPort!)")
+        log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) Creating, binding and connecting a new TCP socket - endpoint: \(endpoint)")
 
         let bootstrap = ClientBootstrap(group: config.eventLoopGroup)
             .channelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)
@@ -76,8 +69,18 @@ final class ProxySessionTCP: ProxySession {
                 return channel.pipeline.addHandler(inboundHandler)
             }
 
-        // Bind to a local address and then connect
+        return bindSourceAddressAndConnect(bootstrap, endpoint: endpoint)
+    }
+
+    private func bindSourceAddressAndConnect(_ bootstrap: ClientBootstrap, endpoint: NWHostEndpoint) -> EventLoopFuture<Channel> {
         do {
+            let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: endpoint)
+            // Return a friendly error on IPv6 addresses
+            // TODO: Properly support IPv6 for the beta
+            if (endpointAddress ?? "").contains(":") {
+                return config.eventLoopGroup.next().makeFailedFuture(ProxySessionError.IPv6("IPv6 is not yet supported"))
+            }
+
             // This is the only call that can throw an exception
             let socketAddress = try SocketAddress(ipAddress: config.interfaceAddress, port: 0)
             let channelFuture = bootstrap.bind(to: socketAddress)
@@ -89,6 +92,19 @@ final class ProxySessionTCP: ProxySession {
         }
     }
 
+    private func handleChannelWrite(_ result: Result<Void, Error>, byteCount: UInt64) {
+        switch result {
+        case .success:
+            // Update number of bytes transmitted
+            self.txBytes &+= byteCount
+            // since everything worked as expected, we schedule another read on the flow
+            self.scheduleFlowRead(flow: flow, channel: channel)
+        case .failure(let error):
+            log(.error, "id: \(self.id) \(flow.sourceAppSigningIdentifier) \(error) while sending TCP data through the socket")
+            self.terminate()
+        }
+    }
+
     // schedule a new read on a TCP flow
     private func scheduleFlowRead(flow: FlowTCP, channel: SessionChannel) {
         flow.readData { outboundData, flowError in
@@ -97,17 +113,7 @@ final class ProxySessionTCP: ProxySession {
             // we want to write that data to the corresponding socket
             if flowError == nil, let data = outboundData, !data.isEmpty {
                 let buffer = channel.allocator.buffer(bytes: data)
-                channel.writeAndFlush(buffer).whenComplete { result in
-                    switch result {
-                    case .success:
-                        self.txBytes &+= UInt64(data.count)
-                        // since everything worked as expected, we schedule another read on the flow
-                        self.scheduleFlowRead(flow: flow, channel: channel)
-                    case .failure(let error):
-                        log(.error, "id: \(self.id) \(flow.sourceAppSigningIdentifier) \(error) while sending TCP data through the socket")
-                        self.terminate()
-                    }
-                }
+                channel.writeAndFlush(buffer).whenComplete { result in self.handleChannelWrite(result, byteCount: UInt64(data.count)) }
             } else {
                 log(.error, "id: \(self.id) \(flow.sourceAppSigningIdentifier) \((flowError?.localizedDescription) ?? "Empty buffer") occurred during TCP flow.readData()")
 

@@ -11,11 +11,12 @@ protocol ProxySession {
     // End an existing proxy session (calls through to Self.terminateProxySession)
     func terminate() -> Void
     // Return the id for a given session (used for tracing)
-    func identifier() -> IDGenerator.ID
+    var id: IDGenerator.ID { get }
 }
 
-enum UnsupportedProtocol: Error {
+enum ProxySessionError: Error {
     case IPv6(_ message: String)
+    case BadEndpoint(_ message: String)
 }
 
 extension ProxySession {

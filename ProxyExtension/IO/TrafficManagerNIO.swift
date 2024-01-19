@@ -9,6 +9,7 @@ struct SessionConfig {
     let interfaceAddress: String
 }
 
+// Manage the handling of Proxy Sessions
 final class TrafficManagerNIO : TrafficManager {
     var sessionConfig: SessionConfig!
     let proxySessionFactory: ProxySessionFactory
@@ -19,7 +20,6 @@ final class TrafficManagerNIO : TrafficManager {
         // Used to assign unique IDs to each session
         self.idGenerator = IDGenerator()
         self.sessionConfig = config ?? Self.defaultSessionConfig(interfaceName: interfaceName)
-
         self.proxySessionFactory = proxySessionFactory
     }
 
@@ -46,6 +46,7 @@ final class TrafficManagerNIO : TrafficManager {
         )
     }
 
+    // Fire off a proxy session for each new flow
     func handleFlowIO(_ flow: Flow) {
         if let tcpFlow = flow as? FlowTCP {
             let tcpSession = proxySessionFactory.create(flow: tcpFlow, config: sessionConfig, id: nextId())

@@ -11,7 +11,7 @@ final class ProxySessionUDP: ProxySession {
     let flow: FlowUDP
     let config: SessionConfig
     // Unique identifier for this session
-    let id: IDGenerator.ID
+    public let id: IDGenerator.ID
     // Made public to allow for mocking/stubbing in tests
     public var channel: SessionChannel!
 
@@ -53,8 +53,6 @@ final class ProxySessionUDP: ProxySession {
         Self.terminateProxySession(id: id, channel: channel, flow: flow)
     }
 
-    public func identifier() -> IDGenerator.ID { self.id }
-
     // this function creates and bind a new UDP channel
     private func initChannel(flow: FlowUDP) -> EventLoopFuture<Channel> {
         log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) Creating and binding a new UDP socket")
@@ -68,6 +66,10 @@ final class ProxySessionUDP: ProxySession {
                 return channel.pipeline.addHandler(inboundHandler)
             }
 
+        return bindSourceAddress(bootstrap)
+    }
+
+    private func bindSourceAddress(_ bootstrap: DatagramBootstrap) -> EventLoopFuture<Channel> {
         do {
             // This is the only call that can throw an exception
             let socketAddress = try SocketAddress(ipAddress: config.interfaceAddress, port: 0)
@@ -78,6 +80,22 @@ final class ProxySessionUDP: ProxySession {
             return channelFuture
         } catch {
             return config.eventLoopGroup.next().makeFailedFuture(error)
+        }
+    }
+
+    private func handleChannelWrite(_ result: Result<Void, Error>, _ readIsScheduled: inout Bool, byteCount: UInt64) {
+        switch result {
+        case .success:
+            // Update number of bytes transmitted
+            self.txBytes &+= byteCount
+            // Only schedule another read if we haven't already done so
+            if !readIsScheduled {
+                self.scheduleFlowRead(flow: flow, channel: channel)
+                readIsScheduled = true
+            }
+        case .failure(let error):
+            log(.error, "id: \(self.id) \(flow.sourceAppSigningIdentifier) \(error) while sending a UDP datagram through the socket")
+            self.terminate()
         }
     }
 
@@ -94,17 +112,7 @@ final class ProxySessionUDP: ProxySession {
                     }
 
                     channel.writeAndFlush(datagram).whenComplete { result in
-                        switch result {
-                        case .success:
-                            // Only schedule another read if we haven't already done so
-                            if !readIsScheduled {
-                                self.scheduleFlowRead(flow: flow, channel: channel)
-                                readIsScheduled = true
-                            }
-                        case .failure(let error):
-                            log(.error, "id: \(self.id) \(flow.sourceAppSigningIdentifier) \(error) while sending a UDP datagram through the socket")
-                            self.terminate()
-                        }
+                        self.handleChannelWrite(result, &readIsScheduled, byteCount: UInt64(data.count))
                     }
                 }
             } else {
