@@ -47,6 +47,7 @@ final class MockFlowTCP: FlowTCP, Mock {
     // Writes to our flow
     func write(_ data: Data, withCompletionHandler completionHandler: @escaping (Error?) -> Void) {
         record(args: [data, completionHandler])
+        completionHandler(flowError)
     }
 }
 
