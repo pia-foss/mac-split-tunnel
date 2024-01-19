@@ -39,7 +39,6 @@ final class SplitTunnelProxyProvider : NETransparentProxyProvider {
         let logFile: String = options?["logFile"] as? String ?? "/tmp/STProxy.log"
 
         self.logger = self.logger ?? Logger.instance
-        self.engine = self.engine ?? ProxyEngine()
         self.vpnStateFactory = self.vpnStateFactory ?? VpnStateFactory()
 
         // Ensure the logger is initialized first
@@ -47,12 +46,14 @@ final class SplitTunnelProxyProvider : NETransparentProxyProvider {
             return
         }
 
+        // Contains connection state, routing, interface, and bypass/vpnOnly app information
         guard let vpnState = vpnStateFactory.create(options: options) else {
             log(.error, "provided incorrect list of options. They might be missing or an incorrect type")
             return
         }
-        // Contains connection state, routing, interface, and bypass/vpnOnly app information
-        engine.vpnState = vpnState
+
+        let trafficManager = TrafficManagerNIO(interfaceName: vpnState.networkInterface)
+        self.engine = self.engine ?? ProxyEngine(trafficManager: trafficManager, vpnState: vpnState)
 
         // Whitelist this process in the firewall - error logging happens in function
         guard engine.whitelistProxyInFirewall(groupName: vpnState.groupName) else {
@@ -61,8 +62,6 @@ final class SplitTunnelProxyProvider : NETransparentProxyProvider {
         }
 
         engine.setTunnelNetworkSettings(serverAddress: vpnState.serverAddress, provider: self, completionHandler: completionHandler)
-
-        engine.trafficManager = TrafficManagerNIO(interfaceName: vpnState.networkInterface)
 
         log(.info, "Proxy started!")
     }

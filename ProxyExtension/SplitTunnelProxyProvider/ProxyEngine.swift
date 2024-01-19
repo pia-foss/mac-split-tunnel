@@ -10,8 +10,8 @@ import Foundation
 import NetworkExtension
 
 protocol ProxyEngineProtocol {
-    var trafficManager: TrafficManager! { get set }
-    var vpnState: VpnState! { get set }
+    var trafficManager: TrafficManager { get }
+    var vpnState: VpnState { get }
 
     func handleNewFlow(_ flow: Flow) -> Bool
     func whitelistProxyInFirewall(groupName: String) -> Bool
@@ -19,8 +19,13 @@ protocol ProxyEngineProtocol {
 }
 
 final class ProxyEngine: ProxyEngineProtocol {
-    public var trafficManager: TrafficManager!
-    public var vpnState: VpnState!
+    let trafficManager: TrafficManager
+    let vpnState: VpnState
+
+    init(trafficManager: TrafficManager, vpnState: VpnState) {
+        self.trafficManager = trafficManager
+        self.vpnState = vpnState
+    }
 
     public func handleNewFlow(_ flow: Flow) -> Bool {
         guard isFlowIPv4(flow) else {
