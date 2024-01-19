@@ -64,6 +64,7 @@
 		5278E59F2B598FBB00210466 /* LoggerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E59E2B598FBB00210466 /* LoggerTest.swift */; };
 		5278E5A92B5A7E3D00210466 /* InboundHandlerTCPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5A82B5A7E3D00210466 /* InboundHandlerTCPTest.swift */; };
 		5278E5AB2B5A963600210466 /* InboundHandlerUDPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5AA2B5A963600210466 /* InboundHandlerUDPTest.swift */; };
+		5278E5AD2B5A9EBA00210466 /* DefaultProxySessionFactoryTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5AC2B5A9EBA00210466 /* DefaultProxySessionFactoryTest.swift */; };
 		527F56A82B3180D6003E7DF7 /* AppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A72B3180D6003E7DF7 /* AppPolicy.swift */; };
 		527F56AA2B31A098003E7DF7 /* AppPolicyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A92B31A098003E7DF7 /* AppPolicyTest.swift */; };
 		527F56AE2B31A5DA003E7DF7 /* AppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A72B3180D6003E7DF7 /* AppPolicy.swift */; };
@@ -170,6 +171,7 @@
 		5278E59E2B598FBB00210466 /* LoggerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerTest.swift; sourceTree = "<group>"; };
 		5278E5A82B5A7E3D00210466 /* InboundHandlerTCPTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboundHandlerTCPTest.swift; sourceTree = "<group>"; };
 		5278E5AA2B5A963600210466 /* InboundHandlerUDPTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboundHandlerUDPTest.swift; sourceTree = "<group>"; };
+		5278E5AC2B5A9EBA00210466 /* DefaultProxySessionFactoryTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultProxySessionFactoryTest.swift; sourceTree = "<group>"; };
 		527F56A72B3180D6003E7DF7 /* AppPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPolicy.swift; sourceTree = "<group>"; };
 		527F56A92B31A098003E7DF7 /* AppPolicyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPolicyTest.swift; sourceTree = "<group>"; };
 		52A5F9DF2B5524560095095D /* ProxySessionUDPTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxySessionUDPTest.swift; sourceTree = "<group>"; };
@@ -422,6 +424,7 @@
 				5278E59E2B598FBB00210466 /* LoggerTest.swift */,
 				5278E5A82B5A7E3D00210466 /* InboundHandlerTCPTest.swift */,
 				5278E5AA2B5A963600210466 /* InboundHandlerUDPTest.swift */,
+				5278E5AC2B5A9EBA00210466 /* DefaultProxySessionFactoryTest.swift */,
 			);
 			path = ProxyTests;
 			sourceTree = "<group>";
@@ -740,6 +743,7 @@
 				5235FB452B5145CE00F3B772 /* ProxySession.swift in Sources */,
 				5278E59D2B59804B00210466 /* MockTrafficManager.swift in Sources */,
 				5235FB212B510D3800F3B772 /* TrafficManagerNIO.swift in Sources */,
+				5278E5AD2B5A9EBA00210466 /* DefaultProxySessionFactoryTest.swift in Sources */,
 				5235FB4B2B5145FD00F3B772 /* Formatters.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
