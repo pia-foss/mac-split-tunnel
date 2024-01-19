@@ -13,16 +13,20 @@ import NetworkExtension
 import NIO
 
 class InboundHandlerTCPTest: QuickSpec {
+    private static func setupTestEnvironment(onBytesReceived: @escaping (UInt64) -> Void = { _ in }, flowError: Error? = nil) -> (EmbeddedChannel, MockFlowTCP, (UInt64) -> Void) {
+        let mockFlow = MockFlowTCP(data: nil, flowError: flowError)
+        let channel = EmbeddedChannel()
+        let handler = InboundHandlerTCP(flow: mockFlow, id: 1, onBytesReceived: onBytesReceived)
+        try! channel.pipeline.addHandler(handler).wait()
+
+        return (channel, mockFlow, onBytesReceived)
+    }
+
     override class func spec() {
         describe("InboundHandlerTCP") {
             context("when new data arrives on the channel") {
                 it("writes the new data to the corresponding flow") {
-                    let onBytesReceived = { (byteCount: UInt64) in }
-                    // We set the mock up to have no data to be read and no errors
-                    let mockFlow = MockFlowTCP(data: nil, flowError: nil)
-                    let channel = EmbeddedChannel()
-                    let handler = InboundHandlerTCP(flow: mockFlow, id: 1, onBytesReceived: onBytesReceived)
-                    try channel.pipeline.addHandler(handler).wait()
+                    let (channel, mockFlow, _) = setupTestEnvironment()
 
                     var buffer = channel.allocator.buffer(capacity: 10)
                     buffer.writeString("Hello world")
@@ -36,10 +40,7 @@ class InboundHandlerTCPTest: QuickSpec {
                 it("updates bytesReceived") {
                     var count: UInt64 = 0
                     let onBytesReceived = { (byteCount: UInt64) in count = byteCount }
-                    let mockFlow = MockFlowTCP(data: nil, flowError: nil)
-                    let channel = EmbeddedChannel()
-                    let handler = InboundHandlerTCP(flow: mockFlow, id: 1, onBytesReceived: onBytesReceived)
-                    try channel.pipeline.addHandler(handler).wait()
+                    let (channel, _, _) = setupTestEnvironment(onBytesReceived: onBytesReceived)
 
                     var buffer = channel.allocator.buffer(capacity: 10)
 
@@ -48,6 +49,22 @@ class InboundHandlerTCPTest: QuickSpec {
                     try channel.writeInbound(buffer)
 
                     expect(count).to(equal(UInt64(stringToWrite.count)))
+                }
+
+                it("terminates the channel if writing to the flow fails") {
+                    // Just a simple error to simulate a flow.write failure
+                    struct FakeError: Error {}
+
+                    var count: UInt64 = 0
+                    let onBytesReceived = { (byteCount: UInt64) in count = byteCount}
+                    let (channel, _, _) = setupTestEnvironment(onBytesReceived: onBytesReceived, flowError: FakeError())
+
+                    var buffer = channel.allocator.buffer(capacity: 10)
+                    buffer.writeString("Hello world")
+                    try channel.writeInbound(buffer)
+
+                    // Bytecount not updated as the write failed
+                    expect(count).to(equal(UInt64(0)))
                 }
             }
         }

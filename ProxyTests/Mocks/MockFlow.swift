@@ -18,7 +18,7 @@ final class MockFlowTCP: FlowTCP, Mock {
     let data: Data?
     let flowError: Error?
 
-    init(data: Data? = nil, flowError: NSError? = nil) {
+    init(data: Data? = nil, flowError: Error? = nil) {
         self.data = data
         self.flowError = flowError
     }
