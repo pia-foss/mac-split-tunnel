@@ -2,6 +2,7 @@ protocol VpnStateFactoryProtocol {
     func create(options: [String : Any]?) -> VpnState?
 }
 
+// Responsible for validating and creating VpnState instances
 struct VpnStateFactory: VpnStateFactoryProtocol {
     // This function returns a not nil value only if all options are present
     // and are the expected type
@@ -56,6 +57,7 @@ struct VpnStateFactory: VpnStateFactoryProtocol {
     }
 }
 
+// Represents the state received from the daemon
 struct VpnState {
     var bypassApps: [String] = []
     var vpnOnlyApps: [String] = []

@@ -1,11 +1,3 @@
-//
-//  ProxySession.swift
-//  SplitTunnelProxyExtension
-//
-//  Created by John Mair on 08/01/2024.
-//  Copyright © 2024 PIA. All rights reserved.
-//
-
 import Foundation
 import NIO
 
@@ -20,6 +12,10 @@ protocol ProxySession {
     func terminate() -> Void
     // Return the id for a given session (used for tracing)
     func identifier() -> IDGenerator.ID
+}
+
+enum UnsupportedProtocol: Error {
+    case IPv6(_ message: String)
 }
 
 extension ProxySession {

@@ -1,11 +1,3 @@
-//
-//  ProxyInitializer.swift
-//  SplitTunnelProxy
-//
-//  Created by John Mair on 16/01/2024.
-//  Copyright © 2024 PIA. All rights reserved.
-//
-
 import Foundation
 import NetworkExtension
 
@@ -18,6 +10,10 @@ protocol ProxyEngineProtocol {
     func setTunnelNetworkSettings(serverAddress: String, provider: NETransparentProxyProvider, completionHandler: @escaping (Error?) -> Void)
 }
 
+// Manages core functionality of the Split Tunnel
+// * handles flows
+// * whitelists in the firewall
+// * configures network settings
 final class ProxyEngine: ProxyEngineProtocol {
     let trafficManager: TrafficManager
     let vpnState: VpnState

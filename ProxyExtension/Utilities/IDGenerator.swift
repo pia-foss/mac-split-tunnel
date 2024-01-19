@@ -1,11 +1,3 @@
-//
-//  IDGenerator.swift
-//  SplitTunnelProxy
-//
-//  Created by John Mair on 08/01/2024.
-//  Copyright © 2024 PIA. All rights reserved.
-//
-
 import Foundation
 
 // Generates a unique id every time generate() is called

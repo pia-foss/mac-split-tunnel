@@ -1,11 +1,3 @@
-//
-//  ProxySessionUDP.swift
-//  SplitTunnelProxyExtension
-//
-//  Created by John Mair on 07/01/2024.
-//  Copyright © 2024 PIA. All rights reserved.
-//
-
 import Foundation
 import NetworkExtension
 import NIO

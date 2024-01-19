@@ -41,6 +41,13 @@ class LoggerTest: QuickSpec {
                     log(.error, "hello world")
                     expect(mockLogger.didCall("error")).to(equal(true))
                 }
+
+                it("delegates an unsupported log level to Logger.instance.info") {
+                    let mockLogger = MockLogger()
+                    Logger.instance = mockLogger
+                    log(.critical, "hello world")
+                    expect(mockLogger.didCall("info")).to(equal(true))
+                }
             }
         }
     }

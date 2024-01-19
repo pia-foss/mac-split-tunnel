@@ -1,11 +1,3 @@
-//
-//  AppPolicy.swift
-//  SplitTunnelProxyExtension
-//
-//  Created by John Mair on 19/12/2023.
-//  Copyright © 2023 PIA. All rights reserved.
-//
-
 import Foundation
 
 // Responsible for determining the policy to apply to a given app -
