@@ -33,8 +33,15 @@ certificate_name="$CODESIGN_IDENTITY"
 app_provision_profile_path="$APP_PROVISION_PROFILE"
 extension_provision_profile_path="$SEXT_PROVISION_PROFILE"
 
-app_profile_uuid=$(grep --binary-files=text -A1 UUID "$app_provision_profile_path" | tail -n1 | sed -E 's/<string>(.*)<\/string>/\1/g' | tr -d ' ' | tr -d '\t')
-extension_profile_uuid=$(grep --binary-files=text -A1 UUID "$extension_provision_profile_path" | tail -n1 | sed -E 's/<string>(.*)<\/string>/\1/g' | tr -d ' ' | tr -d '\t')
+# We need to install the profile in XCode. XCode keeps profiles in "$HOME/Library/MobileDevice/Provisioning Profiles",
+# identified by the name `<uuid>.provisionprofile`.
+# Since the profile is a binary mixed with xml, we can grep for the UUID in the xml, using -A1 to get the line after the id.
+# We use tail to take the line with the UUID value, then use sed to remove the xml string tags tr to remove spaces.
+get_uuid() {
+    grep --binary-files=text -A1 UUID "$1" | tail -n1 | sed -E 's/<string>(.*)<\/string>/\1/g' | tr -d ' \t'
+}
+app_profile_uuid=$(get_uuid "$app_provision_profile_path")
+extension_profile_uuid=$(get_uuid "$extension_provision_profile_path")
 
 ditto "$app_provision_profile_path" "$HOME/Library/MobileDevice/Provisioning Profiles/${app_profile_uuid}.provisionprofile"
 ditto "$extension_provision_profile_path" "$HOME/Library/MobileDevice/Provisioning Profiles/${extension_profile_uuid}.provisionprofile"
@@ -103,7 +110,7 @@ codesign -f --timestamp --options runtime --entitlements "./out/app.entitlements
 # Notarize for release
 if [ $PACKAGE_FOR_RELEASE -ne 0 ]
 then
-    # notarytool cannot take a bundle, zip it first.
+    # We cannot send the bundle directly to notarytool (it is a dir), zip it first.
     ditto -ck --rsrc --keepParent --sequesterRsrc "./out/${app_bundle}" ./out/app.zip
     xcrun notarytool submit ./out/app.zip --wait --apple-id=${NOTARIZATION_EMAIL} --password="${NOTARIZATION_PASSWORD}" --team-id="$TEAM_ID"
     # Staple assuming notarization was Accepted. Even if it fails, notarytool returns 0, so stapler will fail then.
