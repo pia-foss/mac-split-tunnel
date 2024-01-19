@@ -1,11 +1,3 @@
-//
-//  ProxySession.swift
-//  SplitTunnelProxyExtension
-//
-//  Created by John Mair on 07/01/2024.
-//  Copyright © 2024 PIA. All rights reserved.
-//
-
 import Foundation
 import NetworkExtension
 import NIO
@@ -66,6 +58,13 @@ final class ProxySessionTCP: ProxySession {
     private func createChannel(flow: FlowTCP) -> EventLoopFuture<Channel> {
         // Assuming interfaceAddress is already defined
         let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: flow.remoteEndpoint as! NWHostEndpoint)
+
+        // Return a friendly error on IPv6 addresses
+        // TODO: Properly support IPv6 for the beta
+        if (endpointAddress ?? "").contains(":") {
+            return config.eventLoopGroup.next().makeFailedFuture(UnsupportedProtocol.IPv6("IPv6 is not yet supported"))
+        }
+
         log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) Creating, binding and connecting a new TCP socket - remote address: \(endpointAddress!) remote port: \(endpointPort!)")
 
         let bootstrap = ClientBootstrap(group: config.eventLoopGroup)
