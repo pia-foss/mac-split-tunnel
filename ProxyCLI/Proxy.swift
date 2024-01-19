@@ -49,18 +49,13 @@ extension ProxyCLI.Proxy {
         
         func startProxy() throws {
             let semaphore = DispatchSemaphore(value: 0)
-            var proxyManager : NETransparentProxyManager
-            do {
-                try proxyManager = loadProxyManagerSynchronously()
-            } catch ManagerLoadingError.oopsie {
-                print("An oopsie happened. Will create another manager. Fix this!")
+            var proxyManager = loadProxyManagerSynchronously()
+
+            if proxyManager == nil {
                 proxyManager = createManager()
-            } catch {
-                print("An unkown oopsie happened. Quiiiinnn, what happened?")
-                throw error
             }
-            proxyManager.saveToPreferences { errorSave in
-                proxyManager.loadFromPreferences { errorLoad in
+            proxyManager!.saveToPreferences { errorSave in
+                proxyManager!.loadFromPreferences { errorLoad in
                     // might want to refactor this code since the return value of startProxy()
                     // cannot show if an error occurred in these closures
                     if errorSave != nil || errorLoad != nil {
@@ -71,7 +66,7 @@ extension ProxyCLI.Proxy {
                     
                     // The NETunnelProviderSession API is used to control network tunnel
                     // services provided by NETunnelProvider implementations.
-                    if let session = proxyManager.connection as? NETunnelProviderSession {
+                    if let session = proxyManager!.connection as? NETunnelProviderSession {
                         do {
                             // This function is used to start the tunnel (the proxy)
                             // passing it the following settings
@@ -80,8 +75,8 @@ extension ProxyCLI.Proxy {
                                 "vpnOnlyApps" : self.vpnOnlyApps,
                                 "networkInterface" : self.bypassInterface,
                                 "serverAddress" : serverAddress,
-                                "logFile" : "/tmp/STProxy.log",
-                                "logLevel" : "debug",
+                                "logFile" : sysExtLogFile,
+                                "logLevel" : sysExtLogLevel,
                                 "routeVpn" : true,
                                 "connected" : true,
                                 // The name of the unix group pia whitelists in the firewall
@@ -113,18 +108,14 @@ extension ProxyCLI.Proxy {
         }
         
         func stopProxy() throws {
-            var proxyManager : NETransparentProxyManager
-            do {
-                try proxyManager = loadProxyManagerSynchronously()
-            } catch ManagerLoadingError.oopsie {
-                print("An oopsie happened. Will create another manager. Fix this!")
-                proxyManager = createManager()
-            } catch {
-                print("An unkown oopsie happened. Quiiiinnn, what happened?")
-                throw error
+            var proxyManager = loadProxyManagerSynchronously()
+            
+            if proxyManager == nil {
+                print("No manager found")
+                return
             }
             
-            if let session = proxyManager.connection as? NETunnelProviderSession {
+            if let session = proxyManager!.connection as? NETunnelProviderSession {
                 session.stopTunnel()
             } else {
                 print("error getting the proxy manager connection")
@@ -135,9 +126,9 @@ extension ProxyCLI.Proxy {
 }
 
 
-func loadProxyManagerSynchronously() throws -> NETransparentProxyManager {
+func loadProxyManagerSynchronously() -> NETransparentProxyManager? {
     let semaphore = DispatchSemaphore(value: 0)
-    var proxyManager: NETransparentProxyManager?
+    var proxyManager: NETransparentProxyManager? = nil
 
     NETransparentProxyManager.loadAllFromPreferences() { loadedManagers, error in
         if let error = error {
@@ -145,22 +136,16 @@ func loadProxyManagerSynchronously() throws -> NETransparentProxyManager {
         } else if let managers = loadedManagers, !managers.isEmpty {
             if managers.count == 1 {
                 proxyManager = managers.first
-                print("manager loaded!")
             } else {
                 print("ERROR: found more than 1 manager!")
             }
-        } else {
-            print("no managers found")
-            proxyManager = createManager()
         }
         semaphore.signal()
     }
 
     _ = semaphore.wait(timeout: .now() + 120)
-    if proxyManager == nil {
-        throw ManagerLoadingError.oopsie
-    }
-    return proxyManager!
+
+    return proxyManager
 }
 
 private func createManager() -> NETransparentProxyManager {
