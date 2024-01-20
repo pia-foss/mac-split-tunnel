@@ -53,6 +53,7 @@ final class InboundHandlerTCP: InboundHandler {
         // we want to write that data to the flow
         flow.write(data) { flowError in
             if flowError == nil {
+                // No error, byes were written - just record the byteCount
                 onBytesReceived(UInt64(data.count))
             } else {
                 self.handleWriteError(context: context, error: flowError)

@@ -13,6 +13,7 @@ import NetworkExtension
 // Responsible receiving data on a UDP socket and
 // writing that data to the corresponding flow
 final class InboundHandlerUDP: InboundHandler {
+    typealias ByteCountFunc = (UInt64) -> Void
     typealias InboundIn = AddressedEnvelope<ByteBuffer>
     typealias OutboundOut = ByteBuffer
 
@@ -35,23 +36,29 @@ final class InboundHandlerUDP: InboundHandler {
         guard let bytes = input.data.getBytes(at: 0, length: input.data.readableBytes) else {
             return
         }
-        let address = input.remoteAddress.ipAddress
-        let port = input.remoteAddress.port
-        let endpoint = NWHostEndpoint(hostname: address!, port: String(port!))
 
+        let endpoint = NWHostEndpoint(hostname: input.remoteAddress.ipAddress!, port: String(input.remoteAddress.port!))
+
+        forwardToFlow(context: context, data: Data(bytes), endpoint: endpoint, onBytesReceived: onBytesReceived)
+    }
+
+    private func handleWriteError(context: ChannelHandlerContext, error: Error?) {
+        log(.error, "id: \(self.id) \(self.flow.sourceAppSigningIdentifier) \(error!.localizedDescription) occurred when writing UDP data to the flow")
+        context.eventLoop.execute {
+            log(.warning, "id: \(self.id) Closing channel for InboundHandlerUDP")
+            self.terminate(channel: context.channel)
+        }
+    }
+
+    private func forwardToFlow(context: ChannelHandlerContext, data: Data, endpoint: NWHostEndpoint, onBytesReceived: @escaping ByteCountFunc) {
         // new traffic is ready to be read on the socket
         // we want to write that data to the flow
-        flow.writeDatagrams([Data(bytes)], sentBy: [endpoint]) { flowError in
+        flow.writeDatagrams([data], sentBy: [endpoint]) { flowError in
             if flowError == nil {
-                self.onBytesReceived(UInt64(bytes.count))
-                // the next time data is available to read on the socket
-                // this function will be called again automatically by the event loop
+                // No error, byes were written - just record the byteCount
+                self.onBytesReceived(UInt64(data.count))
             } else {
-                log(.error, "id: \(self.id) \(self.flow.sourceAppSigningIdentifier) \(flowError!.localizedDescription) occurred when writing a UDP datagram to the flow")
-                context.eventLoop.execute {
-                    log(.warning, "id: \(self.id) Closing channel for InboundHandlerUDP")
-                    self.terminate(channel: context.channel)
-                }
+                self.handleWriteError(context: context, error: flowError)
             }
         }
     }
