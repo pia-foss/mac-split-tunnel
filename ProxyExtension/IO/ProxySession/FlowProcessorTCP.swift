@@ -47,7 +47,8 @@ final class FlowProcessorTCP {
     }
 
     private func forwardToChannel(data: Data, onBytesTransmitted: @escaping ByteCountFunc) {
-        let writeFuture = self.channel.writeAndFlush(data)
+        let buffer = channel.allocator.buffer(bytes: data)
+        let writeFuture = self.channel.writeAndFlush(buffer)
         writeFuture.whenSuccess {
             // Update number of bytes transmitted
             onBytesTransmitted(UInt64(data.count))
