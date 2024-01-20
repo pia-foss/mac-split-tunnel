@@ -26,164 +26,39 @@ final class ProxySessionUDP: ProxySession {
     }
 
     deinit {
-        log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) Destructor: ProxySession closed. rxBytes=\(formatByteCount(rxBytes)) txBytes=\(formatByteCount(txBytes))")
+        log(.debug, "id: \(self.id) Destructor: ProxySession closed." +
+            " rxBytes=\(formatByteCount(rxBytes)) txBytes=\(formatByteCount(txBytes))"
+            + "\(flow.sourceAppSigningIdentifier)")
     }
 
     public func start() {
+        let onBytesTransmitted = { (byteCount: UInt64) in self.txBytes &+= byteCount }
+        let onBytesReceived = { (byteCount: UInt64) in self.rxBytes &+= byteCount }
+
         if self.channel != nil {
-            self.scheduleFlowRead(flow: self.flow, channel: self.channel)
+            FlowProcessorUDP(id: id, flow: flow, channel: channel)
+                .scheduleFlowRead(onBytesTransmitted)
         } else {
-            createChannelAndStartSession()
+            createChannel(onBytesReceived).whenSuccess { nioChannel in
+                FlowProcessorUDP(id: self.id, flow: self.flow, channel: ChannelWrapper(nioChannel))
+                    .scheduleFlowRead(onBytesTransmitted)
+            }
         }
     }
 
-    private func createChannelAndStartSession() {
-        let channelFuture = initChannel(flow: flow)
-        channelFuture.whenSuccess { channel in
-            self.channel = ChannelWrapper(channel)
-            self.scheduleFlowRead(flow: self.flow, channel: self.channel)
-        }
+    public func createChannel(_ onBytesReceived: @escaping (UInt64) -> Void) -> EventLoopFuture<Channel> {
+        let channelFuture = ChannelCreatorUDP(id: id, flow: flow, config: config).create(onBytesReceived)
+
         channelFuture.whenFailure { error in
             log(.error, "id: \(self.id) Unable to create channel: \(error), dropping the flow.")
             self.flow.closeReadAndWrite()
         }
+
+        return channelFuture
     }
 
     public func terminate() {
         Self.terminateProxySession(id: id, channel: channel, flow: flow)
-    }
-
-    // this function creates and bind a new UDP channel
-    private func initChannel(flow: FlowUDP) -> EventLoopFuture<Channel> {
-        log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) Creating and binding a new UDP socket")
-        let bootstrap = DatagramBootstrap(group: config.eventLoopGroup)
-            // Enable SO_REUSEADDR.
-            .channelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)
-            .channelInitializer { channel in
-                let inboundHandler = InboundHandlerUDP(flow: flow, id: self.id) { (byteCount: UInt64) in
-                    self.rxBytes &+= byteCount
-                }
-                return channel.pipeline.addHandler(inboundHandler)
-            }
-
-        return bindSourceAddress(bootstrap)
-    }
-
-    private func bindSourceAddress(_ bootstrap: DatagramBootstrap) -> EventLoopFuture<Channel> {
-        do {
-            // This is the only call that can throw an exception
-            let socketAddress = try SocketAddress(ipAddress: config.interfaceAddress, port: 0)
-            // Not calling connect() on a UDP socket.
-            // Doing that will turn the socket into a "connected datagram socket".
-            // That will prevent the application from exchanging data with multiple endpoints
-            let channelFuture = bootstrap.bind(to: socketAddress)
-            return channelFuture
-        } catch {
-            return config.eventLoopGroup.next().makeFailedFuture(error)
-        }
-    }
-
-    private func handleChannelWrite(_ result: Result<Void, Error>, _ readIsScheduled: inout Bool, byteCount: UInt64) {
-        switch result {
-        case .success:
-            // Update number of bytes transmitted
-            self.txBytes &+= byteCount
-            // Only schedule another read if we haven't already done so
-            if !readIsScheduled {
-                self.scheduleFlowRead(flow: flow, channel: channel)
-                readIsScheduled = true
-            }
-        case .failure(let error):
-            log(.error, "id: \(self.id) \(flow.sourceAppSigningIdentifier) \(error) while sending a UDP datagram through the socket")
-            self.terminate()
-        }
-    }
-
-    // schedule a new read on a UDP flow
-    private func scheduleFlowRead(flow: FlowUDP, channel: SessionChannel) {
-        flow.readDatagrams { outboundData, outboundEndpoints, flowError in
-            if flowError == nil, let datas = outboundData, !datas.isEmpty, let endpoints = outboundEndpoints, !endpoints.isEmpty {
-                var readIsScheduled = false
-                for (data, endpoint) in zip(datas, endpoints) {
-                    // Kill the proxy session if we can't create a datagram
-                    guard let datagram = self.createDatagram(data: data, endpoint: endpoint) else {
-                        self.terminate()
-                        return
-                    }
-
-                    channel.writeAndFlush(datagram).whenComplete { result in
-                        self.handleChannelWrite(result, &readIsScheduled, byteCount: UInt64(data.count))
-                    }
-                }
-            } else {
-                log(.error, "id: \(self.id) \(flow.sourceAppSigningIdentifier) \((flowError?.localizedDescription) ?? "Empty buffer") occurred during UDP flow.readDatagrams()")
-                if let error = flowError as NSError? {
-                    // Error code 10 is "A read operation is already pending"
-                    // We don't want to terminate the session if that is the error we got
-                    if error.domain == "NEAppProxyFlowErrorDomain" && error.code == 10 {
-                        return
-                    }
-                }
-                self.terminate()
-            }
-        }
-    }
-
-    private func createDatagram(data: Data, endpoint: NWEndpoint) -> AddressedEnvelope<ByteBuffer>? {
-        let buffer = channel.allocator.buffer(bytes: data)
-        let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: endpoint as! NWHostEndpoint)
-        do {
-            let destination = try SocketAddress(ipAddress: endpointAddress!, port: endpointPort!)
-            return AddressedEnvelope<ByteBuffer>(remoteAddress: destination, data: buffer)
-        } catch {
-            log(.error, "id: \(self.id) datagram creation failed")
-            return nil
-        }
-    }
-}
-
-final class InboundHandlerUDP: InboundHandler {
-    typealias InboundIn = AddressedEnvelope<ByteBuffer>
-    typealias OutboundOut = ByteBuffer
-
-    let flow: FlowUDP
-    let id: IDGenerator.ID
-    let onBytesReceived: (UInt64) -> Void
-
-    init(flow: FlowUDP, id: IDGenerator.ID, onBytesReceived: @escaping (UInt64) -> Void) {
-        self.flow = flow
-        self.id = id
-        self.onBytesReceived = onBytesReceived
-    }
-
-    deinit {
-        log(.debug, "id: \(self.id) Destructor called for InboundHandlerUDP")
-    }
-
-    func channelRead(context: ChannelHandlerContext, data: NIOAny) {
-        let input = self.unwrapInboundIn(data)
-        guard let bytes = input.data.getBytes(at: 0, length: input.data.readableBytes) else {
-            return
-        }
-        let address = input.remoteAddress.ipAddress
-        let port = input.remoteAddress.port
-        let endpoint = NWHostEndpoint(hostname: address!, port: String(port!))
-
-        // new traffic is ready to be read on the socket
-        // we want to write that data to the flow
-        flow.writeDatagrams([Data(bytes)], sentBy: [endpoint]) { flowError in
-            if flowError == nil {
-                self.onBytesReceived(UInt64(bytes.count))
-                // the next time data is available to read on the socket
-                // this function will be called again automatically by the event loop
-            } else {
-                log(.error, "id: \(self.id) \(self.flow.sourceAppSigningIdentifier) \(flowError!.localizedDescription) occurred when writing a UDP datagram to the flow")
-                context.eventLoop.execute {
-                    log(.warning, "id: \(self.id) Closing channel for InboundHandlerUDP")
-                    self.terminate(channel: context.channel)
-                }
-            }
-        }
     }
 }
 
