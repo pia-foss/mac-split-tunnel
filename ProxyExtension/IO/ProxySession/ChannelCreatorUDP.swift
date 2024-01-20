@@ -27,8 +27,7 @@ final class ChannelCreatorUDP {
                 return channel.pipeline.addHandler(inboundHandler)
             }
 
-        let channelFuture = bindSourceAddress(bootstrap)
-        return channelFuture
+        return bindSourceAddress(bootstrap)
     }
 
     private func bindSourceAddress(_ bootstrap: DatagramBootstrap) -> EventLoopFuture<Channel> {

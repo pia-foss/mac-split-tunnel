@@ -10,6 +10,8 @@ import Foundation
 import NIO
 import NetworkExtension
 
+// Responsible receiving data on a UDP socket and
+// writing that data to the corresponding flow
 final class InboundHandlerUDP: InboundHandler {
     typealias InboundIn = AddressedEnvelope<ByteBuffer>
     typealias OutboundOut = ByteBuffer

@@ -71,6 +71,12 @@
 		5278E5B42B5B006000210466 /* FlowProcessorUDP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5B22B5B006000210466 /* FlowProcessorUDP.swift */; };
 		5278E5B62B5B859600210466 /* InboundHandlerUDP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5B52B5B859600210466 /* InboundHandlerUDP.swift */; };
 		5278E5B72B5B859600210466 /* InboundHandlerUDP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5B52B5B859600210466 /* InboundHandlerUDP.swift */; };
+		5278E5B92B5B885D00210466 /* ChannelCreatorTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5B82B5B885D00210466 /* ChannelCreatorTCP.swift */; };
+		5278E5BA2B5B885D00210466 /* ChannelCreatorTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5B82B5B885D00210466 /* ChannelCreatorTCP.swift */; };
+		5278E5BC2B5B89AA00210466 /* FlowProcessorTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5BB2B5B89AA00210466 /* FlowProcessorTCP.swift */; };
+		5278E5BD2B5B89AA00210466 /* FlowProcessorTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5BB2B5B89AA00210466 /* FlowProcessorTCP.swift */; };
+		5278E5BF2B5B8E6400210466 /* InboundHandlerTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5BE2B5B8E6400210466 /* InboundHandlerTCP.swift */; };
+		5278E5C02B5B8E6400210466 /* InboundHandlerTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5BE2B5B8E6400210466 /* InboundHandlerTCP.swift */; };
 		527F56A82B3180D6003E7DF7 /* AppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A72B3180D6003E7DF7 /* AppPolicy.swift */; };
 		527F56AA2B31A098003E7DF7 /* AppPolicyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A92B31A098003E7DF7 /* AppPolicyTest.swift */; };
 		527F56AE2B31A5DA003E7DF7 /* AppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A72B3180D6003E7DF7 /* AppPolicy.swift */; };
@@ -181,6 +187,9 @@
 		5278E5AF2B5AFE1E00210466 /* ChannelCreatorUDP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelCreatorUDP.swift; sourceTree = "<group>"; };
 		5278E5B22B5B006000210466 /* FlowProcessorUDP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowProcessorUDP.swift; sourceTree = "<group>"; };
 		5278E5B52B5B859600210466 /* InboundHandlerUDP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboundHandlerUDP.swift; sourceTree = "<group>"; };
+		5278E5B82B5B885D00210466 /* ChannelCreatorTCP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelCreatorTCP.swift; sourceTree = "<group>"; };
+		5278E5BB2B5B89AA00210466 /* FlowProcessorTCP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowProcessorTCP.swift; sourceTree = "<group>"; };
+		5278E5BE2B5B8E6400210466 /* InboundHandlerTCP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboundHandlerTCP.swift; sourceTree = "<group>"; };
 		527F56A72B3180D6003E7DF7 /* AppPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPolicy.swift; sourceTree = "<group>"; };
 		527F56A92B31A098003E7DF7 /* AppPolicyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPolicyTest.swift; sourceTree = "<group>"; };
 		52A5F9DF2B5524560095095D /* ProxySessionUDPTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxySessionUDPTest.swift; sourceTree = "<group>"; };
@@ -289,6 +298,9 @@
 				5278E5AF2B5AFE1E00210466 /* ChannelCreatorUDP.swift */,
 				5278E5B22B5B006000210466 /* FlowProcessorUDP.swift */,
 				5278E5B52B5B859600210466 /* InboundHandlerUDP.swift */,
+				5278E5B82B5B885D00210466 /* ChannelCreatorTCP.swift */,
+				5278E5BB2B5B89AA00210466 /* FlowProcessorTCP.swift */,
+				5278E5BE2B5B8E6400210466 /* InboundHandlerTCP.swift */,
 			);
 			path = ProxySession;
 			sourceTree = "<group>";
@@ -680,6 +692,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				52699E622B56BBEE004FBF20 /* ProxyEngine.swift in Sources */,
+				5278E5B92B5B885D00210466 /* ChannelCreatorTCP.swift in Sources */,
 				C40A5C56229DD92E00627D50 /* IPCConnection.swift in Sources */,
 				5274A5E72B4AC5C600FD0A10 /* ProxySession.swift in Sources */,
 				5235FB1D2B4FFCEB00F3B772 /* ProxySessionFactory.swift in Sources */,
@@ -699,9 +712,11 @@
 				52D4C8CE2B52FBEB0059F7DD /* InboundHandler.swift in Sources */,
 				527F56A82B3180D6003E7DF7 /* AppPolicy.swift in Sources */,
 				D1D5B6B02B18F2B10063363E /* TrafficManagerNIO.swift in Sources */,
+				5278E5BF2B5B8E6400210466 /* InboundHandlerTCP.swift in Sources */,
 				5278E59A2B59582700210466 /* FlowPolicy.swift in Sources */,
 				D1E9AEFE2AE31D4F007603BF /* NetworkUtilities.swift in Sources */,
 				5278E5B32B5B006000210466 /* FlowProcessorUDP.swift in Sources */,
+				5278E5BC2B5B89AA00210466 /* FlowProcessorTCP.swift in Sources */,
 				5274A5E32B4AA5C600FD0A10 /* ProxySessionTCP.swift in Sources */,
 				52E84CF82B54F22200B67912 /* SessionChannelProtocol.swift in Sources */,
 				5235FB292B512A5E00F3B772 /* FlowProtocols.swift in Sources */,
@@ -727,6 +742,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5278E5BD2B5B89AA00210466 /* FlowProcessorTCP.swift in Sources */,
 				52699E602B56AC22004FBF20 /* SplitTunnelProxyProviderTest.swift in Sources */,
 				D19C05F42B50A74500E804DE /* Logger.swift in Sources */,
 				52E84CF32B5406B200B67912 /* ProxySessionTCPTest.swift in Sources */,
@@ -741,6 +757,7 @@
 				D19C05F32B50A67500E804DE /* VpnState.swift in Sources */,
 				5278E5B72B5B859600210466 /* InboundHandlerUDP.swift in Sources */,
 				5278E5952B5954BA00210466 /* ProxyEngineTest.swift in Sources */,
+				5278E5C02B5B8E6400210466 /* InboundHandlerTCP.swift in Sources */,
 				52E84CF62B5439CA00B67912 /* MockChannel.swift in Sources */,
 				52E84CF92B54F22200B67912 /* SessionChannelProtocol.swift in Sources */,
 				5235FB432B5145CE00F3B772 /* ProxySessionUDP.swift in Sources */,
@@ -755,6 +772,7 @@
 				5235FB202B510CEF00F3B772 /* TrafficManagerNIOTest.swift in Sources */,
 				5235FB502B5157DF00F3B772 /* MockFlow.swift in Sources */,
 				52D4C8CF2B52FBEB0059F7DD /* InboundHandler.swift in Sources */,
+				5278E5BA2B5B885D00210466 /* ChannelCreatorTCP.swift in Sources */,
 				5235FB522B51582C00F3B772 /* MockProxySessionFactory.swift in Sources */,
 				5235FB4A2B5145FD00F3B772 /* IPCConnection.swift in Sources */,
 				5278E5AB2B5A963600210466 /* InboundHandlerUDPTest.swift in Sources */,
