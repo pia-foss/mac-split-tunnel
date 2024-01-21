@@ -5,7 +5,7 @@ import NIO
 // Manages a single TCP proxy session from an originating app and proxying
 // it to remote endpoint via the corresponding NIO Channel. Facilitates read and write
 // operations in both directions (app-to-proxy and proxy-to-destination and back again).
-// Uses the InboundHandlerTCP helper class (found further down) to handle packets
+// Uses the InboundHandlerTCP helper class to handle packets
 // incoming from the remote endpoint.
 final class ProxySessionTCP: ProxySession {
     let flow: FlowTCP
@@ -27,8 +27,7 @@ final class ProxySessionTCP: ProxySession {
 
     deinit {
         log(.debug, "id: \(self.id) Destructor: ProxySession closed." +
-            " rxBytes=\(formatByteCount(rxBytes)) txBytes=\(formatByteCount(txBytes))"
-            + "\(flow.sourceAppSigningIdentifier)")
+            " rxBytes=\(formatByteCount(rxBytes)) txBytes=\(formatByteCount(txBytes))")
     }
 
     public func start() {
@@ -40,17 +39,21 @@ final class ProxySessionTCP: ProxySession {
                 .scheduleFlowRead(onBytesTransmitted)
         } else {
             createChannel(onBytesReceived).whenSuccess { nioChannel in
-                FlowProcessorTCP(id: self.id, flow: self.flow, channel: ChannelWrapper(nioChannel))
+                FlowProcessorTCP(id: self.id, flow: self.flow, 
+                    channel: ChannelWrapper(nioChannel))
                     .scheduleFlowRead(onBytesTransmitted)
             }
         }
     }
 
-    public func createChannel(_ onBytesReceived: @escaping (UInt64) -> Void) -> EventLoopFuture<Channel> {
-        let channelFuture = ChannelCreatorTCP(id: id, flow: flow, config: config).create(onBytesReceived)
+    public func createChannel(_ onBytesReceived: @escaping (UInt64) -> Void) 
+        -> EventLoopFuture<Channel> {
+        let channelFuture = ChannelCreatorTCP(id: id, flow: flow,
+                                              config: config).create(onBytesReceived)
 
         channelFuture.whenFailure { error in
-            log(.error, "id: \(self.id) Unable to create channel: \(error), dropping the flow.")
+            log(.error, "id: \(self.id) Unable to create channel: \(error)," +
+                " dropping the flow.")
             self.flow.closeReadAndWrite()
         }
 
@@ -60,5 +63,4 @@ final class ProxySessionTCP: ProxySession {
     public func terminate() {
         Self.terminateProxySession(id: id, channel: channel, flow: flow)
     }
-
 }

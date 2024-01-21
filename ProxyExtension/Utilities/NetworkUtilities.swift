@@ -30,21 +30,3 @@ func getAddressAndPort(endpoint: NWHostEndpoint) -> (String?, Int?) {
     let port = Int(endpoint.port)
     return (address, port)
 }
-
-func createNWEndpoint(fromSockAddr addr: sockaddr_in) -> NWHostEndpoint {
-    // Convert IPv4 address to string
-    var ipAddr = addr.sin_addr
-    let address = withUnsafePointer(to: &ipAddr) { ipPtr -> String in
-        var buffer = [CChar](repeating: 0, count: Int(INET_ADDRSTRLEN))
-        inet_ntop(AF_INET, ipPtr, &buffer, socklen_t(INET_ADDRSTRLEN))
-        return String(cString: buffer)
-    }
-
-    // Convert port number to string
-    let port = String(UInt16(addr.sin_port).byteSwapped) // ntohs(addr.sin_port) in C
-
-    // Create NWHostEndpoint with the address and port
-    let endpoint = NWHostEndpoint(hostname: address, port: port)
-
-    return endpoint
-}

@@ -5,7 +5,7 @@ import NIO
 // Manages a single UDP proxy session from an originating app and proxying
 // it via the corresponding NIO Channel. Facilitates read and write
 // operations in both directions (app-to-proxy and proxy-to-destination and back again).
-// Uses the InboundHandlerUDP helper class (found further down) to handle packets
+// Uses the InboundHandlerUDP helper class to handle packets
 // incoming from the remote endpoint.
 final class ProxySessionUDP: ProxySession {
     let flow: FlowUDP
@@ -25,10 +25,9 @@ final class ProxySessionUDP: ProxySession {
         self.id = id
     }
 
-    deinit {
+    deinit { 
         log(.debug, "id: \(self.id) Destructor: ProxySession closed." +
-            " rxBytes=\(formatByteCount(rxBytes)) txBytes=\(formatByteCount(txBytes))"
-            + "\(flow.sourceAppSigningIdentifier)")
+            " rxBytes=\(formatByteCount(rxBytes)) txBytes=\(formatByteCount(txBytes))")
     }
 
     public func start() {
@@ -46,8 +45,10 @@ final class ProxySessionUDP: ProxySession {
         }
     }
 
-    public func createChannel(_ onBytesReceived: @escaping (UInt64) -> Void) -> EventLoopFuture<Channel> {
-        let channelFuture = ChannelCreatorUDP(id: id, flow: flow, config: config).create(onBytesReceived)
+    public func createChannel(_ onBytesReceived: @escaping (UInt64) -> Void) 
+        -> EventLoopFuture<Channel> {
+        let channelFuture = ChannelCreatorUDP(id: id, flow: flow, 
+                                              config: config).create(onBytesReceived)
 
         channelFuture.whenFailure { error in
             log(.error, "id: \(self.id) Unable to create channel: \(error), dropping the flow.")

@@ -1,11 +1,3 @@
-//
-//  ChannelCreatorUDP.swift
-//  SplitTunnelProxy
-//
-//  Created by John Mair on 20/01/2024.
-//  Copyright © 2024 PIA. All rights reserved.
-//
-
 import NIO
 
 final class ChannelCreatorUDP {
@@ -19,18 +11,22 @@ final class ChannelCreatorUDP {
         self.config = config
     }
 
-    public func create(_ onBytesReceived: @escaping (UInt64) -> Void) -> EventLoopFuture<Channel> {
-        log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) Creating and binding a new UDP socket")
+    public func create(_ onBytesReceived: @escaping (UInt64) -> Void) 
+        -> EventLoopFuture<Channel> {
+        log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) " +
+            "Creating and binding a new UDP socket")
         let bootstrap = DatagramBootstrap(group: config.eventLoopGroup)
             .channelInitializer { channel in
-                let inboundHandler = InboundHandlerUDP(flow: self.flow, id: self.id, onBytesReceived: onBytesReceived)
+                let inboundHandler = InboundHandlerUDP(flow: self.flow, id: self.id, 
+                                                       onBytesReceived: onBytesReceived)
                 return channel.pipeline.addHandler(inboundHandler)
             }
 
         return bindSourceAddress(bootstrap)
     }
 
-    private func bindSourceAddress(_ bootstrap: DatagramBootstrap) -> EventLoopFuture<Channel> {
+    private func bindSourceAddress(_ bootstrap: DatagramBootstrap) 
+        -> EventLoopFuture<Channel> {
         do {
             // This is the only call that can throw an exception
             let socketAddress = try SocketAddress(ipAddress: config.interfaceAddress, port: 0)

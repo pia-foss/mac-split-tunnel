@@ -1,15 +1,9 @@
-//
-//  FlowProcessorTCP.swift
-//  SplitTunnelProxy
-//
-//  Created by John Mair on 20/01/2024.
-//  Copyright © 2024 PIA. All rights reserved.
-//
-
 import Foundation
 import NIO
 import NetworkExtension
 
+// Responsible for reading data from the flow and writing to the
+// corresponding channel
 final class FlowProcessorTCP {
     typealias ByteCountFunc = (UInt64) -> Void
     let flow: FlowTCP
@@ -33,8 +27,9 @@ final class FlowProcessorTCP {
     }
 
     private func handleReadError(error: Error?) {
-        log(.error, "id: \(self.id) \(self.flow.sourceAppSigningIdentifier)" +
-            " \((error?.localizedDescription) ?? "Empty buffer") occurred during" + " TCP flow.readData()")
+        log(.error, "id: \(self.id)" +
+            " \((error?.localizedDescription) ?? "Empty buffer") occurred during" +
+            " TCP flow.readData()")
 
         if let error = error as NSError? {
             // Error code 10 is "A read operation is already pending"
@@ -56,8 +51,7 @@ final class FlowProcessorTCP {
         }
 
         writeFuture.whenFailure { error in
-            log(.error, "id: \(self.id) \(self.flow.sourceAppSigningIdentifier)" +
-                " \(error) while sending a TCP datagram through the socket")
+            log(.error, "id: \(self.id) \(error) while sending a TCP datagram through the socket")
             self.terminate()
         }
     }
