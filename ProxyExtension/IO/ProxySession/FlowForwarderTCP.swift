@@ -4,7 +4,7 @@ import NetworkExtension
 
 // Responsible for reading data from the flow and writing to the
 // corresponding channel
-final class FlowProcessorTCP {
+final class FlowForwarderTCP {
     typealias ByteCountFunc = (UInt64) -> Void
     let flow: FlowTCP
     let channel: SessionChannel

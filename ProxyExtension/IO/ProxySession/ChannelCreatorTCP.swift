@@ -2,6 +2,7 @@ import Foundation
 import NIO
 import NetworkExtension
 
+// Create a TCP channel and set up the inbound handler
 final class ChannelCreatorTCP {
     let id: IDGenerator.ID
     let flow: FlowTCP

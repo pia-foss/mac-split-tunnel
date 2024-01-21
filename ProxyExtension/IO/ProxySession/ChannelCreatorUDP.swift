@@ -1,5 +1,6 @@
 import NIO
 
+// Create a UDP channel and set up the inbound handler
 final class ChannelCreatorUDP {
     let id: IDGenerator.ID
     let flow: FlowUDP

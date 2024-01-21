@@ -35,11 +35,11 @@ final class ProxySessionTCP: ProxySession {
         let onBytesReceived = { (byteCount: UInt64) in self.rxBytes &+= byteCount }
 
         if self.channel != nil {
-            FlowProcessorTCP(id: id, flow: flow, channel: channel)
+            FlowForwarderTCP(id: id, flow: flow, channel: channel)
                 .scheduleFlowRead(onBytesTransmitted)
         } else {
             createChannel(onBytesReceived).whenSuccess { nioChannel in
-                FlowProcessorTCP(id: self.id, flow: self.flow, 
+                FlowForwarderTCP(id: self.id, flow: self.flow, 
                     channel: ChannelWrapper(nioChannel))
                     .scheduleFlowRead(onBytesTransmitted)
             }

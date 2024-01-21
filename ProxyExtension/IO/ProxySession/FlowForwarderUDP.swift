@@ -4,7 +4,7 @@ import NetworkExtension
 
 // Responsible for reading data from the flow and writing to the
 // corresponding channel
-final class FlowProcessorUDP {
+final class FlowForwarderUDP {
     typealias ByteCountFunc = (UInt64) -> Void
     let flow: FlowUDP
     let channel: SessionChannel

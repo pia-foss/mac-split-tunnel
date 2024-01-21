@@ -35,11 +35,11 @@ final class ProxySessionUDP: ProxySession {
         let onBytesReceived = { (byteCount: UInt64) in self.rxBytes &+= byteCount }
 
         if self.channel != nil {
-            FlowProcessorUDP(id: id, flow: flow, channel: channel)
+            FlowForwarderUDP(id: id, flow: flow, channel: channel)
                 .scheduleFlowRead(onBytesTransmitted)
         } else {
             createChannel(onBytesReceived).whenSuccess { nioChannel in
-                FlowProcessorUDP(id: self.id, flow: self.flow, channel: ChannelWrapper(nioChannel))
+                FlowForwarderUDP(id: self.id, flow: self.flow, channel: ChannelWrapper(nioChannel))
                     .scheduleFlowRead(onBytesTransmitted)
             }
         }
