@@ -13,6 +13,8 @@ final class InboundHandlerTCP: InboundHandler {
     let id: IDGenerator.ID
     let onBytesReceived: (UInt64) -> Void
 
+    var appDescriptor: String { flow.sourceAppSigningIdentifier }
+
     init(flow: FlowTCP, id: IDGenerator.ID, onBytesReceived: @escaping (UInt64) -> Void) {
         self.flow = flow
         self.id = id
@@ -33,7 +35,7 @@ final class InboundHandlerTCP: InboundHandler {
     }
 
     private func handleWriteError(context: ChannelHandlerContext, error: Error?) {
-        log(.error, "id: \(self.id) \(error!) occurred when writing TCP data to the flow")
+        log(.error, "id: \(self.id) \(error!) occurred when writing TCP data to the flow \(appDescriptor)")
         context.eventLoop.execute {
             log(.warning, "id: \(self.id) Closing channel for InboundHandlerTCP")
             self.terminate(channel: context.channel)

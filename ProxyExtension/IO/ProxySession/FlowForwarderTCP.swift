@@ -10,6 +10,8 @@ final class FlowForwarderTCP {
     let channel: SessionChannel
     let id: IDGenerator.ID
 
+    var appDescriptor: String { flow.sourceAppSigningIdentifier }
+
     init(id: IDGenerator.ID, flow: FlowTCP, channel: SessionChannel) {
         self.id = id
         self.flow = flow
@@ -29,7 +31,7 @@ final class FlowForwarderTCP {
     private func handleReadError(error: Error?) {
         log(.error, "id: \(self.id)" +
             " \((error?.localizedDescription) ?? "Empty buffer") occurred during" +
-            " TCP flow.readData()")
+            " TCP flow.readData() \(appDescriptor)")
 
         if let error = error as NSError? {
             // Error code 10 is "A read operation is already pending"
@@ -51,7 +53,7 @@ final class FlowForwarderTCP {
         }
 
         writeFuture.whenFailure { error in
-            log(.error, "id: \(self.id) \(error) while sending a TCP datagram through the socket")
+            log(.error, "id: \(self.id) \(error) while sending a TCP datagram through the socket \(self.appDescriptor)")
             self.terminate()
         }
     }

@@ -15,6 +15,8 @@ final class ProxySessionUDP: ProxySession {
     // Made public to allow for mocking/stubbing in tests
     public var channel: SessionChannel!
 
+    var appDescriptor: String { flow.sourceAppSigningIdentifier }
+
     // Number of bytes transmitted and received
     var txBytes: UInt64 = 0
     var rxBytes: UInt64 = 0
@@ -27,7 +29,7 @@ final class ProxySessionUDP: ProxySession {
 
     deinit { 
         log(.debug, "id: \(self.id) Destructor: ProxySession closed." +
-            " rxBytes=\(formatByteCount(rxBytes)) txBytes=\(formatByteCount(txBytes))")
+            " rxBytes=\(formatByteCount(rxBytes)) txBytes=\(formatByteCount(txBytes)) \(appDescriptor)")
     }
 
     public func start() {

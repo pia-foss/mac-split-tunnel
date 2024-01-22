@@ -10,6 +10,8 @@ final class FlowForwarderUDP {
     let channel: SessionChannel
     let id: IDGenerator.ID
 
+    var appDescriptor: String { flow.sourceAppSigningIdentifier }
+
     init(id: IDGenerator.ID, flow: FlowUDP, channel: SessionChannel) {
         self.id = id
         self.flow = flow
@@ -31,7 +33,7 @@ final class FlowForwarderUDP {
     private func handleReadError(error: Error?) {
         log(.error, "id: \(self.id)" +
             " \((error?.localizedDescription) ?? "Empty buffer") occurred during" +
-            " UDP flow.readDatagrams()")
+            " UDP flow.readDatagrams() \(appDescriptor)")
 
         if let error = error as NSError? {
             // Error code 10 is "A read operation is already pending"
@@ -77,7 +79,7 @@ final class FlowForwarderUDP {
             }
 
             writeFuture.whenFailure { error in
-                log(.error, "id: \(self.id) \(error) while sending a UDP datagram through the socket")
+                log(.error, "id: \(self.id) \(error) while sending a UDP datagram through the socket \(self.appDescriptor)")
                 self.terminate()
             }
         }
