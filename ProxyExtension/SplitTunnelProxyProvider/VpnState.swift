@@ -12,14 +12,15 @@ struct VpnStateFactory: VpnStateFactoryProtocol {
             log(.error, "Error: Cannot find bypassApps in options")
             return nil
         }
-        vpnState.bypassApps = bypassApps
+        // Normalize by making all the app descriptors lower case
+        vpnState.bypassApps = bypassApps.map { $0.lowercased() }
         log(.info, "Managing bypass apps: \(vpnState.bypassApps)")
 
         guard let vpnOnlyApps = options!["vpnOnlyApps"] as? [String] else {
             log(.error, "Error: Cannot find vpnOnlyApps in options")
             return nil
         }
-        vpnState.vpnOnlyApps = vpnOnlyApps
+        vpnState.vpnOnlyApps = vpnOnlyApps.map { $0.lowercased() }
         log(.info, "Managing vpnOnly apps: \(vpnState.vpnOnlyApps)")
 
         guard let networkInterface = options!["networkInterface"] as? String else {
