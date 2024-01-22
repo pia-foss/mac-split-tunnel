@@ -13,13 +13,14 @@ struct VpnStateFactory: VpnStateFactoryProtocol {
             return nil
         }
         vpnState.bypassApps = bypassApps
-        log(.info, "Managing \(vpnState.bypassApps)")
+        log(.info, "Managing bypass apps: \(vpnState.bypassApps)")
 
         guard let vpnOnlyApps = options!["vpnOnlyApps"] as? [String] else {
             log(.error, "Error: Cannot find vpnOnlyApps in options")
             return nil
         }
         vpnState.vpnOnlyApps = vpnOnlyApps
+        log(.info, "Managing vpnOnly apps: \(vpnState.vpnOnlyApps)")
 
         guard let networkInterface = options!["networkInterface"] as? String else {
             log(.error, "Error: Cannot find networkInterface in options")
