@@ -1,11 +1,3 @@
-//
-//  ProxySession.swift
-//  SplitTunnelProxyExtension
-//
-//  Created by John Mair on 08/01/2024.
-//  Copyright © 2024 PIA. All rights reserved.
-//
-
 import Foundation
 import NIO
 
@@ -19,13 +11,18 @@ protocol ProxySession {
     // End an existing proxy session (calls through to Self.terminateProxySession)
     func terminate() -> Void
     // Return the id for a given session (used for tracing)
-    func identifier() -> IDGenerator.ID
+    var id: IDGenerator.ID { get }
+}
+
+enum ProxySessionError: Error {
+    case IPv6(_ message: String)
+    case BadEndpoint(_ message: String)
 }
 
 extension ProxySession {
     // Called by a ProxySession class to kill a session.
     static func terminateProxySession(id: IDGenerator.ID, channel: SessionChannel, flow: Flow) {
-        log(.info, "id: \(id) Terminating the flow")
+        log(.info, "id: \(id) Terminating the session")
         log(.info, "id: \(id) Trying to shutdown the flow")
         // Kill the flow
         flow.closeReadAndWrite()

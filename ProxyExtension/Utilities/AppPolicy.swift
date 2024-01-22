@@ -1,11 +1,3 @@
-//
-//  AppPolicy.swift
-//  SplitTunnelProxyExtension
-//
-//  Created by John Mair on 19/12/2023.
-//  Copyright © 2023 PIA. All rights reserved.
-//
-
 import Foundation
 
 // Responsible for determining the policy to apply to a given app -
@@ -13,37 +5,37 @@ import Foundation
 // This object also depends on the routeVpn, connected, bypassApps,
 // and vpnOnlyApps being up to date.
 struct AppPolicy {
+    // A term that covers both AppIDs and App Paths
+    typealias Descriptor = String
+
+    let vpnState: VpnState
+
     // The policy we should apply to an app
     enum Policy {
         case proxy, block, ignore
     }
 
-    // List of apps which bypass the VPN
-    var bypassApps: [String] = []
-    // List of apps which bind to the VPN
-    var vpnOnlyApps: [String] = []
-    // Whether the VPN has the default route (true means it does)
-    var routeVpn: Bool = false
-    // Whether the VPN is connected
-    var connected: Bool = false
+    init(vpnState: VpnState) {
+        self.vpnState = vpnState
+    }
 
-    // Determine the policy by appId (i.e com.apple.curl)
-    func policyFor(appId: String) -> Policy {
+    public static func policyFor(_ descriptor: Descriptor, vpnState: VpnState) -> AppPolicy.Policy {
+        AppPolicy(vpnState: vpnState).policyFor(descriptor)
+    }
+
+    // Determine the policy by Descriptor (either app ID or app path)
+    // i.e com.apple.curl (for app id) or /usr/bin/curl (for app path)
+    public func policyFor(_ descriptor: Descriptor) -> Policy {
         // If we're connected to the VPN then we just have to check
         // if the app is managed by us.
-        if connected {
-            return isManagedApp(app: appId) ? .proxy : .ignore
+        if vpnState.connected {
+            return isManagedApp(app: descriptor) ? .proxy : .ignore
 
         // If the VPN is not connected then we ignore all apps except vpnOnly apps
         // which we block.
         } else {
-            return vpnOnlyApps.contains(appId) ? .block : .ignore
+            return vpnState.vpnOnlyApps.contains(descriptor) ? .block : .ignore
         }
-    }
-
-    // Determine the policy by app path (i.e /usr/bin/curl)
-    func policyFor(appPath: String) -> Policy {
-        return policyFor(appId: appPath)
     }
 
     // A managed app is one that we proxy.
@@ -52,6 +44,6 @@ struct AppPolicy {
     // In the case routeVpn == false, we check for it in vpnOnlyApps
     // this is because we need to proxy these apps to bind them to the VPN interface.
     private func isManagedApp(app: String) -> Bool {
-        return routeVpn ? bypassApps.contains(app) : vpnOnlyApps.contains(app)
+        return vpnState.routeVpn ? vpnState.bypassApps.contains(app) : vpnState.vpnOnlyApps.contains(app)
     }
 }

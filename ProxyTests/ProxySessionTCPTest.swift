@@ -54,7 +54,8 @@ class ProxySessionTCPTest: QuickSpec {
                     proxySession.start()
 
                     let expectedBytes = ByteBuffer(bytes: data)
-                    expect(mockChannel.didCallWithArgAt("writeAndFlush", index: 0, value: expectedBytes)).to(equal(true))
+                    expect(mockChannel.didCallWithArgAt("writeAndFlush", index: 0, 
+                                                        value: expectedBytes)).to(equal(true))
                 }
             }
 

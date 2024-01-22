@@ -18,14 +18,19 @@ final class MockFlowTCP: FlowTCP, Mock {
     let data: Data?
     let flowError: Error?
 
-    init(data: Data? = nil, flowError: NSError? = nil) {
+    init(data: Data? = nil, flowError: Error? = nil) {
         self.data = data
         self.flowError = flowError
     }
 
     // Required by Flow
     func closeReadAndWrite() { record() }
-    var sourceAppSigningIdentifier: String { "quinn" }
+    func openFlow(completionHandler: @escaping (Error?) -> Void) { record(args: [completionHandler]) 
+        completionHandler(nil)
+    }
+    public var sourceAppSigningIdentifier: String = "quinn"
+    public var remoteHostname: String? = nil
+    public var sourceAppAuditToken: Data? = nil
 
     // Required by FlowTCP
     var remoteEndpoint: NWEndpoint { NWHostEndpoint(hostname: "8.8.8.8", port: "1337") }
@@ -42,6 +47,7 @@ final class MockFlowTCP: FlowTCP, Mock {
     // Writes to our flow
     func write(_ data: Data, withCompletionHandler completionHandler: @escaping (Error?) -> Void) {
         record(args: [data, completionHandler])
+        completionHandler(flowError)
     }
 }
 
@@ -55,7 +61,7 @@ final class MockFlowUDP: FlowUDP, Mock {
     let endpoints: [NWEndpoint]?
     let flowError: Error?
 
-    init(data: [Data]? = nil, endpoints: [NWEndpoint]? = nil, flowError: NSError? = nil) {
+    init(data: [Data]? = nil, endpoints: [NWEndpoint]? = nil, flowError: Error? = nil) {
         self.data = data
         self.endpoints = endpoints
         self.flowError = flowError
@@ -63,7 +69,12 @@ final class MockFlowUDP: FlowUDP, Mock {
 
     // Required by Flow
     func closeReadAndWrite() { record() }
-    var sourceAppSigningIdentifier: String { "quinn"}
+    func openFlow(completionHandler: @escaping (Error?) -> Void) { record(args: [completionHandler])
+        completionHandler(nil)
+    }
+    public var sourceAppSigningIdentifier: String = "quinn"
+    public var remoteHostname: String? = nil
+    public var sourceAppAuditToken: Data? = nil
 
     // Required by FlowUDP
     func readDatagrams(completionHandler: @escaping ([Data]?, [NWEndpoint]?, Error?) -> Void) {
@@ -73,5 +84,6 @@ final class MockFlowUDP: FlowUDP, Mock {
 
     func writeDatagrams(_ datagrams: [Data], sentBy remoteEndpoints: [NWEndpoint], completionHandler: @escaping (Error?) -> Void) {
         record(args: [datagrams, remoteEndpoints, completionHandler])
+        completionHandler(flowError)
     }
 }

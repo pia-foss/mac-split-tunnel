@@ -1,11 +1,3 @@
-//
-//  FlowInterface.swift
-//  SplitTunnelProxyExtension
-//
-//  Created by John Mair on 12/01/2024.
-//  Copyright © 2024 PIA. All rights reserved.
-//
-
 import Foundation
 import NetworkExtension
 
@@ -16,7 +8,12 @@ extension NEAppProxyFlow: Flow {
         self.closeWriteWithError(nil)
     }
 
+    func openFlow(completionHandler: @escaping (Error?) -> Void) {
+        open(withLocalEndpoint: nil, completionHandler: completionHandler)
+    }
+
     var sourceAppSigningIdentifier: String { self.metaData.sourceAppSigningIdentifier }
+    var sourceAppAuditToken: Data? { self.metaData.sourceAppAuditToken }
 }
 
 // Enforce Flow protocol conformance for NEAppProxyTCPFlow and NEAppProxyUDPFlow subclasses.

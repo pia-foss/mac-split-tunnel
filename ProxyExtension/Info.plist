@@ -31,7 +31,7 @@
 		<key>NEProviderClasses</key>
 		<dict>
 			<key>com.apple.networkextension.app-proxy</key>
-			<string>$(PRODUCT_MODULE_NAME).STProxyProvider</string>
+			<string>$(PRODUCT_MODULE_NAME).SplitTunnelProxyProvider</string>
 		</dict>
 	</dict>
 </dict>
