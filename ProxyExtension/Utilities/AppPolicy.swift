@@ -8,7 +8,10 @@ struct AppPolicy {
     // A term that covers both AppIDs and App Paths
     typealias Descriptor = String
 
-    let vpnState: VpnState
+    private let vpnState: VpnState
+
+    private let bypassApps: [String]
+    private let vpnOnlyApps: [String]
 
     // The policy we should apply to an app
     enum Policy {
@@ -17,6 +20,9 @@ struct AppPolicy {
 
     init(vpnState: VpnState) {
         self.vpnState = vpnState
+        // Normalize app descriptors to lowercase
+        self.bypassApps = vpnState.bypassApps.map { $0.lowercased() }
+        self.vpnOnlyApps = vpnState.vpnOnlyApps.map { $0.lowercased() }
     }
 
     public static func policyFor(_ descriptor: Descriptor, vpnState: VpnState) -> AppPolicy.Policy {
@@ -26,15 +32,17 @@ struct AppPolicy {
     // Determine the policy by Descriptor (either app ID or app path)
     // i.e com.apple.curl (for app id) or /usr/bin/curl (for app path)
     public func policyFor(_ descriptor: Descriptor) -> Policy {
+        // Normalize the descriptor
+        let normalizedDescriptor = descriptor.lowercased()
         // If we're connected to the VPN then we just have to check
         // if the app is managed by us.
         if vpnState.connected {
-            return isManagedApp(app: descriptor) ? .proxy : .ignore
+            return isManagedApp(app: normalizedDescriptor) ? .proxy : .ignore
 
         // If the VPN is not connected then we ignore all apps except vpnOnly apps
         // which we block.
         } else {
-            return vpnState.vpnOnlyApps.contains(descriptor) ? .block : .ignore
+            return vpnOnlyApps.contains(normalizedDescriptor) ? .block : .ignore
         }
     }
 
@@ -44,6 +52,6 @@ struct AppPolicy {
     // In the case routeVpn == false, we check for it in vpnOnlyApps
     // this is because we need to proxy these apps to bind them to the VPN interface.
     private func isManagedApp(app: String) -> Bool {
-        return vpnState.routeVpn ? vpnState.bypassApps.contains(app) : vpnState.vpnOnlyApps.contains(app)
+        return vpnState.routeVpn ? bypassApps.contains(app) : vpnOnlyApps.contains(app)
     }
 }
