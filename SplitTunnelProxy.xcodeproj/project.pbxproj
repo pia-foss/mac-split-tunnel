@@ -103,6 +103,8 @@
 		9785C0E22B592299002A982D /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 9785C0E12B592299002A982D /* ArgumentParser */; };
 		97B1169C2B0CEF910028B01E /* build.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 97B1169B2B0CEF910028B01E /* build.xcconfig */; };
 		97E7B8AD2AFB565700138C6A /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = 97E7B8AC2AFB565700138C6A /* Puppy */; };
+		97F84ECA2B5EA87E008DF390 /* ExtensionBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1795F722AE9CC50003B0DAE /* ExtensionBundle.swift */; };
+		97F84ECB2B5EA8A0008DF390 /* ExtensionBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1795F722AE9CC50003B0DAE /* ExtensionBundle.swift */; };
 		C40A5C46229DD6A500627D50 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4B45DDD2273A3450050C59B /* NetworkExtension.framework */; };
 		C40A5C4B229DD6A500627D50 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40A5C4A229DD6A500627D50 /* main.swift */; };
 		C40A5C56229DD92E00627D50 /* IPCConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B1415A227A396500B26560 /* IPCConnection.swift */; };
@@ -112,7 +114,6 @@
 		C4B45DC02273A0020050C59B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C4B45DBE2273A0020050C59B /* Main.storyboard */; };
 		C4B45DDE2273A3450050C59B /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4B45DDD2273A3450050C59B /* NetworkExtension.framework */; };
 		D12A9EA02AE98D880009BA23 /* ProxyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D12A9E9F2AE98D870009BA23 /* ProxyApp.swift */; };
-		D1795F732AE9CC50003B0DAE /* ExtensionBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1795F722AE9CC50003B0DAE /* ExtensionBundle.swift */; };
 		D17F5D1A293E1DC300FB8DAF /* ProxyAppDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D19293E1DC300FB8DAF /* ProxyAppDefault.swift */; };
 		D17F5D1C293E701D00FB8DAF /* SplitTunnelProxyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D1B293E701D00FB8DAF /* SplitTunnelProxyProvider.swift */; };
 		D19C05F22B50A67500E804DE /* VpnState.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19C05F12B50A67500E804DE /* VpnState.swift */; };
@@ -680,6 +681,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				97F84ECB2B5EA8A0008DF390 /* ExtensionBundle.swift in Sources */,
 				9785C0CD2B5921A7002A982D /* Proxy.swift in Sources */,
 				9785C0CE2B5921A7002A982D /* ProxyCLIApp.swift in Sources */,
 				9785C0CC2B5921A7002A982D /* RequestDelegate.swift in Sources */,
@@ -733,8 +735,8 @@
 				5274A5E92B4AD88100FD0A10 /* IDGenerator.swift in Sources */,
 				D1D447042ABCE52400A69316 /* ExtensionRequestDelegate.swift in Sources */,
 				C4B45DBB22739FFF0050C59B /* ViewController.swift in Sources */,
-				D1795F732AE9CC50003B0DAE /* ExtensionBundle.swift in Sources */,
 				C4B45DB922739FFF0050C59B /* AppDelegate.swift in Sources */,
+				97F84ECA2B5EA87E008DF390 /* ExtensionBundle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
