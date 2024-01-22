@@ -15,7 +15,7 @@ extension ProxyCLI {
         static var configuration = CommandConfiguration(
             commandName: "proxy",
             abstract: "Manage the proxy.",
-            subcommands: [Start.self, Stop.self])
+            subcommands: [Start.self, Stop.self, Status.self])
     }
 }
 
@@ -108,7 +108,7 @@ extension ProxyCLI.Proxy {
         }
         
         func stopProxy() throws {
-            var proxyManager = loadProxyManagerSynchronously()
+            let proxyManager = loadProxyManagerSynchronously()
             
             if proxyManager == nil {
                 print("No manager found")
@@ -122,6 +122,39 @@ extension ProxyCLI.Proxy {
             }
         }
 
+    }
+    
+    struct Status: ParsableCommand {
+        static var configuration
+            = CommandConfiguration(
+                commandName: "status",
+                abstract: "Get proxy status.")
+        
+        static let StatusMap = [
+            NEVPNStatus.connected : "connected",
+            NEVPNStatus.connecting: "connecting",
+            NEVPNStatus.disconnected: "disconnected",
+            NEVPNStatus.disconnecting: "disconnecting",
+            NEVPNStatus.invalid: "invalid",
+            NEVPNStatus.reasserting: "reasserting",
+        ] as [NEVPNStatus: String]
+        
+        mutating func run() throws {
+            try getProxyStatus()
+        }
+        
+        func getProxyStatus() throws {
+            let proxyManager = loadProxyManagerSynchronously()
+            
+            if proxyManager == nil {
+                print("uninstalled")
+                return
+            }
+
+            if let session = proxyManager!.connection as? NETunnelProviderSession {
+                print(Status.StatusMap[session.status]!)
+            }
+        }
     }
 }
 
