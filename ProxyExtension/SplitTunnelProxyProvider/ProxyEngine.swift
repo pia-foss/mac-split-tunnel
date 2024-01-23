@@ -42,11 +42,29 @@ final class ProxyEngine: ProxyEngineProtocol {
 
     // Is the flow IPv4 ? (we only support IPv4 flows at present)
     private func isFlowIPv4(_ flow: Flow) -> Bool {
-        let hostName = flow.remoteHostname ?? ""
-        // Check if the address is an IPv6 address, and negate it. IPv6 addresses always contain a ":"
-        // We can't do the opposite (such as just checking for "." for an IPv4 address) due to IPv4-mapped IPv6 addresses
-        // which are IPv6 addresses but include IPv4 address notation.
-        return !hostName.contains(":")
+        if let flowTCP = flow as? FlowTCP {
+            log(.debug, "The flow is TCP and flow.remoteEndpoint is: \(flowTCP.remoteEndpoint)")
+            // Check if the address is an IPv6 address, and negate it. IPv6 addresses always contain a ":"
+            // We can't do the opposite (such as just checking for "." for an IPv4 address) due to IPv4-mapped IPv6 addresses
+            // which are IPv6 addresses but include IPv4 address notation.
+            if let endpoint = flowTCP.remoteEndpoint as? NWHostEndpoint {
+                // We have a valid NWHostEndpoint - let's see if it's IPv6
+                if endpoint.hostname.contains(":") {
+                    log(.debug, "TCP Flow is IPv6 - won't handle")
+                    return false
+                } else {
+                    log(.debug, "TCP Flow is IPv4 - will handle")
+                    return true
+                }
+            } else {
+                log(.debug, "Found a TCP Flow, but cannot extract NWHostEndPoint - assuming IPv4")
+                // We cannot know for sure, just assume it's IPv4
+                return true
+            }
+        } else {
+            log(.debug, "The flow is UDP, no remoteEndpoint data available. Assume IPv4")
+            return true
+        }
     }
 
     private func startProxySession(flow: Flow) -> Bool {
