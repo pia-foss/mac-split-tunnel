@@ -671,7 +671,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\necho \"EXT_BUILD_NUMBER=$(date '+%y%m%d%H%M%S')\" > $SRCROOT/ProxyExtension/build.xcconfig\n";
+			shellScript = "./build_scripts/update_build_number.sh\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
