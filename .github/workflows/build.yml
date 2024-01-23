@@ -36,7 +36,7 @@ jobs:
         echo "Done importing certificates"
 
     - env:
-        APP_BUILD_TARGET: ProxyCLI
+        APP_BUILD_TARGET: PIASplitTunnelManager
         APP_PROVISION_PROFILE: ${{ github.workspace }}/app.provisionprofile
         CODESIGN_IDENTITY: ${{ vars.PIA_CODESIGN_IDENTITY }}
         EXTENSION_BUILD_TARGET: SplitTunnelProxyExtension

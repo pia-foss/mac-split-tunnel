@@ -95,6 +95,7 @@
 		52EA0A742B59205200CD8EFE /* MockLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52EA0A732B59205200CD8EFE /* MockLogger.swift */; };
 		9704D2AD2B03C97400A899D7 /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = 9704D2AC2B03C97400A899D7 /* Puppy */; };
 		971DE35C2B59173E008CE5C2 /* com.privateinternetaccess.vpn.splittunnel.systemextension in Copy Files */ = {isa = PBXBuildFile; fileRef = 97AD92092B35876200405E3A /* com.privateinternetaccess.vpn.splittunnel.systemextension */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		97607D122B6003F100025251 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97607D112B6003F100025251 /* Media.xcassets */; };
 		976B8CD72B0B55F60097FE7F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976B8CD62B0B55F60097FE7F /* Logger.swift */; };
 		9785C0CC2B5921A7002A982D /* RequestDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9785C0C72B5921A6002A982D /* RequestDelegate.swift */; };
 		9785C0CD2B5921A7002A982D /* Proxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9785C0C82B5921A6002A982D /* Proxy.swift */; };
@@ -201,6 +202,7 @@
 		52E84CFA2B54F77400B67912 /* ChannelWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelWrapper.swift; sourceTree = "<group>"; };
 		52EA0A6F2B58F8DC00CD8EFE /* MockVpnStateFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockVpnStateFactory.swift; sourceTree = "<group>"; };
 		52EA0A732B59205200CD8EFE /* MockLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLogger.swift; sourceTree = "<group>"; };
+		97607D112B6003F100025251 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		976B8CD62B0B55F60097FE7F /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		9785C0C72B5921A6002A982D /* RequestDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RequestDelegate.swift; path = ProxyCLI/RequestDelegate.swift; sourceTree = SOURCE_ROOT; };
 		9785C0C82B5921A6002A982D /* Proxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Proxy.swift; path = ProxyCLI/Proxy.swift; sourceTree = SOURCE_ROOT; };
@@ -208,7 +210,7 @@
 		9785C0CA2B5921A7002A982D /* SysExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SysExt.swift; path = ProxyCLI/SysExt.swift; sourceTree = SOURCE_ROOT; };
 		9785C0CB2B5921A7002A982D /* ProxyCLI.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; name = ProxyCLI.entitlements; path = ProxyCLI/ProxyCLI.entitlements; sourceTree = SOURCE_ROOT; };
 		9785C0DE2B592271002A982D /* SplitTunnelProxyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SplitTunnelProxyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		9785C0DF2B592271002A982D /* ProxyCLI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProxyCLI.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9785C0DF2B592271002A982D /* PIASplitTunnelManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PIASplitTunnelManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		97AD92092B35876200405E3A /* com.privateinternetaccess.vpn.splittunnel.systemextension */ = {isa = PBXFileReference; explicitFileType = "wrapper.system-extension"; includeInIndex = 0; path = com.privateinternetaccess.vpn.splittunnel.systemextension; sourceTree = BUILT_PRODUCTS_DIR; };
 		97B1169B2B0CEF910028B01E /* build.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = build.xcconfig; sourceTree = "<group>"; };
 		97C805092B46BC63005D814B /* SplitTunnelProxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SplitTunnelProxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -329,6 +331,7 @@
 				9785C0C92B5921A6002A982D /* ProxyCLIApp.swift */,
 				9785C0C72B5921A6002A982D /* RequestDelegate.swift */,
 				9785C0CA2B5921A7002A982D /* SysExt.swift */,
+				97607D112B6003F100025251 /* Media.xcassets */,
 			);
 			path = ProxyCLI;
 			sourceTree = "<group>";
@@ -351,7 +354,6 @@
 			isa = PBXGroup;
 			children = (
 				03411C5003411ED000000001 /* README.md */,
-				D16DF7772AEAC7340082B58C /* UI */,
 				C4B45DB722739FFF0050C59B /* ProxyApp */,
 				C40A5C47229DD6A500627D50 /* ProxyExtension */,
 				D1FE4FB7295A1EA3002BBA20 /* ProxyTests */,
@@ -360,13 +362,14 @@
 				97AD92092B35876200405E3A /* com.privateinternetaccess.vpn.splittunnel.systemextension */,
 				97C805092B46BC63005D814B /* SplitTunnelProxy.app */,
 				9785C0DE2B592271002A982D /* SplitTunnelProxyTests.xctest */,
-				9785C0DF2B592271002A982D /* ProxyCLI.app */,
+				9785C0DF2B592271002A982D /* PIASplitTunnelManager.app */,
 			);
 			sourceTree = "<group>";
 		};
 		C4B45DB722739FFF0050C59B /* ProxyApp */ = {
 			isa = PBXGroup;
 			children = (
+				D16DF7772AEAC7340082B58C /* UI */,
 				C4B45DB822739FFF0050C59B /* AppDelegate.swift */,
 				C4B45DC12273A0020050C59B /* Info.plist */,
 				C4B45DC22273A0020050C59B /* ProxyApp.entitlements */,
@@ -395,7 +398,8 @@
 				C4B45DBC2273A0020050C59B /* Assets.xcassets */,
 				C4B45DBE2273A0020050C59B /* Main.storyboard */,
 			);
-			path = UI;
+			name = UI;
+			path = ../UI;
 			sourceTree = "<group>";
 		};
 		D1D5B6B12B18F64E0063363E /* SplitTunnelProxyProvider */ = {
@@ -465,9 +469,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		9785C0B72B59219A002A982D /* ProxyCLI */ = {
+		9785C0B72B59219A002A982D /* PIASplitTunnelManager */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9785C0C62B59219B002A982D /* Build configuration list for PBXNativeTarget "ProxyCLI" */;
+			buildConfigurationList = 9785C0C62B59219B002A982D /* Build configuration list for PBXNativeTarget "PIASplitTunnelManager" */;
 			buildPhases = (
 				9785C0B42B59219A002A982D /* Sources */,
 				9785C0B52B59219A002A982D /* Frameworks */,
@@ -477,12 +481,12 @@
 			);
 			dependencies = (
 			);
-			name = ProxyCLI;
+			name = PIASplitTunnelManager;
 			packageProductDependencies = (
 				9785C0E12B592299002A982D /* ArgumentParser */,
 			);
 			productName = ProxyCLI;
-			productReference = 9785C0DF2B592271002A982D /* ProxyCLI.app */;
+			productReference = 9785C0DF2B592271002A982D /* PIASplitTunnelManager.app */;
 			productType = "com.apple.product-type.application";
 		};
 		C40A5C44229DD6A500627D50 /* SplitTunnelProxyExtension */ = {
@@ -615,7 +619,7 @@
 				C4B45DB422739FFF0050C59B /* SplitTunnelProxy */,
 				C40A5C44229DD6A500627D50 /* SplitTunnelProxyExtension */,
 				D1FE4FB5295A1EA3002BBA20 /* SplitTunnelProxyTests */,
-				9785C0B72B59219A002A982D /* ProxyCLI */,
+				9785C0B72B59219A002A982D /* PIASplitTunnelManager */,
 			);
 		};
 /* End PBXProject section */
@@ -625,6 +629,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				97607D122B6003F100025251 /* Media.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -827,6 +832,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_ENTITLEMENTS = ProxyCLI/ProxyCLI.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -837,6 +843,7 @@
 				ENABLE_PREVIEWS = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 PIA. All rights reserved.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -860,6 +867,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_ENTITLEMENTS = ProxyCLI/ProxyCLI.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -870,6 +878,7 @@
 				ENABLE_PREVIEWS = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 PIA. All rights reserved.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1166,7 +1175,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		9785C0C62B59219B002A982D /* Build configuration list for PBXNativeTarget "ProxyCLI" */ = {
+		9785C0C62B59219B002A982D /* Build configuration list for PBXNativeTarget "PIASplitTunnelManager" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9785C0C42B59219B002A982D /* Debug */,
