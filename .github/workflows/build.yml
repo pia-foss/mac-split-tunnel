@@ -48,7 +48,7 @@ jobs:
         SEXT_PROVISION_PROFILE: ${{ github.workspace }}/sext.provisionprofile
         TEAM_ID: ${{ vars.PIA_APPLE_TEAM_ID }}
       name: Build, sign, package
-      run: ./build.sh
+      run: ./build_scripts/build.sh
     - name: Zip app bundle
       run: |
         # We zip it manually using ditto. Github Actions may break things in the bundle if we let it zip on upload.
