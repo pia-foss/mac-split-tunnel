@@ -52,10 +52,10 @@ jobs:
     - name: Zip app bundle
       run: |
         # We zip it manually using ditto. Github Actions may break things in the bundle if we let it zip on upload.
-        ditto -ck --rsrc --keepParent --sequesterRsrc "out/ProxyCLI.app" out/proxyCLI.zip
+        ditto -ck --rsrc --keepParent --sequesterRsrc "out/PIASplitTunnelManager.app" out/stmanager.zip
     - uses: actions/upload-artifact@v3
       if: success()
       with:
         name: "splitTunnel"
         retention-days: 10
-        path: out/proxyCLI.zip
+        path: out/stmanager.zip
