@@ -29,7 +29,7 @@ extension ProxyCLI.Proxy {
             )
 
         @Option(help: "Apps to bypass")
-        var bypassApps: [String] = ["org.mozilla.firefox"]
+        var bypassApps: [String] = []
         
         @Option(help: "Apps to enforce vpn use")
         var vpnOnlyApps: [String] = [String]()
