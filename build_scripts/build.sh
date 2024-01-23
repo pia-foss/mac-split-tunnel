@@ -1,6 +1,9 @@
 #!/bin/bash
 set -ex
 
+# If you specify a parameter, it the build number will be set to that, otherwise a sensible default.
+./build_scripts/update_build_number.sh $1
+
 # This build script is mainly aimed at CI. It takes a bunch of environment variables as input.
 # Optionally, we can use the .env work to help during debugging or if we want to work without XCode.
 #
