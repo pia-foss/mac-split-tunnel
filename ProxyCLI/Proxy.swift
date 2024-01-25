@@ -115,6 +115,7 @@ extension ProxyCLI.Proxy {
                                 semaphore.signal()
                             default:
                                 print("cannot start from status " + Status.StatusMap[session.status]!)
+                                semaphore.signal()
                             }
                         } catch {
                             print("startProxy error!")
