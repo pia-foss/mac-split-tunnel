@@ -15,11 +15,9 @@ class MockProxyEngine: ProxyEngineProtocol, Mock {
     var argumentsGiven: Dictionary<String, [Any]> = [:]
 
     // Required by ProxyEngineProtocol
-    var trafficManager: TrafficManager
     var vpnState: VpnState
 
     init() {
-        self.trafficManager = MockTrafficManager()
         self.vpnState = VpnState()
     }
 

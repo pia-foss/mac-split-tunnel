@@ -10,6 +10,14 @@ protocol ProxyEngineProtocol {
     func setTunnelNetworkSettings(serverAddress: String, provider: NETransparentProxyProvider, completionHandler: @escaping (Error?) -> Void)
 }
 
+struct SessionConfig {
+    var bindIp: String { interface.ip4()! }
+    let interface: NetworkInterfaceProtocol
+    // We need to make this optional so that we can
+    // leave it nil in tests - tests do not use an EventLoopGroup
+    let eventLoopGroup: MultiThreadedEventLoopGroup!
+}
+
 // Manages core functionality of the Split Tunnel
 // * handles flows
 // * whitelists in the firewall
