@@ -15,21 +15,21 @@ extension ProxyCLI {
         static var configuration = CommandConfiguration(
             commandName: "proxy",
             abstract: "Manage the proxy.",
-            subcommands: [Start.self, Stop.self, Status.self])
+            subcommands: [Sync.self, Stop.self, Status.self])
     }
 }
 
 
 extension ProxyCLI.Proxy {
-    struct StartOptions: ParsableArguments {
-        @Option(help: "Apps to bypass")
+    struct SyncOptions: ParsableArguments {
+        @Option(name: .customLong("bypass-app"), help: "Apps that will bypass the vpn")
         var bypassApps: [String] = []
         
-        @Option(help: "Apps to enforce vpn use")
+        @Option(name: .customLong("vpn-only-app"), help: "Apps that will be enforced to use vpn")
         var vpnOnlyApps: [String] = [String]()
         
         @Option(help: "Interface to send packages when bypassing")
-        var bypassInterface: String = "en0"
+        var bindInterface: String = "en0"
         
         @Option(help: "Where to store system extension logs")
         var sysExtLogFile: String = "/tmp/STProxy.log"
@@ -38,7 +38,7 @@ extension ProxyCLI.Proxy {
         var sysExtLogLevel: String = "info"
         
         @Flag(help: "VPN Tunnel is ready")
-        var connectedVpn: Bool = false
+        var isConnected: Bool = false
         
         @Flag(help: "Route VPN")
         var routeVpn: Bool = false
@@ -50,31 +50,36 @@ extension ProxyCLI.Proxy {
             [
                 "bypassApps" : bypassApps,
                 "vpnOnlyApps" : vpnOnlyApps,
-                "networkInterface" : bypassInterface,
+                "bindInterface" : bindInterface,
                 "serverAddress" : serverAddress,
                 "logFile" : sysExtLogFile,
                 "logLevel" : sysExtLogLevel,
                 "routeVpn" : routeVpn,
-                "connected" : connectedVpn,
+                "isConnected" : isConnected,
                 "whitelistGroupName" : whitelistGroupName
             ] as [String : Any]
         }
     }
     
-    struct Start: AsyncParsableCommand {
+    struct Sync: AsyncParsableCommand {
         static var configuration
             = CommandConfiguration(
-                commandName: "start",
-                abstract: "Start the split tunnel proxy."
+                commandName: "sync",
+                abstract: "Synchronizes the split tunnel proxy. It will start the proxy if disconnected and update it if already connected."
             )
 
-        @OptionGroup var options: ProxyCLI.Proxy.StartOptions
+        @OptionGroup var options: ProxyCLI.Proxy.SyncOptions
 
         mutating func run() throws {
-            try startProxy()
+            try syncProxy()
         }
         
-        func startProxy() throws {
+        /**
+         * Synchronizes the proxy. If it's stopped, it will start it with the given options. If it's already started, it will
+         * update it to match the new arguments  by sending the options as a message.
+         * Updating this way makes it possible to update the proxy live without restarting it.
+         */
+        func syncProxy() throws {
             let semaphore = DispatchSemaphore(value: 0)
             var proxyManager = loadProxyManagerSynchronously()
 
@@ -100,12 +105,11 @@ extension ProxyCLI.Proxy {
                             switch session.status {
                             case .connected:
                                 if let optionsData = try? JSONSerialization.data(withJSONObject: options.asOptionsMap(), options: []) {
-                                    print("Sending stuff")
-                                    print(optionsData)
+                                    print("sending new options to the proxy")
                                     try session.sendProviderMessage(optionsData) { response in
                                         if let responseMessage = response {
                                             let responseString = String(data: responseMessage, encoding: .utf8)
-                                            print("Response: \(responseString ?? "")")
+                                            print("proxy response: \(responseString ?? "")")
                                         }
                                         semaphore.signal()
                                     }
@@ -118,7 +122,7 @@ extension ProxyCLI.Proxy {
                                 semaphore.signal()
                             }
                         } catch {
-                            print("startProxy error!")
+                            print("error syncing the proxy!")
                             print(error)
                             semaphore.signal()
                         }
