@@ -37,11 +37,11 @@ extension ProxyCLI.Proxy {
         @Option(help: "Log level for the system extension logs")
         var sysExtLogLevel: String = "info"
         
-        @Flag(name: [.long, .customShort("c")], help: "VPN Tunnel is ready")
-        var connectedVpn = false
+        @Flag(help: "VPN Tunnel is ready")
+        var connectedVpn: Bool = false
         
-        @Flag(name: [.long, .customShort("r")], help: "Route VPN")
-        var routeVpn = false
+        @Flag(help: "Route VPN")
+        var routeVpn: Bool = false
         
         @Option(help: "Name of the group to set the extension to. Must be whitelisted in the firewall.")
         var whitelistGroupName: String = "piavpn"

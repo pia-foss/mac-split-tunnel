@@ -41,6 +41,7 @@ struct VpnStateFactory: VpnStateFactoryProtocol {
             log(.error, "Error: Cannot find routeVpn in options")
             return nil
         }
+        log(.info, "routeVPN: \(routeVpn)")
         vpnState.routeVpn = routeVpn
 
         guard let connected = options!["connected"] as? Bool else {
@@ -48,6 +49,7 @@ struct VpnStateFactory: VpnStateFactoryProtocol {
             return nil
         }
         vpnState.connected = connected
+        log(.info, "connected: \(connected)")
 
         guard let groupName = options!["whitelistGroupName"] as? String else {
             log(.error, "Error: Cannot find whitelistGroupName in options")
