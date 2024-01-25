@@ -38,18 +38,10 @@ final class ChannelCreatorTCP {
     private func bindSourceAddressAndConnect(_ bootstrap: ClientBootstrap, endpoint: NWHostEndpoint) 
         -> EventLoopFuture<Channel> {
         do {
-            let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: endpoint)
-            // Return a friendly error on IPv6 addresses
-            // TODO: Properly support IPv6 for the beta
-            if (endpointAddress ?? "").contains(":") {
-                return config.eventLoopGroup.next().makeFailedFuture(
-                    ProxySessionError.IPv6("IPv6 is not yet supported"))
-            }
-
             // This is the only call that can throw an exception
-            let socketAddress = try SocketAddress(ipAddress: config.interfaceAddress, port: 0)
+            let socketAddress = try SocketAddress(ipAddress: config.bindIp, port: 0)
             let channelFuture = bootstrap.bind(to: socketAddress)
-                .connect(host: endpointAddress!, port: endpointPort!)
+                .connect(host: endpoint.hostname, port: Int(endpoint.port)!)
 
             return channelFuture
         } catch {
