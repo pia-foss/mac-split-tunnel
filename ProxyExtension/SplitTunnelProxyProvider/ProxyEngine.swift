@@ -3,7 +3,7 @@ import NetworkExtension
 
 protocol ProxyEngineProtocol {
     var trafficManager: TrafficManager { get }
-    var vpnState: VpnState { get }
+    var vpnState: VpnState { get set }
 
     func handleNewFlow(_ flow: Flow) -> Bool
     func whitelistProxyInFirewall(groupName: String) -> Bool
@@ -16,7 +16,7 @@ protocol ProxyEngineProtocol {
 // * configures network settings
 final class ProxyEngine: ProxyEngineProtocol {
     let trafficManager: TrafficManager
-    let vpnState: VpnState
+    var vpnState: VpnState
 
     init(trafficManager: TrafficManager, vpnState: VpnState) {
         self.trafficManager = trafficManager
