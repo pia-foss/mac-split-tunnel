@@ -1,8 +1,8 @@
 import Foundation
+import NIO
 import NetworkExtension
 
 protocol ProxyEngineProtocol {
-    var trafficManager: TrafficManager { get }
     var vpnState: VpnState { get }
 
     func handleNewFlow(_ flow: Flow) -> Bool
@@ -15,12 +15,26 @@ protocol ProxyEngineProtocol {
 // * whitelists in the firewall
 // * configures network settings
 final class ProxyEngine: ProxyEngineProtocol {
-    let trafficManager: TrafficManager
     let vpnState: VpnState
 
-    init(trafficManager: TrafficManager, vpnState: VpnState) {
-        self.trafficManager = trafficManager
+    // From TrafficManager
+    var sessionConfig: SessionConfig!
+    let proxySessionFactory: ProxySessionFactory
+    var idGenerator: IDGenerator
+
+    init(vpnState: VpnState,
+         proxySessionFactory: ProxySessionFactory = DefaultProxySessionFactory(),
+         config: SessionConfig? = nil) {
         self.vpnState = vpnState
+
+        // From TrafficManager
+        self.idGenerator = IDGenerator()
+        self.sessionConfig = config ?? Self.defaultSessionConfig(interface: NetworkInterface(interfaceName: vpnState.networkInterface))
+        self.proxySessionFactory = proxySessionFactory
+    }
+
+    deinit {
+        try! sessionConfig.eventLoopGroup.syncShutdownGracefully()
     }
 
     public func handleNewFlow(_ flow: Flow) -> Bool {
@@ -74,9 +88,32 @@ final class ProxyEngine: ProxyEngineProtocol {
                 log(.error, "\(appID) \"\(error!.localizedDescription)\" in \(String(describing: flow.self)) open()")
                 return
             }
-            self.trafficManager.handleFlowIO(flow)
+            self.handleFlowIO(flow)
         }
         return true
+    }
+
+    private static func defaultSessionConfig(interface: NetworkInterfaceProtocol) -> SessionConfig {
+        // Fundamental config used to establish a session
+        SessionConfig(
+            interface: interface,
+            // Trying with just 1 thread for now, since we dont want to use too many resources on the user's machines.
+            // According to SwiftNIO docs it is better to use MultiThreadedEventLoopGroup
+            // even in the case of just 1 thread
+            eventLoopGroup: MultiThreadedEventLoopGroup(numberOfThreads: 1)
+        )
+    }
+
+    // Fire off a proxy session for each new flow
+    func handleFlowIO(_ flow: Flow) {
+        let nextId = idGenerator.generate()
+        if let tcpFlow = flow as? FlowTCP {
+            let tcpSession = proxySessionFactory.create(flow: tcpFlow, config: sessionConfig, id: nextId)
+            tcpSession.start()
+        } else if let udpFlow = flow as? FlowUDP {
+            let udpSession = proxySessionFactory.create(flow: udpFlow, config: sessionConfig, id: nextId)
+            udpSession.start()
+        }
     }
 
     public func whitelistProxyInFirewall(groupName: String) -> Bool {

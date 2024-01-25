@@ -19,8 +19,7 @@ final class ProxyEngineTest: QuickSpec {
                     it("ignores a new TCP flow") {
                         let vpnState = VpnState(bypassApps: [], vpnOnlyApps: [""], networkInterface: "en0", serverAddress: "127.0.01", routeVpn: true, connected: false, groupName: "piavpn")
 
-                        let mockTrafficManager = MockTrafficManager()
-                        let engine = ProxyEngine(trafficManager: mockTrafficManager, vpnState: vpnState)
+                        let engine = ProxyEngine(vpnState: vpnState)
 
                         let flow = MockFlowTCP()
                         flow.sourceAppSigningIdentifier = "com.foo.bar"
@@ -32,8 +31,7 @@ final class ProxyEngineTest: QuickSpec {
                     it("ignores a new UDP flow") {
                         let vpnState = VpnState(bypassApps: [], vpnOnlyApps: [""], networkInterface: "en0", serverAddress: "127.0.01", routeVpn: true, connected: false, groupName: "piavpn")
 
-                        let mockTrafficManager = MockTrafficManager()
-                        let engine = ProxyEngine(trafficManager: mockTrafficManager, vpnState: vpnState)
+                        let engine = ProxyEngine(vpnState: vpnState)
 
                         let flow = MockFlowUDP()
                         flow.sourceAppSigningIdentifier = "com.foo.bar"
@@ -46,8 +44,7 @@ final class ProxyEngineTest: QuickSpec {
                     it("blocks a new TCP flow") {
                         let vpnState = VpnState(bypassApps: [], vpnOnlyApps: ["com.apple.curl"], networkInterface: "en0", serverAddress: "127.0.01", routeVpn: true, connected: false, groupName: "piavpn")
 
-                        let mockTrafficManager = MockTrafficManager()
-                        let engine = ProxyEngine(trafficManager: mockTrafficManager, vpnState: vpnState)
+                        let engine = ProxyEngine(vpnState: vpnState)
 
                         let flow = MockFlowTCP()
                         flow.sourceAppSigningIdentifier = "com.apple.curl"
@@ -61,8 +58,7 @@ final class ProxyEngineTest: QuickSpec {
                     it("blocks a new UDP flow") {
                         let vpnState = VpnState(bypassApps: [], vpnOnlyApps: ["com.apple.curl"], networkInterface: "en0", serverAddress: "127.0.01", routeVpn: true, connected: false, groupName: "piavpn")
 
-                        let mockTrafficManager = MockTrafficManager()
-                        let engine = ProxyEngine(trafficManager: mockTrafficManager, vpnState: vpnState)
+                        let engine = ProxyEngine(vpnState: vpnState)
 
                         let flow = MockFlowUDP()
                         flow.sourceAppSigningIdentifier = "com.apple.curl"
@@ -78,8 +74,7 @@ final class ProxyEngineTest: QuickSpec {
                     it("manages a new TCP flow") {
                         let vpnState = VpnState(bypassApps: ["com.apple.curl"], vpnOnlyApps: [], networkInterface: "en0", serverAddress: "127.0.01", routeVpn: true, connected: true, groupName: "piavpn")
 
-                        let mockTrafficManager = MockTrafficManager()
-                        let engine = ProxyEngine(trafficManager: mockTrafficManager, vpnState: vpnState)
+                        let engine = ProxyEngine(vpnState: vpnState)
 
                         let flow = MockFlowTCP()
                         flow.sourceAppSigningIdentifier = "com.apple.curl"
@@ -87,14 +82,12 @@ final class ProxyEngineTest: QuickSpec {
                         let willHandleFlow = engine.handleNewFlow(flow)
                         expect(willHandleFlow).to(equal(true))
                         expect(flow.didCall("openFlow")).to(equal(true))
-                        expect(mockTrafficManager.didCall("handleFlowIO")).to(equal(true))
                     }
 
                     it("manages a new UDP flow") {
                         let vpnState = VpnState(bypassApps: ["com.apple.curl"], vpnOnlyApps: [], networkInterface: "en0", serverAddress: "127.0.01", routeVpn: true, connected: true, groupName: "piavpn")
 
-                        let mockTrafficManager = MockTrafficManager()
-                        let engine = ProxyEngine(trafficManager: mockTrafficManager, vpnState: vpnState)
+                        let engine = ProxyEngine(vpnState: vpnState)
 
                         let flow = MockFlowUDP()
                         flow.sourceAppSigningIdentifier = "com.apple.curl"
@@ -102,7 +95,6 @@ final class ProxyEngineTest: QuickSpec {
                         let willHandleFlow = engine.handleNewFlow(flow)
                         expect(willHandleFlow).to(equal(true))
                         expect(flow.didCall("openFlow")).to(equal(true))
-                        expect(mockTrafficManager.didCall("handleFlowIO")).to(equal(true))
                     }
                 }
             }
