@@ -30,7 +30,7 @@ final class ChannelCreatorUDP {
         -> EventLoopFuture<Channel> {
         do {
             // This is the only call that can throw an exception
-            let socketAddress = try SocketAddress(ipAddress: config.interfaceAddress, port: 0)
+            let socketAddress = try SocketAddress(ipAddress: config.bindIp, port: 0)
             // Not calling connect() on a UDP socket.
             // Doing that will turn the socket into a "connected datagram socket".
             // That will prevent the application from exchanging data with multiple endpoints

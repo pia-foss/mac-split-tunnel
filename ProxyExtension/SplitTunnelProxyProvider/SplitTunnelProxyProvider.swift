@@ -52,7 +52,7 @@ final class SplitTunnelProxyProvider : NETransparentProxyProvider {
             return
         }
 
-        let trafficManager = TrafficManagerNIO(interfaceName: vpnState.networkInterface)
+        let trafficManager = TrafficManagerNIO(interface: NetworkInterface(interfaceName: vpnState.networkInterface))
         self.engine = self.engine ?? ProxyEngine(trafficManager: trafficManager, vpnState: vpnState)
 
         // Whitelist this process in the firewall - error logging happens in function

@@ -14,11 +14,13 @@ import NIO
 
 class TrafficManagerNIOSpec: QuickSpec {
     override class func spec() {
+        let mockInterface = MockNetworkInterface()
+
         describe("TrafficManagerNIO") {
             context("when handling a TCP flow") {
                 it("should create a TCP ProxySession") {
                     let mockFactory = MockProxySessionFactory()
-                    let tm = TrafficManagerNIO(interfaceName: "en0", proxySessionFactory: mockFactory)
+                    let tm = TrafficManagerNIO(interface: mockInterface, proxySessionFactory: mockFactory)
                     tm.handleFlowIO(MockFlowTCP())
 
                     expect(mockFactory.didCall("createTCP")).to(equal(true))
@@ -28,7 +30,7 @@ class TrafficManagerNIOSpec: QuickSpec {
             context("when handling a UDP flow") {
                 it("should create a UDP ProxySession") {
                     let mockFactory = MockProxySessionFactory()
-                    let tm = TrafficManagerNIO(interfaceName: "en0", proxySessionFactory: mockFactory)
+                    let tm = TrafficManagerNIO(interface: mockInterface, proxySessionFactory: mockFactory)
                     tm.handleFlowIO(MockFlowUDP())
 
                     expect(mockFactory.didCall("createUDP")).to(equal(true))
@@ -38,7 +40,7 @@ class TrafficManagerNIOSpec: QuickSpec {
             context("id generation") {
                 it("should generate a unique id each time") {
                     let mockFactory = MockProxySessionFactory()
-                    let tm = TrafficManagerNIO(interfaceName: "en0", proxySessionFactory: mockFactory)
+                    let tm = TrafficManagerNIO(interface: mockInterface, proxySessionFactory: mockFactory)
                     tm.handleFlowIO(MockFlowTCP())
                     tm.handleFlowIO(MockFlowUDP())
 

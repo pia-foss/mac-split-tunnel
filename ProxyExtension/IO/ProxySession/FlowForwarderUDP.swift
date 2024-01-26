@@ -47,10 +47,13 @@ final class FlowForwarderUDP {
 
     private func createDatagram(data: Data, endpoint: NWEndpoint)
         -> AddressedEnvelope<ByteBuffer>? {
+        guard let endpoint = endpoint as? NWHostEndpoint else {
+            log(.error, "id: \(self.id) datagram creation failed - NWEndpoint is not an NWHostEndpoint")
+            return nil
+        }
         let buffer = channel.allocator.buffer(bytes: data)
-        let (endpointAddress, endpointPort) = getAddressAndPort(endpoint: endpoint as! NWHostEndpoint)
         do {
-            let destination = try SocketAddress(ipAddress: endpointAddress!, port: endpointPort!)
+            let destination = try SocketAddress(ipAddress: endpoint.hostname, port: Int(endpoint.port)!)
             return AddressedEnvelope<ByteBuffer>(remoteAddress: destination, data: buffer)
         } catch {
             log(.error, "id: \(self.id) datagram creation failed")
