@@ -1,46 +1,38 @@
-//
-//  NewFlowHandler.swift
-//  SplitTunnelProxy
-//
-//  Created by John Mair on 25/01/2024.
-//  Copyright © 2024 PIA. All rights reserved.
-//
-
 import Foundation
 import NetworkExtension
 import NIO
 
-final class NewFlowHandler {
-    let vpnState: VpnState
-
-    var sessionConfig: SessionConfig!
-    let proxySessionFactory: ProxySessionFactory
+final class FlowHandler {
+    let eventLoopGroup: MultiThreadedEventLoopGroup
     var idGenerator: IDGenerator
 
-    init(vpnState: VpnState,
-         proxySessionFactory: ProxySessionFactory = DefaultProxySessionFactory(),
-         config: SessionConfig? = nil) {
-        self.vpnState = vpnState
+    // explicitly set this for tests
+    var proxySessionFactory: ProxySessionFactory
 
+    init() {
         self.idGenerator = IDGenerator()
-        self.sessionConfig = config
-        self.proxySessionFactory = proxySessionFactory
+        self.proxySessionFactory = DefaultProxySessionFactory()
+        self.eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
     }
 
-    private func startProxySession(flow: Flow) -> Bool {
+    deinit {
+        try! eventLoopGroup.syncShutdownGracefully()
+    }
+
+    private func startProxySession(flow: Flow, sessionConfig: SessionConfig) -> Bool {
         let appID = flow.sourceAppSigningIdentifier
         flow.openFlow { error in
             guard error == nil else {
                 log(.error, "\(appID) \"\(error!.localizedDescription)\" in \(String(describing: flow.self)) open()")
                 return
             }
-            self.handleFlowIO(flow)
+            self.handleFlowIO(flow, sessionConfig: sessionConfig)
         }
         return true
     }
 
     // Fire off a proxy session for each new flow
-    func handleFlowIO(_ flow: Flow) {
+    func handleFlowIO(_ flow: Flow, sessionConfig: SessionConfig) {
         let nextId = idGenerator.generate()
         if let tcpFlow = flow as? FlowTCP {
             let tcpSession = proxySessionFactory.create(flow: tcpFlow, config: sessionConfig, id: nextId)
@@ -51,14 +43,17 @@ final class NewFlowHandler {
         }
     }
 
-    public func handleNewFlow(_ flow: Flow) -> Bool {
+    public func handleNewFlow(_ flow: Flow, vpnState: VpnState) -> Bool {
         guard isFlowIPv4(flow) else {
             return false
         }
 
+        let sessionConfig = SessionConfig(interface: NetworkInterface(interfaceName: vpnState.networkInterface), 
+                                          eventLoopGroup: eventLoopGroup)
+
         switch FlowPolicy.policyFor(flow: flow, vpnState: vpnState) {
         case .proxy:
-            return startProxySession(flow: flow)
+            return startProxySession(flow: flow, sessionConfig: sessionConfig)
         case .block:
             flow.closeReadAndWrite()
             // We return true to indicate to the OS we want to handle the flow, so the app is blocked.

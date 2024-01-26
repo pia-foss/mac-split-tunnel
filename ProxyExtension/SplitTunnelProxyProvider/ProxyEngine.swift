@@ -23,48 +23,25 @@ struct SessionConfig {
 final class ProxyEngine: ProxyEngineProtocol {
     var vpnState: VpnState
 
-    var sessionConfig: SessionConfig!
-    let proxySessionFactory: ProxySessionFactory
+    public var flowHandler: FlowHandler
+    public var messageHandler: MessageHandler
 
-    init(vpnState: VpnState, proxySessionFactory: ProxySessionFactory = DefaultProxySessionFactory(),
-         config: SessionConfig? = nil) {
+    init(vpnState: VpnState) {
         self.vpnState = vpnState
-
-        self.sessionConfig = config ?? Self.defaultSessionConfig(interface: NetworkInterface(interfaceName: vpnState.networkInterface))
-        self.proxySessionFactory = proxySessionFactory
-    }
-
-    deinit {
-        if sessionConfig.eventLoopGroup != nil {
-            try! sessionConfig.eventLoopGroup.syncShutdownGracefully()
-        }
+        self.flowHandler = FlowHandler()
+        self.messageHandler = MessageHandler()
     }
 
     public func handleNewFlow(_ flow: Flow) -> Bool {
-        NewFlowHandler(vpnState: vpnState, proxySessionFactory: proxySessionFactory, config: sessionConfig).handleNewFlow(flow)
+        flowHandler.handleNewFlow(flow, vpnState: vpnState)
     }
 
     public func handleAppMessage(_ messageData: Data, completionHandler: ((Data?) -> Void)?) {
-        // Deserialization
-        if let options = try? JSONSerialization.jsonObject(with: messageData, options: []) as? [String: Any] {
-            log(.info, String(decoding: messageData, as: UTF8.self))
-            // Contains connection state, routing, interface, and bypass/vpnOnly app information
-            guard let vpnState = VpnStateFactory.create(options: options) else {
-                log(.error, "provided incorrect list of options. They might be missing or an incorrect type")
-                completionHandler?("bad_options_error".data(using: .utf8))
-                return
+        messageHandler.handleAppMessage(messageData, completionHandler: completionHandler) { (messageType, newVpnState) in
+            switch messageType {
+            case .VpnStateUpdateMessage:
+                self.vpnState = newVpnState
             }
-            // TODO: The API is changing. Make sure we update the target interface in the traffic manager.
-            // engine.trafficManager.updateInterface(vpnState.networkInterface)
-            self.vpnState = vpnState
-
-            log(.info, "Proxy updated!")
-            // Optionally send a response back to the app
-            completionHandler?("ok".data(using: .utf8))
-        }
-        else {
-            log(.info, "Failed to deserialize data")
-            completionHandler?("deserialization_error".data(using: .utf8))
         }
     }
 
