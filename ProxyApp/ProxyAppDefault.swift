@@ -136,12 +136,12 @@ class ProxyAppDefault : ProxyApp {
                         try session.startTunnel(options: [
                             "bypassApps" : self.bypassApps,
                             "vpnOnlyApps" : self.vpnOnlyApps,
-                            "networkInterface" : self.networkInterface,
+                            "bindInterface" : self.networkInterface,
                             "serverAddress" : ProxyAppDefault.serverAddress,
                             "logFile" : "/tmp/STProxy.log",
                             "logLevel" : "debug",
                             "routeVpn" : true,
-                            "connected" : true,
+                            "isConnected" : true,
                             // The name of the unix group pia whitelists in the firewall
                             // This may be different when PIA is white-labeled
                             "whitelistGroupName" : "piavpn"

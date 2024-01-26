@@ -15,39 +15,71 @@ extension ProxyCLI {
         static var configuration = CommandConfiguration(
             commandName: "proxy",
             abstract: "Manage the proxy.",
-            subcommands: [Start.self, Stop.self, Status.self])
+            subcommands: [Sync.self, Stop.self, Status.self])
     }
 }
 
 
 extension ProxyCLI.Proxy {
-    struct Start: AsyncParsableCommand {
-        static var configuration
-            = CommandConfiguration(
-                commandName: "start",
-                abstract: "Start the split tunnel proxy."
-            )
-
-        @Option(help: "Apps to bypass")
+    struct SyncOptions: ParsableArguments {
+        @Option(name: .customLong("bypass-app"), help: "Apps that will bypass the vpn")
         var bypassApps: [String] = []
         
-        @Option(help: "Apps to enforce vpn use")
+        @Option(name: .customLong("vpn-only-app"), help: "Apps that will be enforced to use vpn")
         var vpnOnlyApps: [String] = [String]()
         
         @Option(help: "Interface to send packages when bypassing")
-        var bypassInterface: String = "en0"
+        var bindInterface: String = "en0"
         
         @Option(help: "Where to store system extension logs")
         var sysExtLogFile: String = "/tmp/STProxy.log"
         
         @Option(help: "Log level for the system extension logs")
         var sysExtLogLevel: String = "info"
+        
+        @Flag(help: "VPN Tunnel is ready")
+        var isConnected: Bool = false
+        
+        @Flag(help: "Route VPN")
+        var routeVpn: Bool = false
+        
+        @Option(help: "Name of the group to set the extension to. Must be whitelisted in the firewall.")
+        var whitelistGroupName: String = "piavpn"
+        
+        func asOptionsMap() -> [String : Any] {
+            [
+                "bypassApps" : bypassApps,
+                "vpnOnlyApps" : vpnOnlyApps,
+                "bindInterface" : bindInterface,
+                "serverAddress" : serverAddress,
+                "logFile" : sysExtLogFile,
+                "logLevel" : sysExtLogLevel,
+                "routeVpn" : routeVpn,
+                "isConnected" : isConnected,
+                "whitelistGroupName" : whitelistGroupName
+            ] as [String : Any]
+        }
+    }
+    
+    struct Sync: AsyncParsableCommand {
+        static var configuration
+            = CommandConfiguration(
+                commandName: "sync",
+                abstract: "Synchronizes the split tunnel proxy. It will start the proxy if disconnected and update it if already connected."
+            )
+
+        @OptionGroup var options: ProxyCLI.Proxy.SyncOptions
 
         mutating func run() throws {
-            try startProxy()
+            try syncProxy()
         }
         
-        func startProxy() throws {
+        /**
+         * Synchronizes the proxy. If it's stopped, it will start it with the given options. If it's already started, it will
+         * update it to match the new arguments  by sending the options as a message.
+         * Updating this way makes it possible to update the proxy live without restarting it.
+         */
+        func syncProxy() throws {
             let semaphore = DispatchSemaphore(value: 0)
             var proxyManager = loadProxyManagerSynchronously()
 
@@ -70,27 +102,34 @@ extension ProxyCLI.Proxy {
                         do {
                             // This function is used to start the tunnel (the proxy)
                             // passing it the following settings
-                            try session.startTunnel(options: [
-                                "bypassApps" : self.bypassApps,
-                                "vpnOnlyApps" : self.vpnOnlyApps,
-                                "networkInterface" : self.bypassInterface,
-                                "serverAddress" : serverAddress,
-                                "logFile" : sysExtLogFile,
-                                "logLevel" : sysExtLogLevel,
-                                "routeVpn" : true,
-                                "connected" : true,
-                                // The name of the unix group pia whitelists in the firewall
-                                // This may be different when PIA is white-labeled
-                                "whitelistGroupName" : "piavpn"
-                            ] as [String : Any])
+                            switch session.status {
+                            case .connected:
+                                if let optionsData = try? JSONSerialization.data(withJSONObject: options.asOptionsMap(), options: []) {
+                                    print("sending new options to the proxy")
+                                    try session.sendProviderMessage(optionsData) { response in
+                                        if let responseMessage = response {
+                                            let responseString = String(data: responseMessage, encoding: .utf8)
+                                            print("proxy response: \(responseString ?? "")")
+                                        }
+                                        semaphore.signal()
+                                    }
+                                }
+                            case .disconnected:
+                                try session.startTunnel(options: options.asOptionsMap())
+                                semaphore.signal()
+                            default:
+                                print("cannot start from status " + Status.StatusMap[session.status]!)
+                                semaphore.signal()
+                            }
                         } catch {
-                            print("startProxy error!")
+                            print("error syncing the proxy!")
                             print(error)
+                            semaphore.signal()
                         }
                     } else {
                         print("error getting the proxy manager connection")
+                        semaphore.signal()
                     }
-                    semaphore.signal()
                 }
             }
             _ = semaphore.wait(timeout: .now() + 120)

@@ -15,12 +15,12 @@ final class SplitTunnelProxyProviderTest: QuickSpec {
     static let validOptions: Dictionary<String, Any> = [
         "bypassApps" : ["/Applications/Foo.app"],
         "vpnOnlyApps" : ["/Applications/Bar.app"],
-        "networkInterface" : "en0",
+        "bindInterface" : "en0",
         "serverAddress" : "127.0.0.1",
         "logFile" : "/foo/bar.log",
         "logLevel" : "debug",
         "routeVpn" : true,
-        "connected" : true,
+        "isConnected" : true,
         // The name of the unix group pia whitelists in the firewall
         // This may be different when PIA is white-labeled
         "whitelistGroupName" : "piavpn"
