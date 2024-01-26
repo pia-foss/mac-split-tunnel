@@ -1,6 +1,9 @@
 # PIA Mac Split Tunnel
 ## Overview
 
+<img width="643" alt="image" src="https://github.com/xvpn/pia_mac_split_tunnel/assets/109503634/1ad39ce3-aefa-4496-b791-1d3814a52ea4">
+
+
 - A SplitTunnel using the Apple Network Extension Transparent Proxy APIs
 - Check out PIA macOS Split Tunnelling document on Confluence: https://polymoon.atlassian.net/l/cp/0vALekXM
 

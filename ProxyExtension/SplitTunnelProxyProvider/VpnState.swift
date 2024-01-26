@@ -23,7 +23,7 @@ struct VpnStateFactory: VpnStateFactoryProtocol {
         vpnState.vpnOnlyApps = vpnOnlyApps.map { $0.lowercased() }
         log(.info, "Managing vpnOnly apps: \(vpnState.vpnOnlyApps)")
 
-        guard let networkInterface = options!["networkInterface"] as? String else {
+        guard let networkInterface = options!["bindInterface"] as? String else {
             log(.error, "Error: Cannot find networkInterface in options")
             return nil
         }
@@ -41,13 +41,15 @@ struct VpnStateFactory: VpnStateFactoryProtocol {
             log(.error, "Error: Cannot find routeVpn in options")
             return nil
         }
+        log(.info, "routeVPN: \(routeVpn)")
         vpnState.routeVpn = routeVpn
 
-        guard let connected = options!["connected"] as? Bool else {
+        guard let connected = options!["isConnected"] as? Bool else {
             log(.error, "Error: Cannot find connected in options")
             return nil
         }
         vpnState.connected = connected
+        log(.info, "connected: \(connected)")
 
         guard let groupName = options!["whitelistGroupName"] as? String else {
             log(.error, "Error: Cannot find whitelistGroupName in options")

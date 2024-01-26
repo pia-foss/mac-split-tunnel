@@ -13,12 +13,12 @@ class VpnStateSpec: QuickSpec {
                     let correctOptions: [String : Any]? =
                         ["bypassApps" : ["Quinn", "app1"],
                         "vpnOnlyApps" : ["Eskimo", "app2"],
-                        "networkInterface" : "en666",
+                        "bindInterface" : "en666",
                         "serverAddress" : "1.2.3.4",
                         "logFile" : "file.log",
                         "logLevel" : "debug",
                         "routeVpn" : true,
-                        "connected" : true,
+                        "isConnected" : true,
                         "whitelistGroupName" : "group1"]
                     expect(VpnStateFactory().create(options: correctOptions)).toNot(beNil())
                 }
@@ -26,7 +26,7 @@ class VpnStateSpec: QuickSpec {
                 it("should return nil if some required options are missing") {
                     let missingOptions: [String : Any]? =
                         ["routeVpn" : true,
-                        "connected" : true,
+                        "isConnected" : true,
                         "whitelistGroupName" : "group1"]
                     expect(VpnStateFactory().create(options: missingOptions)).to(beNil())
                 }
@@ -35,12 +35,12 @@ class VpnStateSpec: QuickSpec {
                     let wrongTypeOptions: [String : Any]? =
                     ["bypassApps" : "",
                     "vpnOnlyApps" : "",
-                    "networkInterface" : "en666",
+                    "bindInterface" : "en666",
                     "serverAddress" : "1.2.3.4",
                     "logFile" : "file.log",
                     "logLevel" : "debug",
                     "routeVpn" : true,
-                    "connected" : true,
+                    "isConnected" : true,
                     "whitelistGroupName" : "group1"]
                     expect(VpnStateFactory().create(options: wrongTypeOptions)).to(beNil())
                 }
