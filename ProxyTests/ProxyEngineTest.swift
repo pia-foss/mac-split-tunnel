@@ -13,13 +13,16 @@ import NetworkExtension
 
 final class ProxyEngineTest: QuickSpec {
     override class func spec() {
+        let config = SessionConfig(interface: MockNetworkInterface(), eventLoopGroup: nil)
+
         describe("ProxyEngineTest") {
             context("handleNewFlow") {
                 context("when the app is not in either the vpnOnly or bypass lists") {
                     it("ignores a new TCP flow") {
                         let vpnState = VpnState(bypassApps: [], vpnOnlyApps: [""], networkInterface: "en0", serverAddress: "127.0.01", routeVpn: true, connected: false, groupName: "piavpn")
 
-                        let engine = ProxyEngine(vpnState: vpnState)
+                        let mockSessionFactory = MockProxySessionFactory()
+                        let engine = ProxyEngine(vpnState: vpnState, proxySessionFactory: mockSessionFactory, config: config)
 
                         let flow = MockFlowTCP()
                         flow.sourceAppSigningIdentifier = "com.foo.bar"
@@ -31,7 +34,8 @@ final class ProxyEngineTest: QuickSpec {
                     it("ignores a new UDP flow") {
                         let vpnState = VpnState(bypassApps: [], vpnOnlyApps: [""], networkInterface: "en0", serverAddress: "127.0.01", routeVpn: true, connected: false, groupName: "piavpn")
 
-                        let engine = ProxyEngine(vpnState: vpnState)
+                        let mockSessionFactory = MockProxySessionFactory()
+                        let engine = ProxyEngine(vpnState: vpnState, proxySessionFactory: mockSessionFactory, config: config)
 
                         let flow = MockFlowUDP()
                         flow.sourceAppSigningIdentifier = "com.foo.bar"
@@ -44,7 +48,8 @@ final class ProxyEngineTest: QuickSpec {
                     it("blocks a new TCP flow") {
                         let vpnState = VpnState(bypassApps: [], vpnOnlyApps: ["com.apple.curl"], networkInterface: "en0", serverAddress: "127.0.01", routeVpn: true, connected: false, groupName: "piavpn")
 
-                        let engine = ProxyEngine(vpnState: vpnState)
+                        let mockSessionFactory = MockProxySessionFactory()
+                        let engine = ProxyEngine(vpnState: vpnState, proxySessionFactory: mockSessionFactory, config: config)
 
                         let flow = MockFlowTCP()
                         flow.sourceAppSigningIdentifier = "com.apple.curl"
@@ -58,7 +63,8 @@ final class ProxyEngineTest: QuickSpec {
                     it("blocks a new UDP flow") {
                         let vpnState = VpnState(bypassApps: [], vpnOnlyApps: ["com.apple.curl"], networkInterface: "en0", serverAddress: "127.0.01", routeVpn: true, connected: false, groupName: "piavpn")
 
-                        let engine = ProxyEngine(vpnState: vpnState)
+                        let mockSessionFactory = MockProxySessionFactory()
+                        let engine = ProxyEngine(vpnState: vpnState, proxySessionFactory: mockSessionFactory, config: config)
 
                         let flow = MockFlowUDP()
                         flow.sourceAppSigningIdentifier = "com.apple.curl"
@@ -74,7 +80,8 @@ final class ProxyEngineTest: QuickSpec {
                     it("manages a new TCP flow") {
                         let vpnState = VpnState(bypassApps: ["com.apple.curl"], vpnOnlyApps: [], networkInterface: "en0", serverAddress: "127.0.01", routeVpn: true, connected: true, groupName: "piavpn")
 
-                        let engine = ProxyEngine(vpnState: vpnState)
+                        let mockSessionFactory = MockProxySessionFactory()
+                        let engine = ProxyEngine(vpnState: vpnState, proxySessionFactory: mockSessionFactory, config: config)
 
                         let flow = MockFlowTCP()
                         flow.sourceAppSigningIdentifier = "com.apple.curl"
@@ -87,7 +94,8 @@ final class ProxyEngineTest: QuickSpec {
                     it("manages a new UDP flow") {
                         let vpnState = VpnState(bypassApps: ["com.apple.curl"], vpnOnlyApps: [], networkInterface: "en0", serverAddress: "127.0.01", routeVpn: true, connected: true, groupName: "piavpn")
 
-                        let engine = ProxyEngine(vpnState: vpnState)
+                        let mockSessionFactory = MockProxySessionFactory()
+                        let engine = ProxyEngine(vpnState: vpnState, proxySessionFactory: mockSessionFactory, config: config)
 
                         let flow = MockFlowUDP()
                         flow.sourceAppSigningIdentifier = "com.apple.curl"

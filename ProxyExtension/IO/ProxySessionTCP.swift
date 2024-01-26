@@ -48,7 +48,7 @@ final class ProxySessionTCP: ProxySession {
         }
     }
 
-    public func createChannel(_ onBytesReceived: @escaping (UInt64) -> Void) 
+    func createChannel(_ onBytesReceived: @escaping (UInt64) -> Void)
         -> EventLoopFuture<Channel> {
         let channelFuture = ChannelCreatorTCP(id: id, flow: flow,
                                               config: config).create(onBytesReceived)

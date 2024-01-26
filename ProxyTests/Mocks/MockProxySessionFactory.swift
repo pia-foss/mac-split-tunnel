@@ -16,11 +16,11 @@ final class MockProxySessionFactory: ProxySessionFactory, Mock {
 
     func create(flow: FlowTCP, config: SessionConfig, id: IDGenerator.ID) -> ProxySession {
         record(args: [flow, config, id], name: "createTCP")
-        return ProxySessionTCP(flow: flow, config: config, id: IDGenerator().nextID)
+        return MockProxySession()
     }
 
     func create(flow: FlowUDP, config: SessionConfig, id: IDGenerator.ID) -> ProxySession {
         record(args: [flow, config, id], name: "createUDP")
-        return ProxySessionUDP(flow: flow, config: config, id: IDGenerator().nextID)
+        return MockProxySession()
     }
 }
