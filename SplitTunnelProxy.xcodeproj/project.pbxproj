@@ -106,7 +106,6 @@
 		52E84CF92B54F22200B67912 /* SessionChannelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E84CF72B54F22200B67912 /* SessionChannelProtocol.swift */; };
 		52E84CFB2B54F77400B67912 /* ChannelWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E84CFA2B54F77400B67912 /* ChannelWrapper.swift */; };
 		52E84CFC2B54F77400B67912 /* ChannelWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E84CFA2B54F77400B67912 /* ChannelWrapper.swift */; };
-		52EA0A702B58F8DC00CD8EFE /* MockVpnStateFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52EA0A6F2B58F8DC00CD8EFE /* MockVpnStateFactory.swift */; };
 		52EA0A742B59205200CD8EFE /* MockLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52EA0A732B59205200CD8EFE /* MockLogger.swift */; };
 		9704D2AD2B03C97400A899D7 /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = 9704D2AC2B03C97400A899D7 /* Puppy */; };
 		971DE35C2B59173E008CE5C2 /* com.privateinternetaccess.vpn.splittunnel.systemextension in Copy Files */ = {isa = PBXBuildFile; fileRef = 97AD92092B35876200405E3A /* com.privateinternetaccess.vpn.splittunnel.systemextension */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -226,7 +225,6 @@
 		52E84CF52B5439CA00B67912 /* MockChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockChannel.swift; sourceTree = "<group>"; };
 		52E84CF72B54F22200B67912 /* SessionChannelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionChannelProtocol.swift; sourceTree = "<group>"; };
 		52E84CFA2B54F77400B67912 /* ChannelWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelWrapper.swift; sourceTree = "<group>"; };
-		52EA0A6F2B58F8DC00CD8EFE /* MockVpnStateFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockVpnStateFactory.swift; sourceTree = "<group>"; };
 		52EA0A732B59205200CD8EFE /* MockLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLogger.swift; sourceTree = "<group>"; };
 		97607D112B6003F100025251 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		976B8CD62B0B55F60097FE7F /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
@@ -340,7 +338,6 @@
 				5235FB512B51582C00F3B772 /* MockProxySessionFactory.swift */,
 				52E84CF52B5439CA00B67912 /* MockChannel.swift */,
 				5220075B2B57F3850034BCEA /* MockProxyEngine.swift */,
-				52EA0A6F2B58F8DC00CD8EFE /* MockVpnStateFactory.swift */,
 				52EA0A732B59205200CD8EFE /* MockLogger.swift */,
 				52105C3B2B628CA400E7D4E0 /* MockNetworkInterface.swift */,
 				52105C402B63AEC400E7D4E0 /* MockProxySession.swift */,
@@ -830,7 +827,6 @@
 				5235FB522B51582C00F3B772 /* MockProxySessionFactory.swift in Sources */,
 				5235FB4A2B5145FD00F3B772 /* IPCConnection.swift in Sources */,
 				5278E5AB2B5A963600210466 /* InboundHandlerUDPTest.swift in Sources */,
-				52EA0A702B58F8DC00CD8EFE /* MockVpnStateFactory.swift in Sources */,
 				52105C3F2B62A44B00E7D4E0 /* FlowHandler.swift in Sources */,
 				52EA0A742B59205200CD8EFE /* MockLogger.swift in Sources */,
 				5235FB402B5145CE00F3B772 /* FlowProtocols.swift in Sources */,

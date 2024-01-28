@@ -2,6 +2,9 @@ import Foundation
 import NetworkExtension
 import NIO
 
+// Core config required to start a new proxy session
+// * The bindIp - which we use to bind ipv4 sockets to change default routing behaviour
+// * The eventLoopGroup - required to setup the NIO Inbound Handlers
 struct SessionConfig {
     var bindIp: String { interface.ip4()! }
     let interface: NetworkInterfaceProtocol
@@ -53,10 +56,9 @@ final class FlowHandler: FlowHandlerProtocol {
     }
 
     private func startProxySession(flow: Flow, sessionConfig: SessionConfig) -> Bool {
-        let appID = flow.sourceAppSigningIdentifier
         flow.openFlow { error in
             guard error == nil else {
-                log(.error, "\(appID) \"\(error!.localizedDescription)\" in \(String(describing: flow.self)) open()")
+                log(.error, "\(flow.sourceAppSigningIdentifier) \"\(error!.localizedDescription)\" in \(String(describing: flow.self)) open()")
                 return
             }
             self.handleFlowIO(flow, sessionConfig: sessionConfig)

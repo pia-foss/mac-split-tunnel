@@ -5,6 +5,8 @@ protocol MessageHandlerProtocol {
                           onProcessedMessage: @escaping (MessageType) -> Void)
 }
 
+// Currently only supports VpnState updates, but
+// it's possible we may support other message types in the future
 enum MessageType {
     case VpnStateUpdateMessage(VpnState)
 }
@@ -23,9 +25,7 @@ final class MessageHandler: MessageHandlerProtocol {
                 completionHandler?("bad_options_error".data(using: .utf8))
                 return
             }
-            // TODO: The API is changing. Make sure we update the target interface in the traffic manager.
-            // engine.trafficManager.updateInterface(vpnState.networkInterface)
-
+            // Callback to handle new vpnState
             onProcessedMessage(.VpnStateUpdateMessage(newVpnState))
 
             log(.info, "Proxy updated!")

@@ -10,8 +10,8 @@ protocol ProxyEngineProtocol {
 }
 
 // Manages core functionality of the Split Tunnel
-// * handles new flows
-// *
+// * handles flows
+// * handles app messages which may modify Split Tunnel behaviour (i.e changing bypass/vpnOnly apps)
 final class ProxyEngine: ProxyEngineProtocol {
     var vpnState: VpnState
 
