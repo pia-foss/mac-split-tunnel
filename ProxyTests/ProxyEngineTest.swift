@@ -25,9 +25,9 @@ final class ProxyEngineTest: QuickSpec {
             }
 
             context("handleAppMessage") {
-                let newVpnState = VpnState(bypassApps: [], vpnOnlyApps: [""],
+                let newVpnState = VpnState(bypassApps: ["com.baz"], vpnOnlyApps: ["com.foobar"],
                                            networkInterface: "en8", serverAddress: "127.0.01",
-                                           routeVpn: false, connected: true, groupName: "piavpn")
+                                           routeVpn: false, connected: true, groupName: "acmevpn")
                 it("delegates the call") {
                     let proxyEngine = ProxyEngine(vpnState: vpnState)
                     let mockMessageHandler = MockMessageHandler(newVpnState: newVpnState)

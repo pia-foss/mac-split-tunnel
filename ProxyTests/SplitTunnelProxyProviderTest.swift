@@ -81,13 +81,6 @@ final class SplitTunnelProxyProviderTest: QuickSpec {
 
                         expect(mockLogger.didCall("initializeLogger")).to(equal(true))
                     }
-
-                    it("creates a VpnState instance") {
-                        let (_, _, provider) = setupTestEnvironment()
-                        let completionHandler: (Error?) -> Void = { (error: Error?) in }
-
-                        provider.startProxy(options: Self.validOptions, completionHandler: completionHandler)
-                    }
                 }
             }
         }
