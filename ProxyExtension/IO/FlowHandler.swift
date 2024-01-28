@@ -14,6 +14,7 @@ protocol FlowHandlerProtocol {
     func handleNewFlow(_ flow: Flow, vpnState: VpnState) -> Bool
 }
 
+// Responsible for handling flows, both new flows and pre-existing
 final class FlowHandler: FlowHandlerProtocol {
     let eventLoopGroup: MultiThreadedEventLoopGroup
     var idGenerator: IDGenerator

@@ -9,6 +9,8 @@ enum MessageType {
     case VpnStateUpdateMessage(VpnState)
 }
 
+// Responsible for handling incoming messages from the 'driver app'
+// aka the app that started the proxy
 final class MessageHandler: MessageHandlerProtocol {
     public func handleAppMessage(_ messageData: Data, _ completionHandler: ((Data?) -> Void)?,
                                  onProcessedMessage: (MessageType) -> Void) {
