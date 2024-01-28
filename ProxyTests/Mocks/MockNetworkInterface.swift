@@ -13,9 +13,15 @@ final class MockNetworkInterface: NetworkInterfaceProtocol, Mock {
     var methodsCalled: Set<String> = []
     var argumentsGiven: Dictionary<String, [Any]> = [:]
 
+    let ip: String
+
+    init(ip: String = "192.168.100.1") {
+        self.ip = ip
+    }
+
     // Required by NetworkInterface
     func ip4() -> String? {
         record()
-        return "192.168.1.1"
+        return ip
     }
 }

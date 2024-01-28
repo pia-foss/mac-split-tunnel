@@ -38,7 +38,7 @@ final class MockFlowTCP: FlowTCP, Equatable, Mock {
     public var sourceAppAuditToken: Data? = nil
 
     // Required by FlowTCP
-    var remoteEndpoint: NWEndpoint { NWHostEndpoint(hostname: "8.8.8.8", port: "1337") }
+    public var remoteEndpoint: NWEndpoint = NWHostEndpoint(hostname: "8.8.8.8", port: "1337") 
 
     // Reads from our flow
     // Unlike the real readData on NEAppProxyTCPFlow this does not dispatch the

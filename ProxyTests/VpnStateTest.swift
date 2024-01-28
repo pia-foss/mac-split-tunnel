@@ -4,7 +4,7 @@ import Nimble
 
 class VpnStateSpec: QuickSpec {
     override class func spec() {
-        describe("ProxyOptions") {
+        describe("VpnState") {
             context("when an option array is created") {
                 it("should return the object if all required options are present") {
                     let correctOptions: [String : Any]? =
