@@ -14,13 +14,13 @@ final class MockProxySessionFactory: ProxySessionFactory, Mock {
     var methodsCalled: Set<String> = []
     var argumentsGiven: Dictionary<String, [Any]> = [:]
 
-    func create(flow: FlowTCP, config: SessionConfig, id: IDGenerator.ID) -> ProxySession {
-        record(args: [flow, config, id], name: "createTCP")
+    func createTCP(flow: FlowTCP, config: SessionConfig, id: IDGenerator.ID) -> ProxySession {
+        record(args: [flow, config, id])
         return MockProxySession()
     }
 
-    func create(flow: FlowUDP, config: SessionConfig, id: IDGenerator.ID) -> ProxySession {
-        record(args: [flow, config, id], name: "createUDP")
+    func createUDP(flow: FlowUDP, config: SessionConfig, id: IDGenerator.ID) -> ProxySession {
+        record(args: [flow, config, id])
         return MockProxySession()
     }
 }

@@ -58,7 +58,7 @@ struct VpnStateFactory {
 }
 
 // Represents the state received from the daemon
-struct VpnState {
+struct VpnState: Equatable {
     var bypassApps: [String] = []
     var vpnOnlyApps: [String] = []
     var networkInterface: String = ""

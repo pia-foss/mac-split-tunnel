@@ -10,7 +10,7 @@ import Foundation
 import NetworkExtension
 
 // Mocks a FlowTCP for use in tests
-final class MockFlowTCP: FlowTCP, Mock {
+final class MockFlowTCP: FlowTCP, Equatable, Mock {
     // Required by Mock
     var methodsCalled: Set<String> = []
     var argumentsGiven: Dictionary<String, [Any]> = [:]
@@ -23,9 +23,14 @@ final class MockFlowTCP: FlowTCP, Mock {
         self.flowError = flowError
     }
 
+    static func ==(lhs: MockFlowTCP, rhs: MockFlowTCP) -> Bool {
+        return lhs === rhs
+    }
+
     // Required by Flow
     func closeReadAndWrite() { record() }
-    func openFlow(completionHandler: @escaping (Error?) -> Void) { record(args: [completionHandler]) 
+    func openFlow(completionHandler: @escaping (Error?) -> Void) { 
+        record(args: [completionHandler])
         completionHandler(nil)
     }
     public var sourceAppSigningIdentifier: String = "quinn"
@@ -52,7 +57,7 @@ final class MockFlowTCP: FlowTCP, Mock {
 }
 
 // Mocks a FlowUDP for use in tests
-final class MockFlowUDP: FlowUDP, Mock {
+final class MockFlowUDP: FlowUDP, Equatable, Mock {
     // Required by Mock
     var methodsCalled: Set<String> = []
     var argumentsGiven: Dictionary<String, [Any]> = [:]
@@ -67,9 +72,14 @@ final class MockFlowUDP: FlowUDP, Mock {
         self.flowError = flowError
     }
 
+    static func ==(lhs: MockFlowUDP, rhs: MockFlowUDP) -> Bool {
+        return lhs === rhs
+    }
+
     // Required by Flow
     func closeReadAndWrite() { record() }
-    func openFlow(completionHandler: @escaping (Error?) -> Void) { record(args: [completionHandler])
+    func openFlow(completionHandler: @escaping (Error?) -> Void) { 
+        record(args: [completionHandler])
         completionHandler(nil)
     }
     public var sourceAppSigningIdentifier: String = "quinn"

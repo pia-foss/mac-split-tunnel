@@ -15,8 +15,8 @@ protocol ProxyEngineProtocol {
 final class ProxyEngine: ProxyEngineProtocol {
     var vpnState: VpnState
 
-    public var flowHandler: FlowHandler
-    public var messageHandler: MessageHandler
+    public var flowHandler: FlowHandlerProtocol
+    public var messageHandler: MessageHandlerProtocol
 
     init(vpnState: VpnState) {
         self.vpnState = vpnState
@@ -29,9 +29,9 @@ final class ProxyEngine: ProxyEngineProtocol {
     }
 
     public func handleAppMessage(_ messageData: Data, completionHandler: ((Data?) -> Void)?) {
-        messageHandler.handleAppMessage(messageData, completionHandler) { (messageType, newVpnState) in
+        messageHandler.handleAppMessage(messageData, completionHandler) { (messageType) in
             switch messageType {
-            case .VpnStateUpdateMessage:
+            case .VpnStateUpdateMessage(let newVpnState):
                 self.vpnState = newVpnState
             }
         }

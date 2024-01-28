@@ -10,8 +10,11 @@ struct SessionConfig {
     let eventLoopGroup: MultiThreadedEventLoopGroup!
 }
 
+protocol FlowHandlerProtocol {
+    func handleNewFlow(_ flow: Flow, vpnState: VpnState) -> Bool
+}
 
-final class FlowHandler {
+final class FlowHandler: FlowHandlerProtocol {
     let eventLoopGroup: MultiThreadedEventLoopGroup
     var idGenerator: IDGenerator
 
@@ -26,6 +29,26 @@ final class FlowHandler {
 
     deinit {
         try! eventLoopGroup.syncShutdownGracefully()
+    }
+
+    public func handleNewFlow(_ flow: Flow, vpnState: VpnState) -> Bool {
+        guard isFlowIPv4(flow) else {
+            return false
+        }
+
+        let sessionConfig = SessionConfig(interface: NetworkInterface(interfaceName: vpnState.networkInterface),
+                                          eventLoopGroup: eventLoopGroup)
+
+        switch FlowPolicy.policyFor(flow: flow, vpnState: vpnState) {
+        case .proxy:
+            return startProxySession(flow: flow, sessionConfig: sessionConfig)
+        case .block:
+            flow.closeReadAndWrite()
+            // We return true to indicate to the OS we want to handle the flow, so the app is blocked.
+            return true
+        case .ignore:
+            return false
+        }
     }
 
     private func startProxySession(flow: Flow, sessionConfig: SessionConfig) -> Bool {
@@ -44,31 +67,11 @@ final class FlowHandler {
     func handleFlowIO(_ flow: Flow, sessionConfig: SessionConfig) {
         let nextId = idGenerator.generate()
         if let tcpFlow = flow as? FlowTCP {
-            let tcpSession = proxySessionFactory.create(flow: tcpFlow, config: sessionConfig, id: nextId)
+            let tcpSession = proxySessionFactory.createTCP(flow: tcpFlow, config: sessionConfig, id: nextId)
             tcpSession.start()
         } else if let udpFlow = flow as? FlowUDP {
-            let udpSession = proxySessionFactory.create(flow: udpFlow, config: sessionConfig, id: nextId)
+            let udpSession = proxySessionFactory.createUDP(flow: udpFlow, config: sessionConfig, id: nextId)
             udpSession.start()
-        }
-    }
-
-    public func handleNewFlow(_ flow: Flow, vpnState: VpnState) -> Bool {
-        guard isFlowIPv4(flow) else {
-            return false
-        }
-
-        let sessionConfig = SessionConfig(interface: NetworkInterface(interfaceName: vpnState.networkInterface), 
-                                          eventLoopGroup: eventLoopGroup)
-
-        switch FlowPolicy.policyFor(flow: flow, vpnState: vpnState) {
-        case .proxy:
-            return startProxySession(flow: flow, sessionConfig: sessionConfig)
-        case .block:
-            flow.closeReadAndWrite()
-            // We return true to indicate to the OS we want to handle the flow, so the app is blocked.
-            return true
-        case .ignore:
-            return false
         }
     }
 
