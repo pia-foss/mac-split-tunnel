@@ -1,17 +1,23 @@
 import Foundation
 import NetworkExtension
 
+// Simulate a "Connection refused" error
+let connectionRefused = NSError(domain: NSPOSIXErrorDomain, code: Int(ECONNREFUSED), userInfo: nil)
+
 // Implement the shortcuts
 extension NEAppProxyFlow: Flow {
+    // Kill a flow
     func closeReadAndWrite() {
-        self.closeReadWithError(nil)
-        self.closeWriteWithError(nil)
+        self.closeReadWithError(connectionRefused)
+        self.closeWriteWithError(connectionRefused)
     }
 
+    // Open a flow
     func openFlow(completionHandler: @escaping (Error?) -> Void) {
         open(withLocalEndpoint: nil, completionHandler: completionHandler)
     }
 
+    // Flow metadata
     var sourceAppSigningIdentifier: String { self.metaData.sourceAppSigningIdentifier }
     var sourceAppAuditToken: Data? { self.metaData.sourceAppAuditToken }
 }
