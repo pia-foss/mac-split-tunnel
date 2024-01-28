@@ -2,6 +2,15 @@ import Foundation
 import NetworkExtension
 import NIO
 
+struct SessionConfig {
+    var bindIp: String { interface.ip4()! }
+    let interface: NetworkInterfaceProtocol
+    // We need to make this optional so that we can
+    // leave it nil in tests - tests do not use an EventLoopGroup
+    let eventLoopGroup: MultiThreadedEventLoopGroup!
+}
+
+
 final class FlowHandler {
     let eventLoopGroup: MultiThreadedEventLoopGroup
     var idGenerator: IDGenerator

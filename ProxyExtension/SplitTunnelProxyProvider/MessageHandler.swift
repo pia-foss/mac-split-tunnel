@@ -13,7 +13,8 @@ enum MessageType {
 }
 
 final class MessageHandler {
-    public func handleAppMessage(_ messageData: Data, completionHandler: ((Data?) -> Void)?, onProcessedMessage: (MessageType, VpnState) -> Void) {
+    public func handleAppMessage(_ messageData: Data, _ completionHandler: ((Data?) -> Void)?,
+                                 onProcessedMessage: (MessageType, VpnState) -> Void) {
         // Deserialization
         if let options = try? JSONSerialization.jsonObject(with: messageData, options: []) as? [String: Any] {
             log(.info, String(decoding: messageData, as: UTF8.self))
