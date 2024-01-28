@@ -47,10 +47,6 @@ final class ProxySessionUDP: ProxySession {
         }
     }
 
-    public func terminate() {
-        Self.terminateProxySession(id: id, channel: channel, flow: flow)
-    }
-
     func createChannel(_ onBytesReceived: @escaping (UInt64) -> Void)
         -> EventLoopFuture<Channel> {
         let channelFuture = ChannelCreatorUDP(id: id, flow: flow, 
@@ -62,6 +58,10 @@ final class ProxySessionUDP: ProxySession {
         }
 
         return channelFuture
+    }
+
+    public func terminate() {
+        Self.terminateProxySession(id: id, channel: channel, flow: flow)
     }
 }
 

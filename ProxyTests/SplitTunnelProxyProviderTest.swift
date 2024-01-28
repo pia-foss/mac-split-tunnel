@@ -40,6 +40,21 @@ final class SplitTunnelProxyProviderTest: QuickSpec {
 
     override class func spec() {
         describe("SplitTunnelProxyProviderTest") {
+
+            // We cannot test this as it expects an actual NEAppProxyFlow which we
+            // cannot construct ourselves
+            context("handleNewFlow") {
+            }
+
+            context("handleAppMessage") {
+                it("delegates the call") {
+                    let (mockEngine, _, provider) = setupTestEnvironment()
+                    let data = "quinn-the-eskimo".data(using: .utf8)
+                    provider.handleAppMessage(data!, completionHandler: nil)
+                    expect(mockEngine.didCallWithArgAt("handleAppMessage", index: 0, value: data)).to(beTrue())
+                }
+            }
+
             context("with invalid options") {
                 context("when starting proxy") {
                     it("early exits after failing to create VpnState") {
