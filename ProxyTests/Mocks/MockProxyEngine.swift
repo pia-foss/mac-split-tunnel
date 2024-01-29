@@ -15,11 +15,9 @@ class MockProxyEngine: ProxyEngineProtocol, Mock {
     var argumentsGiven: Dictionary<String, [Any]> = [:]
 
     // Required by ProxyEngineProtocol
-    var trafficManager: TrafficManager
     var vpnState: VpnState
 
     init() {
-        self.trafficManager = MockTrafficManager()
         self.vpnState = VpnState()
     }
 
@@ -29,12 +27,17 @@ class MockProxyEngine: ProxyEngineProtocol, Mock {
     }
 
     public func setTunnelNetworkSettings(serverAddress: String, provider: NETransparentProxyProvider, completionHandler: @escaping (Error?) -> Void) {
-        record(args: [serverAddress, provider, completionHandler])
+        record(args: [serverAddress, provider, completionHandler as Any])
     }
 
     public func handleNewFlow(_ flow: Flow) -> Bool {
         record(args: [flow])
         return true
+    }
+
+    public func handleAppMessage(_ messageData: Data, completionHandler: ((Data?) -> Void)?) {
+        // use 'as Any' to avoid 'expression implicitly (Data?) -> Void converted to Any'
+        record(args: [messageData, completionHandler as Any])
     }
 }
 

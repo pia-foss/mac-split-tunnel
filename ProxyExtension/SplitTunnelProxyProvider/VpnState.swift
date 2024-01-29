@@ -1,12 +1,8 @@
-protocol VpnStateFactoryProtocol {
-    func create(options: [String : Any]?) -> VpnState?
-}
-
 // Responsible for validating and creating VpnState instances
-struct VpnStateFactory: VpnStateFactoryProtocol {
+struct VpnStateFactory {
     // This function returns a not nil value only if all options are present
     // and are the expected type
-    func create(options: [String : Any]?) -> VpnState? {
+    static func create(options: [String : Any]?) -> VpnState? {
         var vpnState = VpnState()
         guard let bypassApps = options!["bypassApps"] as? [String] else {
             log(.error, "Error: Cannot find bypassApps in options")
@@ -62,7 +58,7 @@ struct VpnStateFactory: VpnStateFactoryProtocol {
 }
 
 // Represents the state received from the daemon
-struct VpnState {
+struct VpnState: Equatable {
     var bypassApps: [String] = []
     var vpnOnlyApps: [String] = []
     var networkInterface: String = ""

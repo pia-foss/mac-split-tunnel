@@ -4,11 +4,8 @@ import Nimble
 
 class VpnStateSpec: QuickSpec {
     override class func spec() {
-        describe("ProxyOptions") {
+        describe("VpnState") {
             context("when an option array is created") {
-                // This is needed because ProxyOptions.create() contains log calls
-                Logger.instance.initializeLogger(logLevel: "error", logFile: "/tmp/STProxy.log")
-
                 it("should return the object if all required options are present") {
                     let correctOptions: [String : Any]? =
                         ["bypassApps" : ["Quinn", "app1"],
@@ -20,7 +17,7 @@ class VpnStateSpec: QuickSpec {
                         "routeVpn" : true,
                         "isConnected" : true,
                         "whitelistGroupName" : "group1"]
-                    expect(VpnStateFactory().create(options: correctOptions)).toNot(beNil())
+                    expect(VpnStateFactory.create(options: correctOptions)).toNot(beNil())
                 }
                 
                 it("should return nil if some required options are missing") {
@@ -28,7 +25,7 @@ class VpnStateSpec: QuickSpec {
                         ["routeVpn" : true,
                         "isConnected" : true,
                         "whitelistGroupName" : "group1"]
-                    expect(VpnStateFactory().create(options: missingOptions)).to(beNil())
+                    expect(VpnStateFactory.create(options: missingOptions)).to(beNil())
                 }
 
                 it("should return nil if some required options are the wrong type") {
@@ -42,7 +39,7 @@ class VpnStateSpec: QuickSpec {
                     "routeVpn" : true,
                     "isConnected" : true,
                     "whitelistGroupName" : "group1"]
-                    expect(VpnStateFactory().create(options: wrongTypeOptions)).to(beNil())
+                    expect(VpnStateFactory.create(options: wrongTypeOptions)).to(beNil())
                 }
             }
         }

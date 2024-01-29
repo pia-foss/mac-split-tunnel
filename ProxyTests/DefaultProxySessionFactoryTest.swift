@@ -27,13 +27,13 @@ class DefaultProxySessionFactoryTest: QuickSpec {
             it("creates a ProxySessionUDP when given a FlowUDP") {
                 let mockFlow = MockFlowUDP()
                 let factory = DefaultProxySessionFactory()
-                let session = factory.create(flow: mockFlow, config: sessionConfig, id: 1)
+                let session = factory.createUDP(flow: mockFlow, config: sessionConfig, id: 1)
                 expect(session is ProxySessionUDP ).to(equal(true))
             }
             it("creates a ProxySessionTCP when given a FlowTCP") {
                 let mockFlow = MockFlowTCP()
                 let factory = DefaultProxySessionFactory()
-                let session = factory.create(flow: mockFlow, config: sessionConfig, id: 1)
+                let session = factory.createTCP(flow: mockFlow, config: sessionConfig, id: 1)
                 expect(session is ProxySessionTCP ).to(equal(true))
             }
         }

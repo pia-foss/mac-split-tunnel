@@ -1,6 +1,10 @@
 import Foundation
 
 // Given a flow, find the policy for that flow - ignore, block, proxy
+// This class just wraps AppPolicy, which takes an app "descriptor", either
+// an appID or a full path to an executable. It first tries to find a policy based
+// on appID, and failing that (if it gets back an .ignore) it tries the full path which
+// it extracts from the flow audit token.
 final class FlowPolicy {
     let vpnState: VpnState
 
