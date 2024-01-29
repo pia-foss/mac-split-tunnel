@@ -212,7 +212,7 @@
 		9785C0CA2B5921A7002A982D /* SysExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SysExt.swift; path = ProxyCLI/SysExt.swift; sourceTree = SOURCE_ROOT; };
 		9785C0CB2B5921A7002A982D /* ProxyCLI.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; name = ProxyCLI.entitlements; path = ProxyCLI/ProxyCLI.entitlements; sourceTree = SOURCE_ROOT; };
 		9785C0DE2B592271002A982D /* SplitTunnelProxyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SplitTunnelProxyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		9785C0DF2B592271002A982D /* PIASplitTunnelManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PIASplitTunnelManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9785C0DF2B592271002A982D /* PIA Split Tunnel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PIA Split Tunnel.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		97AD92092B35876200405E3A /* com.privateinternetaccess.vpn.splittunnel.systemextension */ = {isa = PBXFileReference; explicitFileType = "wrapper.system-extension"; includeInIndex = 0; path = com.privateinternetaccess.vpn.splittunnel.systemextension; sourceTree = BUILT_PRODUCTS_DIR; };
 		97B1169B2B0CEF910028B01E /* build.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = build.xcconfig; sourceTree = "<group>"; };
 		97C805092B46BC63005D814B /* SplitTunnelProxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SplitTunnelProxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -365,7 +365,7 @@
 				97AD92092B35876200405E3A /* com.privateinternetaccess.vpn.splittunnel.systemextension */,
 				97C805092B46BC63005D814B /* SplitTunnelProxy.app */,
 				9785C0DE2B592271002A982D /* SplitTunnelProxyTests.xctest */,
-				9785C0DF2B592271002A982D /* PIASplitTunnelManager.app */,
+				9785C0DF2B592271002A982D /* PIA Split Tunnel.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -472,9 +472,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		9785C0B72B59219A002A982D /* PIASplitTunnelManager */ = {
+		9785C0B72B59219A002A982D /* PIA Split Tunnel */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9785C0C62B59219B002A982D /* Build configuration list for PBXNativeTarget "PIASplitTunnelManager" */;
+			buildConfigurationList = 9785C0C62B59219B002A982D /* Build configuration list for PBXNativeTarget "PIA Split Tunnel" */;
 			buildPhases = (
 				9785C0B42B59219A002A982D /* Sources */,
 				9785C0B52B59219A002A982D /* Frameworks */,
@@ -484,12 +484,12 @@
 			);
 			dependencies = (
 			);
-			name = PIASplitTunnelManager;
+			name = "PIA Split Tunnel";
 			packageProductDependencies = (
 				9785C0E12B592299002A982D /* ArgumentParser */,
 			);
 			productName = ProxyCLI;
-			productReference = 9785C0DF2B592271002A982D /* PIASplitTunnelManager.app */;
+			productReference = 9785C0DF2B592271002A982D /* PIA Split Tunnel.app */;
 			productType = "com.apple.product-type.application";
 		};
 		C40A5C44229DD6A500627D50 /* SplitTunnelProxyExtension */ = {
@@ -622,7 +622,7 @@
 				C4B45DB422739FFF0050C59B /* SplitTunnelProxy */,
 				C40A5C44229DD6A500627D50 /* SplitTunnelProxyExtension */,
 				D1FE4FB5295A1EA3002BBA20 /* SplitTunnelProxyTests */,
-				9785C0B72B59219A002A982D /* PIASplitTunnelManager */,
+				9785C0B72B59219A002A982D /* PIA Split Tunnel */,
 			);
 		};
 /* End PBXProject section */
@@ -1179,7 +1179,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		9785C0C62B59219B002A982D /* Build configuration list for PBXNativeTarget "PIASplitTunnelManager" */ = {
+		9785C0C62B59219B002A982D /* Build configuration list for PBXNativeTarget "PIA Split Tunnel" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9785C0C42B59219B002A982D /* Debug */,

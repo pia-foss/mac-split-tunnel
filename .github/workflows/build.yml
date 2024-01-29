@@ -36,7 +36,7 @@ jobs:
         echo "Done importing certificates"
 
     - env:
-        APP_BUILD_TARGET: PIASplitTunnelManager
+        APP_BUILD_TARGET: PIA Split Tunnel
         APP_PROVISION_PROFILE: ${{ github.workspace }}/app.provisionprofile
         CODESIGN_IDENTITY: ${{ vars.PIA_CODESIGN_IDENTITY }}
         EXTENSION_BUILD_TARGET: SplitTunnelProxyExtension
@@ -52,7 +52,7 @@ jobs:
     - name: Zip app bundle
       run: |
         # We zip it manually using ditto. Github Actions may break things in the bundle if we let it zip on upload.
-        ditto -ck --rsrc --keepParent --sequesterRsrc "out/PIASplitTunnelManager.app" out/stmanager.zip
+        ditto -ck --rsrc --keepParent --sequesterRsrc "out/PIA Split Tunnel.app" out/stmanager.zip
     - uses: actions/upload-artifact@v3
       if: success()
       with:
