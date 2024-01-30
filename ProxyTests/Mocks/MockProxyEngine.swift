@@ -9,6 +9,7 @@
 import Foundation
 import NetworkExtension
 
+@testable import SplitTunnelProxyExtensionFramework
 class MockProxyEngine: ProxyEngineProtocol, Mock {
     // Required by Mock
     var methodsCalled: Set<String> = []

@@ -1,9 +1,9 @@
-@testable import SplitTunnelProxy
 import Quick
 import Nimble
 import NetworkExtension
 import NIO
 
+@testable import SplitTunnelProxyExtensionFramework
 class OutboundHandler: ChannelOutboundHandler {
     typealias OutboundIn = ByteBuffer
     var lastWrittenData: String?

@@ -1,7 +1,7 @@
-@testable import SplitTunnelProxy
 import Quick
 import Nimble
 import NetworkExtension
+@testable import SplitTunnelProxyExtensionFramework
 
 final class ProxyEngineTest: QuickSpec {
     override class func spec() {

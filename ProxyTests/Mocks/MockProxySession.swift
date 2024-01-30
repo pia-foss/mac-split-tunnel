@@ -1,6 +1,7 @@
 import Foundation
 
 // Mocks a ProxySession - for use in tests
+@testable import SplitTunnelProxyExtensionFramework
 final class MockProxySession: ProxySession, Mock {
     // Required by Mock
     var methodsCalled: Set<String> = []

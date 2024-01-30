@@ -6,12 +6,12 @@
 //  Copyright © 2024 PIA. All rights reserved.
 //
 
-@testable import SplitTunnelProxy
 import Quick
 import Nimble
 import NetworkExtension
 import NIO
 
+@testable import SplitTunnelProxyExtensionFramework
 class InboundHandlerTCPTest: QuickSpec {
     struct TestEnv {
         let mockFlow: MockFlowTCP

@@ -9,6 +9,7 @@
 import Foundation
 import Puppy
 
+@testable import SplitTunnelProxyExtensionFramework
 class MockLogger: LoggerProtocol, Mock {
     // Required by Mock
     var methodsCalled: Set<String> = []

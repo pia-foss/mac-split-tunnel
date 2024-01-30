@@ -1,8 +1,8 @@
-@testable import SplitTunnelProxy
 import Quick
 import Nimble
 import NetworkExtension
 
+@testable import SplitTunnelProxyExtensionFramework
 final class FlowHandlerTest: QuickSpec {
     override class func spec() {
         let vpnState = VpnState(bypassApps: ["com.apple.curl"], vpnOnlyApps: [""],

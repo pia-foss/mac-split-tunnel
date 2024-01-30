@@ -9,6 +9,7 @@
 import Foundation
 
 // Mocks a ProxySessionFactory - for use in tests
+@testable import SplitTunnelProxyExtensionFramework
 final class MockProxySessionFactory: ProxySessionFactory, Mock {
     // Required by Mock
     var methodsCalled: Set<String> = []

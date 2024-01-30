@@ -1,7 +1,7 @@
-@testable import SplitTunnelProxy
 import Quick
 import Nimble
 
+@testable import SplitTunnelProxyExtensionFramework
 class AppPolicySpec: QuickSpec {
     override class func spec() {
         describe("AppPolicy") {

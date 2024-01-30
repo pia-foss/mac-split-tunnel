@@ -1,7 +1,7 @@
-@testable import SplitTunnelProxy
 import Quick
 import Nimble
 
+@testable import SplitTunnelProxyExtensionFramework
 class VpnStateSpec: QuickSpec {
     override class func spec() {
         describe("VpnState") {

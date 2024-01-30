@@ -1,9 +1,9 @@
-@testable import SplitTunnelProxy
 import Quick
 import Nimble
 import NetworkExtension
 import NIO
 
+@testable import SplitTunnelProxyExtensionFramework
 final class ChannelCreatorTCPTest: QuickSpec {
     override class func spec() {
 
