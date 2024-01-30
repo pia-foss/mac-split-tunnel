@@ -14,8 +14,10 @@ final class ChannelCreatorUDP {
 
     public func create(_ onBytesReceived: @escaping (UInt64) -> Void) 
         -> EventLoopFuture<Channel> {
-        log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) " +
-            "Creating and binding a new UDP socket")
+
+       log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) " +
+           "Creating and binding a new UDP socket with bindIp: \(config.bindIp)")
+
         let bootstrap = DatagramBootstrap(group: config.eventLoopGroup)
             .channelInitializer { channel in
                 let inboundHandler = InboundHandlerUDP(flow: self.flow, id: self.id, 
@@ -35,6 +37,7 @@ final class ChannelCreatorUDP {
             // Doing that will turn the socket into a "connected datagram socket".
             // That will prevent the application from exchanging data with multiple endpoints
             let channelFuture = bootstrap.bind(to: socketAddress)
+
             return channelFuture
         } catch {
             return config.eventLoopGroup.next().makeFailedFuture(error)
