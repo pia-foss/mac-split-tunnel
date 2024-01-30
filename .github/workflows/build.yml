@@ -5,6 +5,16 @@ on:
 jobs:
   macos:
     name: macos_universal_build
+    env:
+      APP_BUILD_TARGET: PIA Split Tunnel
+      EXTENSION_BUILD_TARGET: SplitTunnelProxyExtension
+      APP_PROVISION_PROFILE: ${{ github.workspace }}/app.provisionprofile
+      SEXT_PROVISION_PROFILE: ${{ github.workspace }}/sext.provisionprofile
+      EXTENSION_ID: com.privateinternetaccess.vpn.splittunnel
+      PROJECT: SplitTunnelProxy
+      PACKAGE_FOR_RELEASE: 1
+      CODESIGN_IDENTITY: ${{ vars.PIA_CODESIGN_IDENTITY }}
+      TEAM_ID: ${{ vars.PIA_APPLE_TEAM_ID }}
     runs-on: macos-13
     steps:
     - uses: maxim-lobanov/setup-xcode@v1
@@ -20,10 +30,10 @@ jobs:
         echo -n "${{ secrets.PIA_APPLE_DEVELOPER_ID_CERT_BASE64 }}" | base64 -d -o "$CERTIFICATE_PATH"
 
         echo "write app profile from secrets"
-        echo -n "${{ secrets.PIA_APPLE_CLI_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode -o ${{ github.workspace }}/app.provisionprofile
+        echo -n "${{ secrets.PIA_APPLE_CLI_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode -o "${APP_PROVISION_PROFILE}"
         echo "write extension profile from secrets"
-        echo -n "${{ secrets.PIA_APPLE_SYSTEM_EXTENSION_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode -o ${{ github.workspace }}/sext.provisionprofile
-        
+        echo -n "${{ secrets.PIA_APPLE_SYSTEM_EXTENSION_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode -o "${SEXT_PROVISION_PROFILE}"
+
         echo "creating temporary keychain"
         security create-keychain -p "" $KEYCHAIN_PATH
         security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
@@ -34,20 +44,14 @@ jobs:
         security list-keychain -d user -s $KEYCHAIN_PATH
 
         echo "Done importing certificates"
-
-    - env:
-        APP_BUILD_TARGET: PIA Split Tunnel
-        APP_PROVISION_PROFILE: ${{ github.workspace }}/app.provisionprofile
-        CODESIGN_IDENTITY: ${{ vars.PIA_CODESIGN_IDENTITY }}
-        EXTENSION_BUILD_TARGET: SplitTunnelProxyExtension
-        EXTENSION_ID: com.privateinternetaccess.vpn.splittunnel
+    - name: Run tests
+      env:
+        TEST_TARGET: SplitTunnelProxyExtensionFrameworkTests
+      run: ./build_scripts/test.sh
+    - name: Build, sign, package
+      env:
         NOTARIZATION_EMAIL: ${{ secrets.PIA_APPLE_NOTARIZATION_EMAIL }}
         NOTARIZATION_PASSWORD: ${{ secrets.PIA_APPLE_NOTARIZATION_PASSWORD }}
-        PACKAGE_FOR_RELEASE: 1
-        PROJECT: SplitTunnelProxy
-        SEXT_PROVISION_PROFILE: ${{ github.workspace }}/sext.provisionprofile
-        TEAM_ID: ${{ vars.PIA_APPLE_TEAM_ID }}
-      name: Build, sign, package
       run: ./build_scripts/build.sh
     - name: Zip app bundle
       run: |
