@@ -32,9 +32,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D1FE4FB5295A1EA3002BBA20"
-               BuildableName = "SplitTunnelProxyTests.xctest"
-               BlueprintName = "SplitTunnelProxyTests"
+               BlueprintIdentifier = "97199B1B2B6904240095C516"
+               BuildableName = "SplitTunnelProxyExtensionFrameworkTests.xctest"
+               BlueprintName = "SplitTunnelProxyExtensionFrameworkTests"
                ReferencedContainer = "container:SplitTunnelProxy.xcodeproj">
             </BuildableReference>
          </TestableReference>
