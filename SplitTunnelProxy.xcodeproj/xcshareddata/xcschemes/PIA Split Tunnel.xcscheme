@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "9785C0B72B59219A002A982D"
-               BuildableName = "PIASplitTunnelManager.app"
-               BlueprintName = "PIASplitTunnelManager"
+               BuildableName = "PIA Split Tunnel.app"
+               BlueprintName = "PIA Split Tunnel"
                ReferencedContainer = "container:SplitTunnelProxy.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -44,8 +44,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9785C0B72B59219A002A982D"
-            BuildableName = "PIASplitTunnelManager.app"
-            BlueprintName = "PIASplitTunnelManager"
+            BuildableName = "PIA Split Tunnel.app"
+            BlueprintName = "PIA Split Tunnel"
             ReferencedContainer = "container:SplitTunnelProxy.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -61,8 +61,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9785C0B72B59219A002A982D"
-            BuildableName = "PIASplitTunnelManager.app"
-            BlueprintName = "PIASplitTunnelManager"
+            BuildableName = "PIA Split Tunnel.app"
+            BlueprintName = "PIA Split Tunnel"
             ReferencedContainer = "container:SplitTunnelProxy.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

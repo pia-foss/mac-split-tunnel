@@ -58,8 +58,8 @@ then
 fi
 
 # Build the app and extension
-xcodebuild -project ${PROJECT}.xcodeproj -scheme ${EXTENSION_BUILD_TARGET} archive -archivePath "out/${EXTENSION_BUILD_TARGET}.xcarchive" CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY="${certificate_name}" PROVISIONING_PROFILE_SPECIFIER="${extension_profile_uuid}"
-xcodebuild -project ${PROJECT}.xcodeproj -scheme ${APP_BUILD_TARGET} archive -archivePath "out/${APP_BUILD_TARGET}.xcarchive" CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY="${certificate_name}" PROVISIONING_PROFILE_SPECIFIER="${app_profile_uuid}"
+xcodebuild -project "${PROJECT}.xcodeproj" -scheme "${EXTENSION_BUILD_TARGET}" archive -archivePath "out/${EXTENSION_BUILD_TARGET}.xcarchive" CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY="${certificate_name}" PROVISIONING_PROFILE_SPECIFIER="${extension_profile_uuid}"
+xcodebuild -project "${PROJECT}.xcodeproj" -scheme "${APP_BUILD_TARGET}" archive -archivePath "out/${APP_BUILD_TARGET}.xcarchive" CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY="${certificate_name}" PROVISIONING_PROFILE_SPECIFIER="${app_profile_uuid}"
 
 # Copy the app and extension over
 for i in ./out/*.xcarchive
@@ -91,18 +91,18 @@ fi
 
 # Copy the system extension into the app bundle
 mkdir -p ./out/${app_bundle}/Contents/Library/SystemExtensions/
-ditto ./out/${extension_bundle} ./out/${app_bundle}/Contents/Library/SystemExtensions/${extension_bundle}
+ditto "./out/${extension_bundle}" "./out/${app_bundle}/Contents/Library/SystemExtensions/${extension_bundle}"
 
 # Replace the embedded provision profiles
 ditto ${app_provision_profile_path} "./out/${app_bundle}/Contents/embedded.provisionprofile"
 ditto ${extension_provision_profile_path} "./out/${app_bundle}/Contents/Library/SystemExtensions/${extension_bundle}/Contents/embedded.provisionprofile"
 
 # Sign the System extension bundle first, then the binary with entitlements. Both require hardened runtime
-codesign -f --timestamp --options runtime --sign "${certificate_name}" ./out/${app_bundle}/Contents/Library/SystemExtensions/${extension_bundle}
+codesign -f --timestamp --options runtime --sign "${certificate_name}" "./out/${app_bundle}/Contents/Library/SystemExtensions/${extension_bundle}"
 codesign -f --timestamp --options runtime --entitlements "./out/sext.entitlements" --sign "${certificate_name}" "./out/${app_bundle}/Contents/Library/SystemExtensions/${extension_bundle}/Contents/MacOS/${extension_id}"
 
 # Sign the App bundle first, then the binary with entitlements. Both require hardened runtime
-codesign -f --timestamp --options runtime --sign "${certificate_name}" ./out/${app_bundle}
+codesign -f --timestamp --options runtime --sign "${certificate_name}" "./out/${app_bundle}"
 if [ -f "./out/${app_bundle}/Contents/Frameworks/libswift_Concurrency.dylib" ]
 then
     # Any additional resources require manual signing as we are not using the --deep flag.
