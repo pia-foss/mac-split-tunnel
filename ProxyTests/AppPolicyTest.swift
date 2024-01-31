@@ -29,6 +29,14 @@ class AppPolicySpec: QuickSpec {
                     // Case is irrelevant
                     expect(appPolicy.policyFor("COM.APPLE.FOO")).to(equal(AppPolicy.Policy.ignore))
                 }
+
+                it("should include apps that are prefixed by an app from the bypass list") {
+                    expect(appPolicy.policyFor("com.apple.curl.helper")).to(equal(AppPolicy.Policy.proxy))
+                }
+
+                it("should include apps containing `-` that are prefixed by an app from the bypass list") {
+                    expect(appPolicy.policyFor("com.apple.curl.curl-helper")).to(equal(AppPolicy.Policy.proxy))
+                }
             }
 
             context("when the VPN is connected without default route") {
@@ -94,6 +102,10 @@ class AppPolicySpec: QuickSpec {
 
                 it("should ignore apps not in any list when VPN is connected") {
                     expect(appPolicy.policyFor("/usr/bin/foo")).to(equal(AppPolicy.Policy.ignore))
+                }
+
+                it("should ignore apps that are prefixed by an app from the bypass list") {
+                    expect(appPolicy.policyFor("/usr/bin/curl/helper")).to(equal(AppPolicy.Policy.ignore))
                 }
             }
         }
