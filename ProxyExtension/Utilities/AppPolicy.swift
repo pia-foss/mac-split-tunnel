@@ -52,6 +52,21 @@ struct AppPolicy {
     // In the case routeVpn == false, we check for it in vpnOnlyApps
     // this is because we need to proxy these apps to bind them to the VPN interface.
     private func isManagedApp(app: String) -> Bool {
-        return vpnState.routeVpn ? bypassApps.contains(app) : vpnOnlyApps.contains(app)
+        let managedApps = vpnState.routeVpn ? bypassApps : vpnOnlyApps
+
+        if isAppBundleId(app: app) {
+            return managedApps.contains { app.hasPrefix($0) }
+        } else {
+            return managedApps.contains(app)
+        }
+    }
+
+    // Determine if a string represents an app bundle or a binary path.
+    // We consider an app anything that is made entirely of numbers,
+    // letters, and the period sign `.`
+    // That discards any binary path, as they necessarily contain slashes `/`.
+    private func isAppBundleId(app: String) -> Bool {
+        let bundleCharacters = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: ".-"))
+        return app.unicodeScalars.allSatisfy { bundleCharacters.contains($0) }
     }
 }
