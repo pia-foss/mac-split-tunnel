@@ -456,7 +456,6 @@
 				97199B152B6904230095C516 /* SplitTunnelProxyExtensionFramework.framework */,
 				97199B1C2B6904240095C516 /* SplitTunnelProxyExtensionFrameworkTests.xctest */,
 				97FADFE02B69234B00265334 /* SplitTunnelProxyExtensionFrameworkTests.xctestplan */,
-				97FADFE22B6931AC00265334 /* PIASplitTunnelManager.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -585,7 +584,7 @@
 			buildConfigurationList = 97199B2A2B6904240095C516 /* Build configuration list for PBXNativeTarget "SplitTunnelProxyExtensionFramework" */;
 			buildPhases = (
 				97199B102B6904230095C516 /* Headers */,
-				97199B112B6904230095C516 /* Sources */,
+				C40A5C41229DD6A500627D50 /* Sources */,
 				97199B122B6904230095C516 /* Frameworks */,
 				97199B132B6904230095C516 /* Resources */,
 			);
@@ -823,46 +822,6 @@
 			shellScript = "./build_scripts/update_build_number.sh\n";
 		};
 /* End PBXShellScriptBuildPhase section */
-
-/* Begin PBXSourcesBuildPhase section */
-		97199B112B6904230095C516 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				97199B4B2B6904410095C516 /* ChannelCreatorUDP.swift in Sources */,
-				97199B4C2B6904410095C516 /* FlowForwarderUDP.swift in Sources */,
-				97199B4D2B6904410095C516 /* InboundHandlerUDP.swift in Sources */,
-				97199B4E2B6904410095C516 /* ChannelCreatorTCP.swift in Sources */,
-				97199B4F2B6904410095C516 /* FlowForwarderTCP.swift in Sources */,
-				97199B502B6904410095C516 /* InboundHandlerTCP.swift in Sources */,
-				97199B512B6904410095C516 /* InboundHandler.swift in Sources */,
-				97199B522B6904410095C516 /* FlowProtocols.swift in Sources */,
-				97199B532B6904410095C516 /* NEAppProxyFlow+Extensions.swift in Sources */,
-				97199B542B6904410095C516 /* ProxySession.swift in Sources */,
-				97199B552B6904410095C516 /* ProxySessionTCP.swift in Sources */,
-				97199B562B6904410095C516 /* ProxySessionUDP.swift in Sources */,
-				97199B572B6904410095C516 /* ProxySessionFactory.swift in Sources */,
-				97199B582B6904410095C516 /* SessionChannelProtocol.swift in Sources */,
-				97199B592B6904410095C516 /* ChannelWrapper.swift in Sources */,
-				97199B5A2B6904410095C516 /* MessageHandler.swift in Sources */,
-				97199B5B2B6904410095C516 /* FlowHandler.swift in Sources */,
-				97199B5C2B6904410095C516 /* IPCConnection.swift in Sources */,
-				97199B5D2B6904410095C516 /* Logger.swift in Sources */,
-				97199B5E2B6904410095C516 /* NetworkInterface.swift in Sources */,
-				97199B5F2B6904410095C516 /* ProcessUtilities.swift in Sources */,
-				97199B602B6904410095C516 /* AppPolicy.swift in Sources */,
-				97199B612B6904410095C516 /* IDGenerator.swift in Sources */,
-				97199B622B6904410095C516 /* Formatters.swift in Sources */,
-				97199B632B6904410095C516 /* FlowPolicy.swift in Sources */,
-				97199B642B6904410095C516 /* SplitTunnelProxyProvider.swift in Sources */,
-				97199B652B6904410095C516 /* SplitTunnelProxyProvider-Bridging-Header.h in Sources */,
-				97199B662B6904410095C516 /* VpnState.swift in Sources */,
-				97199B672B6904410095C516 /* ProxyEngine.swift in Sources */,
-				97199B682B6904410095C516 /* SplitTunnelNetworkConfig.swift in Sources */,
-				97199B692B6904410095C516 /* FirewallWhitelister.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		97199B182B6904240095C516 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
