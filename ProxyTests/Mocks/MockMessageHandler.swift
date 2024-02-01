@@ -1,5 +1,6 @@
 import Foundation
 
+@testable import SplitTunnelProxyExtensionFramework
 final class MockMessageHandler: MessageHandlerProtocol, Mock {
     // Required by Mock
     var methodsCalled: Set<String> = []

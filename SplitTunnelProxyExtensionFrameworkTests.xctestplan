@@ -1,0 +1,34 @@
+{
+  "configurations" : [
+    {
+      "id" : "B53A95F9-5AB2-4EC8-86B4-4A2FEF1EA6F8",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:SplitTunnelProxy.xcodeproj",
+          "identifier" : "97199B142B6904230095C516",
+          "name" : "SplitTunnelProxyExtensionFramework"
+        }
+      ]
+    },
+    "uiTestingScreenshotsLifetime" : "keepNever"
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:SplitTunnelProxy.xcodeproj",
+        "identifier" : "97199B1B2B6904240095C516",
+        "name" : "SplitTunnelProxyExtensionFrameworkTests"
+      }
+    }
+  ],
+  "version" : 1
+}

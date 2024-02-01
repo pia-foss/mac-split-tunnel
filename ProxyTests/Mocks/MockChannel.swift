@@ -10,6 +10,7 @@ import Foundation
 import NIO
 
 // Mocks a NIO Channel
+@testable import SplitTunnelProxyExtensionFramework
 final class MockChannel: SessionChannel, Mock {
     // Required by Mock
     var methodsCalled: Set<String> = []

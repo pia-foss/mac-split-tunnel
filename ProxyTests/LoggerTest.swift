@@ -6,10 +6,10 @@
 //  Copyright © 2024 PIA. All rights reserved.
 //
 
-@testable import SplitTunnelProxy
 import Quick
 import Nimble
 
+@testable import SplitTunnelProxyExtensionFramework
 class LoggerTest: QuickSpec {
     override class func spec() {
         describe("LoggerTest") {

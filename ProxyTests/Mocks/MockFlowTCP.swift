@@ -2,6 +2,7 @@ import Foundation
 import NetworkExtension
 
 // Mocks a FlowTCP for use in tests
+@testable import SplitTunnelProxyExtensionFramework
 final class MockFlowTCP: FlowTCP, Equatable, Mock {
     // Required by Mock
     var methodsCalled: Set<String> = []

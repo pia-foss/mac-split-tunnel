@@ -1,10 +1,10 @@
 
 import Foundation
 
-@testable import SplitTunnelProxy
 import Quick
 import Nimble
 
+@testable import SplitTunnelProxyExtensionFramework
 final class NetworkInterfaceTest: QuickSpec {
     override class func spec() {
         describe("NetworkInterfaceTest") {

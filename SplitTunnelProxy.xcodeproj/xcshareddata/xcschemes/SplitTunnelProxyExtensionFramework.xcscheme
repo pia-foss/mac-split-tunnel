@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
    LastUpgradeVersion = "1500"
-   version = "1.3">
+   version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C40A5C44229DD6A500627D50"
-               BuildableName = "com.privateinternetaccess.vpn.splittunnel.systemextension"
-               BlueprintName = "SplitTunnelProxyExtension"
+               BlueprintIdentifier = "97199B142B6904230095C516"
+               BuildableName = "SplitTunnelProxyExtensionFramework.framework"
+               BlueprintName = "SplitTunnelProxyExtensionFramework"
                ReferencedContainer = "container:SplitTunnelProxy.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -26,25 +26,13 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
-      <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "97199B1B2B6904240095C516"
-               BuildableName = "SplitTunnelProxyExtensionFrameworkTests.xctest"
-               BlueprintName = "SplitTunnelProxyExtensionFrameworkTests"
-               ReferencedContainer = "container:SplitTunnelProxy.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-      </Testables>
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      shouldAutocreateTestPlan = "YES">
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      debugAsWhichUser = "root"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
@@ -61,9 +49,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "C40A5C44229DD6A500627D50"
-            BuildableName = "com.privateinternetaccess.vpn.splittunnel.systemextension"
-            BlueprintName = "SplitTunnelProxyExtension"
+            BlueprintIdentifier = "97199B142B6904230095C516"
+            BuildableName = "SplitTunnelProxyExtensionFramework.framework"
+            BlueprintName = "SplitTunnelProxyExtensionFramework"
             ReferencedContainer = "container:SplitTunnelProxy.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

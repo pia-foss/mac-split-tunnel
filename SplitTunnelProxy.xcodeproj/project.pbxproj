@@ -7,57 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		52105C3C2B628CA400E7D4E0 /* MockNetworkInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C3B2B628CA400E7D4E0 /* MockNetworkInterface.swift */; };
 		52105C3E2B62A44B00E7D4E0 /* FlowHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C3D2B62A44B00E7D4E0 /* FlowHandler.swift */; };
-		52105C3F2B62A44B00E7D4E0 /* FlowHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C3D2B62A44B00E7D4E0 /* FlowHandler.swift */; };
-		52105C422B63AEC400E7D4E0 /* MockProxySession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C402B63AEC400E7D4E0 /* MockProxySession.swift */; };
 		52105C442B63F3C600E7D4E0 /* SplitTunnelNetworkConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C432B63F3C600E7D4E0 /* SplitTunnelNetworkConfig.swift */; };
-		52105C452B63F3C600E7D4E0 /* SplitTunnelNetworkConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C432B63F3C600E7D4E0 /* SplitTunnelNetworkConfig.swift */; };
 		52105C472B63FDAE00E7D4E0 /* FirewallWhitelister.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C462B63FDAE00E7D4E0 /* FirewallWhitelister.swift */; };
-		52105C482B63FDAE00E7D4E0 /* FirewallWhitelister.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C462B63FDAE00E7D4E0 /* FirewallWhitelister.swift */; };
 		52105C4A2B640D8100E7D4E0 /* MessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C492B640D8100E7D4E0 /* MessageHandler.swift */; };
-		52105C4B2B640D8100E7D4E0 /* MessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C492B640D8100E7D4E0 /* MessageHandler.swift */; };
-		52105C4D2B6652DE00E7D4E0 /* MockFlowHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C4C2B6652DE00E7D4E0 /* MockFlowHandler.swift */; };
-		52105C4F2B6667B000E7D4E0 /* MockMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C4E2B6667B000E7D4E0 /* MockMessageHandler.swift */; };
-		52105C512B66725800E7D4E0 /* FlowHandlerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C502B66725800E7D4E0 /* FlowHandlerTest.swift */; };
-		52105C532B668E3D00E7D4E0 /* MessageHandlerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C522B668E3C00E7D4E0 /* MessageHandlerTest.swift */; };
-		52105C552B669C4A00E7D4E0 /* ChannelCreatorUDPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C542B669C4A00E7D4E0 /* ChannelCreatorUDPTest.swift */; };
-		52105C572B66ACDA00E7D4E0 /* ChannelCreatorTCPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C562B66ACDA00E7D4E0 /* ChannelCreatorTCPTest.swift */; };
-		52105C592B66B50400E7D4E0 /* MockFlowTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C582B66B50400E7D4E0 /* MockFlowTCP.swift */; };
-		52105C5B2B66BB6F00E7D4E0 /* NetworkInterfaceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C5A2B66BB6F00E7D4E0 /* NetworkInterfaceTest.swift */; };
-		52105C5D2B67125D00E7D4E0 /* ChannelWrapperTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C5C2B67125D00E7D4E0 /* ChannelWrapperTest.swift */; };
-		5220075C2B57F3850034BCEA /* MockProxyEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5220075B2B57F3850034BCEA /* MockProxyEngine.swift */; };
-		5220075D2B57F5E70034BCEA /* SplitTunnelProxyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D1B293E701D00FB8DAF /* SplitTunnelProxyProvider.swift */; };
 		5235FB192B4FC43900F3B772 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB182B4FC43900F3B772 /* Formatters.swift */; };
 		5235FB1A2B4FC43900F3B772 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB182B4FC43900F3B772 /* Formatters.swift */; };
 		5235FB1D2B4FFCEB00F3B772 /* ProxySessionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB1B2B4FFCEB00F3B772 /* ProxySessionFactory.swift */; };
 		5235FB272B511DD700F3B772 /* NEAppProxyFlow+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB262B511DD700F3B772 /* NEAppProxyFlow+Extensions.swift */; };
 		5235FB292B512A5E00F3B772 /* FlowProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB282B512A5E00F3B772 /* FlowProtocols.swift */; };
-		5235FB332B51458800F3B772 /* _NIOConcurrency in Frameworks */ = {isa = PBXBuildFile; productRef = 5235FB322B51458800F3B772 /* _NIOConcurrency */; };
-		5235FB352B51458800F3B772 /* NIO in Frameworks */ = {isa = PBXBuildFile; productRef = 5235FB342B51458800F3B772 /* NIO */; };
-		5235FB372B51458800F3B772 /* NIOConcurrencyHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 5235FB362B51458800F3B772 /* NIOConcurrencyHelpers */; };
-		5235FB392B51458800F3B772 /* NIOCore in Frameworks */ = {isa = PBXBuildFile; productRef = 5235FB382B51458800F3B772 /* NIOCore */; };
-		5235FB3B2B51458800F3B772 /* NIOEmbedded in Frameworks */ = {isa = PBXBuildFile; productRef = 5235FB3A2B51458800F3B772 /* NIOEmbedded */; };
-		5235FB3D2B51458800F3B772 /* NIOFoundationCompat in Frameworks */ = {isa = PBXBuildFile; productRef = 5235FB3C2B51458800F3B772 /* NIOFoundationCompat */; };
-		5235FB3F2B51459200F3B772 /* NIOTestUtils in Frameworks */ = {isa = PBXBuildFile; productRef = 5235FB3E2B51459200F3B772 /* NIOTestUtils */; };
-		5235FB402B5145CE00F3B772 /* FlowProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB282B512A5E00F3B772 /* FlowProtocols.swift */; };
-		5235FB412B5145CE00F3B772 /* ProxySessionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB1B2B4FFCEB00F3B772 /* ProxySessionFactory.swift */; };
-		5235FB432B5145CE00F3B772 /* ProxySessionUDP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5274A5E42B4AAC4500FD0A10 /* ProxySessionUDP.swift */; };
-		5235FB442B5145CE00F3B772 /* NEAppProxyFlow+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB262B511DD700F3B772 /* NEAppProxyFlow+Extensions.swift */; };
-		5235FB452B5145CE00F3B772 /* ProxySession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5274A5E62B4AC5C600FD0A10 /* ProxySession.swift */; };
-		5235FB462B5145CE00F3B772 /* ProxySessionTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5274A5E22B4AA5C600FD0A10 /* ProxySessionTCP.swift */; };
-		5235FB482B5145FD00F3B772 /* IDGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5274A5E82B4AD88100FD0A10 /* IDGenerator.swift */; };
-		5235FB492B5145FD00F3B772 /* NetworkInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E9AEFD2AE31D4F007603BF /* NetworkInterface.swift */; };
-		5235FB4A2B5145FD00F3B772 /* IPCConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B1415A227A396500B26560 /* IPCConnection.swift */; };
-		5235FB4B2B5145FD00F3B772 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB182B4FC43900F3B772 /* Formatters.swift */; };
-		5235FB4C2B5145FD00F3B772 /* ProcessUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6B52B18F7DF0063363E /* ProcessUtilities.swift */; };
-		5235FB4E2B51541F00F3B772 /* Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB4D2B51541F00F3B772 /* Mock.swift */; };
-		5235FB502B5157DF00F3B772 /* MockFlowUDP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB4F2B5157DF00F3B772 /* MockFlowUDP.swift */; };
-		5235FB522B51582C00F3B772 /* MockProxySessionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB512B51582C00F3B772 /* MockProxySessionFactory.swift */; };
-		526208122B5709B500C5C0E4 /* libbsm.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5274B64E2B2AE8DF0007250C /* libbsm.tbd */; };
-		52699E602B56AC22004FBF20 /* SplitTunnelProxyProviderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52699E5F2B56AC22004FBF20 /* SplitTunnelProxyProviderTest.swift */; };
 		52699E622B56BBEE004FBF20 /* ProxyEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52699E612B56BBEE004FBF20 /* ProxyEngine.swift */; };
-		52699E632B56BBEE004FBF20 /* ProxyEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52699E612B56BBEE004FBF20 /* ProxyEngine.swift */; };
 		526CFC0B2B3AD15B00F31493 /* NIO in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC0A2B3AD15B00F31493 /* NIO */; };
 		526CFC0D2B3AD15B00F31493 /* NIOConcurrencyHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC0C2B3AD15B00F31493 /* NIOConcurrencyHelpers */; };
 		526CFC0F2B3AD15B00F31493 /* NIOCore in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC0E2B3AD15B00F31493 /* NIOCore */; };
@@ -65,7 +24,6 @@
 		526CFC132B3AD15B00F31493 /* NIOPosix in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC122B3AD15B00F31493 /* NIOPosix */; };
 		526CFC152B3AD15B00F31493 /* NIOTestUtils in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC142B3AD15B00F31493 /* NIOTestUtils */; };
 		526CFC172B3AD15B00F31493 /* _NIOConcurrency in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC162B3AD15B00F31493 /* _NIOConcurrency */; };
-		526CFC342B3AD94A00F31493 /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC332B3AD94A00F31493 /* Puppy */; };
 		526CFC362B3ADD0600F31493 /* libproc.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 526CFC352B3ADD0600F31493 /* libproc.tbd */; };
 		5274A5E32B4AA5C600FD0A10 /* ProxySessionTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5274A5E22B4AA5C600FD0A10 /* ProxySessionTCP.swift */; };
 		5274A5E52B4AAC4500FD0A10 /* ProxySessionUDP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5274A5E42B4AAC4500FD0A10 /* ProxySessionUDP.swift */; };
@@ -73,41 +31,91 @@
 		5274A5E92B4AD88100FD0A10 /* IDGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5274A5E82B4AD88100FD0A10 /* IDGenerator.swift */; };
 		5274A5EA2B4AD88100FD0A10 /* IDGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5274A5E82B4AD88100FD0A10 /* IDGenerator.swift */; };
 		5274B64F2B2AE8DF0007250C /* libbsm.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5274B64E2B2AE8DF0007250C /* libbsm.tbd */; };
-		5278E5952B5954BA00210466 /* ProxyEngineTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5942B5954BA00210466 /* ProxyEngineTest.swift */; };
 		5278E59A2B59582700210466 /* FlowPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5992B59582700210466 /* FlowPolicy.swift */; };
-		5278E59B2B59582700210466 /* FlowPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5992B59582700210466 /* FlowPolicy.swift */; };
-		5278E59F2B598FBB00210466 /* LoggerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E59E2B598FBB00210466 /* LoggerTest.swift */; };
-		5278E5A92B5A7E3D00210466 /* InboundHandlerTCPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5A82B5A7E3D00210466 /* InboundHandlerTCPTest.swift */; };
-		5278E5AB2B5A963600210466 /* InboundHandlerUDPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5AA2B5A963600210466 /* InboundHandlerUDPTest.swift */; };
-		5278E5AD2B5A9EBA00210466 /* DefaultProxySessionFactoryTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5AC2B5A9EBA00210466 /* DefaultProxySessionFactoryTest.swift */; };
 		5278E5B02B5AFE1E00210466 /* ChannelCreatorUDP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5AF2B5AFE1E00210466 /* ChannelCreatorUDP.swift */; };
-		5278E5B12B5AFE1E00210466 /* ChannelCreatorUDP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5AF2B5AFE1E00210466 /* ChannelCreatorUDP.swift */; };
 		5278E5B32B5B006000210466 /* FlowForwarderUDP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5B22B5B006000210466 /* FlowForwarderUDP.swift */; };
-		5278E5B42B5B006000210466 /* FlowForwarderUDP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5B22B5B006000210466 /* FlowForwarderUDP.swift */; };
 		5278E5B62B5B859600210466 /* InboundHandlerUDP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5B52B5B859600210466 /* InboundHandlerUDP.swift */; };
-		5278E5B72B5B859600210466 /* InboundHandlerUDP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5B52B5B859600210466 /* InboundHandlerUDP.swift */; };
 		5278E5B92B5B885D00210466 /* ChannelCreatorTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5B82B5B885D00210466 /* ChannelCreatorTCP.swift */; };
-		5278E5BA2B5B885D00210466 /* ChannelCreatorTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5B82B5B885D00210466 /* ChannelCreatorTCP.swift */; };
 		5278E5BC2B5B89AA00210466 /* FlowForwarderTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5BB2B5B89AA00210466 /* FlowForwarderTCP.swift */; };
-		5278E5BD2B5B89AA00210466 /* FlowForwarderTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5BB2B5B89AA00210466 /* FlowForwarderTCP.swift */; };
 		5278E5BF2B5B8E6400210466 /* InboundHandlerTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5BE2B5B8E6400210466 /* InboundHandlerTCP.swift */; };
-		5278E5C02B5B8E6400210466 /* InboundHandlerTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5BE2B5B8E6400210466 /* InboundHandlerTCP.swift */; };
 		527F56A82B3180D6003E7DF7 /* AppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A72B3180D6003E7DF7 /* AppPolicy.swift */; };
-		527F56AA2B31A098003E7DF7 /* AppPolicyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A92B31A098003E7DF7 /* AppPolicyTest.swift */; };
-		527F56AE2B31A5DA003E7DF7 /* AppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A72B3180D6003E7DF7 /* AppPolicy.swift */; };
-		527F56B22B31B43B003E7DF7 /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = 527F56B12B31B43B003E7DF7 /* Quick */; };
-		527F56B42B31B440003E7DF7 /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = 527F56B32B31B440003E7DF7 /* Nimble */; };
-		52A5F9E02B5524560095095D /* ProxySessionUDPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A5F9DF2B5524560095095D /* ProxySessionUDPTest.swift */; };
 		52D4C8CE2B52FBEB0059F7DD /* InboundHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D4C8CD2B52FBEB0059F7DD /* InboundHandler.swift */; };
-		52D4C8CF2B52FBEB0059F7DD /* InboundHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D4C8CD2B52FBEB0059F7DD /* InboundHandler.swift */; };
-		52E84CF32B5406B200B67912 /* ProxySessionTCPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E84CF22B5406B200B67912 /* ProxySessionTCPTest.swift */; };
-		52E84CF62B5439CA00B67912 /* MockChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E84CF52B5439CA00B67912 /* MockChannel.swift */; };
 		52E84CF82B54F22200B67912 /* SessionChannelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E84CF72B54F22200B67912 /* SessionChannelProtocol.swift */; };
-		52E84CF92B54F22200B67912 /* SessionChannelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E84CF72B54F22200B67912 /* SessionChannelProtocol.swift */; };
 		52E84CFB2B54F77400B67912 /* ChannelWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E84CFA2B54F77400B67912 /* ChannelWrapper.swift */; };
-		52E84CFC2B54F77400B67912 /* ChannelWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E84CFA2B54F77400B67912 /* ChannelWrapper.swift */; };
-		52EA0A742B59205200CD8EFE /* MockLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52EA0A732B59205200CD8EFE /* MockLogger.swift */; };
 		9704D2AD2B03C97400A899D7 /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = 9704D2AC2B03C97400A899D7 /* Puppy */; };
+		97199B1D2B6904240095C516 /* SplitTunnelProxyExtensionFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97199B152B6904230095C516 /* SplitTunnelProxyExtensionFramework.framework */; };
+		97199B282B6904240095C516 /* SplitTunnelProxyExtensionFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97199B152B6904230095C516 /* SplitTunnelProxyExtensionFramework.framework */; };
+		97199B292B6904240095C516 /* SplitTunnelProxyExtensionFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 97199B152B6904230095C516 /* SplitTunnelProxyExtensionFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		97199B302B6904330095C516 /* Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB4D2B51541F00F3B772 /* Mock.swift */; };
+		97199B312B6904330095C516 /* MockFlowUDP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB4F2B5157DF00F3B772 /* MockFlowUDP.swift */; };
+		97199B322B6904330095C516 /* MockProxySessionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB512B51582C00F3B772 /* MockProxySessionFactory.swift */; };
+		97199B332B6904330095C516 /* MockChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E84CF52B5439CA00B67912 /* MockChannel.swift */; };
+		97199B342B6904330095C516 /* MockProxyEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5220075B2B57F3850034BCEA /* MockProxyEngine.swift */; };
+		97199B352B6904330095C516 /* MockLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52EA0A732B59205200CD8EFE /* MockLogger.swift */; };
+		97199B362B6904330095C516 /* MockNetworkInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C3B2B628CA400E7D4E0 /* MockNetworkInterface.swift */; };
+		97199B372B6904330095C516 /* MockProxySession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C402B63AEC400E7D4E0 /* MockProxySession.swift */; };
+		97199B382B6904330095C516 /* MockFlowHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C4C2B6652DE00E7D4E0 /* MockFlowHandler.swift */; };
+		97199B392B6904330095C516 /* MockMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C4E2B6667B000E7D4E0 /* MockMessageHandler.swift */; };
+		97199B3A2B6904330095C516 /* MockFlowTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C582B66B50400E7D4E0 /* MockFlowTCP.swift */; };
+		97199B3B2B6904330095C516 /* AppPolicyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A92B31A098003E7DF7 /* AppPolicyTest.swift */; };
+		97199B3C2B6904330095C516 /* VpnStateTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19C05F52B50A8CB00E804DE /* VpnStateTest.swift */; };
+		97199B3D2B6904330095C516 /* ProxySessionTCPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E84CF22B5406B200B67912 /* ProxySessionTCPTest.swift */; };
+		97199B3E2B6904330095C516 /* ProxySessionUDPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A5F9DF2B5524560095095D /* ProxySessionUDPTest.swift */; };
+		97199B402B6904330095C516 /* ProxyEngineTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5942B5954BA00210466 /* ProxyEngineTest.swift */; };
+		97199B412B6904330095C516 /* LoggerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E59E2B598FBB00210466 /* LoggerTest.swift */; };
+		97199B422B6904330095C516 /* InboundHandlerTCPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5A82B5A7E3D00210466 /* InboundHandlerTCPTest.swift */; };
+		97199B432B6904330095C516 /* InboundHandlerUDPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5AA2B5A963600210466 /* InboundHandlerUDPTest.swift */; };
+		97199B442B6904330095C516 /* DefaultProxySessionFactoryTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5AC2B5A9EBA00210466 /* DefaultProxySessionFactoryTest.swift */; };
+		97199B452B6904330095C516 /* FlowHandlerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C502B66725800E7D4E0 /* FlowHandlerTest.swift */; };
+		97199B462B6904330095C516 /* MessageHandlerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C522B668E3C00E7D4E0 /* MessageHandlerTest.swift */; };
+		97199B472B6904330095C516 /* ChannelCreatorUDPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C542B669C4A00E7D4E0 /* ChannelCreatorUDPTest.swift */; };
+		97199B482B6904330095C516 /* ChannelCreatorTCPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C562B66ACDA00E7D4E0 /* ChannelCreatorTCPTest.swift */; };
+		97199B492B6904330095C516 /* NetworkInterfaceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C5A2B66BB6F00E7D4E0 /* NetworkInterfaceTest.swift */; };
+		97199B4A2B6904330095C516 /* ChannelWrapperTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C5C2B67125D00E7D4E0 /* ChannelWrapperTest.swift */; };
+		97199B4B2B6904410095C516 /* ChannelCreatorUDP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5AF2B5AFE1E00210466 /* ChannelCreatorUDP.swift */; };
+		97199B4C2B6904410095C516 /* FlowForwarderUDP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5B22B5B006000210466 /* FlowForwarderUDP.swift */; };
+		97199B4D2B6904410095C516 /* InboundHandlerUDP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5B52B5B859600210466 /* InboundHandlerUDP.swift */; };
+		97199B4E2B6904410095C516 /* ChannelCreatorTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5B82B5B885D00210466 /* ChannelCreatorTCP.swift */; };
+		97199B4F2B6904410095C516 /* FlowForwarderTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5BB2B5B89AA00210466 /* FlowForwarderTCP.swift */; };
+		97199B502B6904410095C516 /* InboundHandlerTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5BE2B5B8E6400210466 /* InboundHandlerTCP.swift */; };
+		97199B512B6904410095C516 /* InboundHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D4C8CD2B52FBEB0059F7DD /* InboundHandler.swift */; };
+		97199B522B6904410095C516 /* FlowProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB282B512A5E00F3B772 /* FlowProtocols.swift */; };
+		97199B532B6904410095C516 /* NEAppProxyFlow+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB262B511DD700F3B772 /* NEAppProxyFlow+Extensions.swift */; };
+		97199B542B6904410095C516 /* ProxySession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5274A5E62B4AC5C600FD0A10 /* ProxySession.swift */; };
+		97199B552B6904410095C516 /* ProxySessionTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5274A5E22B4AA5C600FD0A10 /* ProxySessionTCP.swift */; };
+		97199B562B6904410095C516 /* ProxySessionUDP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5274A5E42B4AAC4500FD0A10 /* ProxySessionUDP.swift */; };
+		97199B572B6904410095C516 /* ProxySessionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB1B2B4FFCEB00F3B772 /* ProxySessionFactory.swift */; };
+		97199B582B6904410095C516 /* SessionChannelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E84CF72B54F22200B67912 /* SessionChannelProtocol.swift */; };
+		97199B592B6904410095C516 /* ChannelWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E84CFA2B54F77400B67912 /* ChannelWrapper.swift */; };
+		97199B5A2B6904410095C516 /* MessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C492B640D8100E7D4E0 /* MessageHandler.swift */; };
+		97199B5B2B6904410095C516 /* FlowHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C3D2B62A44B00E7D4E0 /* FlowHandler.swift */; };
+		97199B5C2B6904410095C516 /* IPCConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B1415A227A396500B26560 /* IPCConnection.swift */; };
+		97199B5D2B6904410095C516 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976B8CD62B0B55F60097FE7F /* Logger.swift */; };
+		97199B5E2B6904410095C516 /* NetworkInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E9AEFD2AE31D4F007603BF /* NetworkInterface.swift */; };
+		97199B5F2B6904410095C516 /* ProcessUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6B52B18F7DF0063363E /* ProcessUtilities.swift */; };
+		97199B602B6904410095C516 /* AppPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F56A72B3180D6003E7DF7 /* AppPolicy.swift */; };
+		97199B612B6904410095C516 /* IDGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5274A5E82B4AD88100FD0A10 /* IDGenerator.swift */; };
+		97199B622B6904410095C516 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB182B4FC43900F3B772 /* Formatters.swift */; };
+		97199B632B6904410095C516 /* FlowPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5992B59582700210466 /* FlowPolicy.swift */; };
+		97199B642B6904410095C516 /* SplitTunnelProxyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D1B293E701D00FB8DAF /* SplitTunnelProxyProvider.swift */; };
+		97199B652B6904410095C516 /* SplitTunnelProxyProvider-Bridging-Header.h in Sources */ = {isa = PBXBuildFile; fileRef = 5274B64D2B2AE6880007250C /* SplitTunnelProxyProvider-Bridging-Header.h */; };
+		97199B662B6904410095C516 /* VpnState.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19C05F12B50A67500E804DE /* VpnState.swift */; };
+		97199B672B6904410095C516 /* ProxyEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52699E612B56BBEE004FBF20 /* ProxyEngine.swift */; };
+		97199B682B6904410095C516 /* SplitTunnelNetworkConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C432B63F3C600E7D4E0 /* SplitTunnelNetworkConfig.swift */; };
+		97199B692B6904410095C516 /* FirewallWhitelister.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52105C462B63FDAE00E7D4E0 /* FirewallWhitelister.swift */; };
+		97199B6B2B6904D00095C516 /* _NIOConcurrency in Frameworks */ = {isa = PBXBuildFile; productRef = 97199B6A2B6904D00095C516 /* _NIOConcurrency */; };
+		97199B6D2B6904D00095C516 /* NIO in Frameworks */ = {isa = PBXBuildFile; productRef = 97199B6C2B6904D00095C516 /* NIO */; };
+		97199B6F2B6904D00095C516 /* NIOConcurrencyHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 97199B6E2B6904D00095C516 /* NIOConcurrencyHelpers */; };
+		97199B712B6904D00095C516 /* NIOCore in Frameworks */ = {isa = PBXBuildFile; productRef = 97199B702B6904D00095C516 /* NIOCore */; };
+		97199B732B6904D00095C516 /* NIOFoundationCompat in Frameworks */ = {isa = PBXBuildFile; productRef = 97199B722B6904D00095C516 /* NIOFoundationCompat */; };
+		97199B752B6904D00095C516 /* NIOPosix in Frameworks */ = {isa = PBXBuildFile; productRef = 97199B742B6904D00095C516 /* NIOPosix */; };
+		97199B772B6904D00095C516 /* NIOTestUtils in Frameworks */ = {isa = PBXBuildFile; productRef = 97199B762B6904D00095C516 /* NIOTestUtils */; };
+		97199B792B6904F00095C516 /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = 97199B782B6904F00095C516 /* Puppy */; };
+		97199B7A2B6905100095C516 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4B45DDD2273A3450050C59B /* NetworkExtension.framework */; };
+		97199B7B2B69056D0095C516 /* libproc.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 526CFC352B3ADD0600F31493 /* libproc.tbd */; };
+		97199B7C2B6905750095C516 /* libbsm.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5274B64E2B2AE8DF0007250C /* libbsm.tbd */; };
+		97199B802B6905FD0095C516 /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = 97199B7F2B6905FD0095C516 /* Quick */; };
+		97199B822B6906010095C516 /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = 97199B812B6906010095C516 /* Nimble */; };
 		971DE35C2B59173E008CE5C2 /* com.privateinternetaccess.vpn.splittunnel.systemextension in Copy Files */ = {isa = PBXBuildFile; fileRef = 97AD92092B35876200405E3A /* com.privateinternetaccess.vpn.splittunnel.systemextension */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		97607D122B6003F100025251 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97607D112B6003F100025251 /* Media.xcassets */; };
 		976B8CD72B0B55F60097FE7F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976B8CD62B0B55F60097FE7F /* Logger.swift */; };
@@ -132,15 +140,26 @@
 		D17F5D1A293E1DC300FB8DAF /* ProxyAppDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D19293E1DC300FB8DAF /* ProxyAppDefault.swift */; };
 		D17F5D1C293E701D00FB8DAF /* SplitTunnelProxyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D1B293E701D00FB8DAF /* SplitTunnelProxyProvider.swift */; };
 		D19C05F22B50A67500E804DE /* VpnState.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19C05F12B50A67500E804DE /* VpnState.swift */; };
-		D19C05F32B50A67500E804DE /* VpnState.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19C05F12B50A67500E804DE /* VpnState.swift */; };
-		D19C05F42B50A74500E804DE /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976B8CD62B0B55F60097FE7F /* Logger.swift */; };
-		D19C05F62B50A8CB00E804DE /* VpnStateTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19C05F52B50A8CB00E804DE /* VpnStateTest.swift */; };
 		D1D447042ABCE52400A69316 /* ExtensionRequestDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D447032ABCE52400A69316 /* ExtensionRequestDelegate.swift */; };
 		D1D5B6B62B18F7DF0063363E /* ProcessUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6B52B18F7DF0063363E /* ProcessUtilities.swift */; };
 		D1E9AEFE2AE31D4F007603BF /* NetworkInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E9AEFD2AE31D4F007603BF /* NetworkInterface.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		97199B1E2B6904240095C516 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C4B45DAD22739FFF0050C59B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 97199B142B6904230095C516;
+			remoteInfo = SplitTunnelProxyExtensionFramework;
+		};
+		97199B262B6904240095C516 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C4B45DAD22739FFF0050C59B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 97199B142B6904230095C516;
+			remoteInfo = SplitTunnelProxyExtensionFramework;
+		};
 		971DE3592B591722008CE5C2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C4B45DAD22739FFF0050C59B /* Project object */;
@@ -148,16 +167,20 @@
 			remoteGlobalIDString = C40A5C44229DD6A500627D50;
 			remoteInfo = SplitTunnelProxyExtension;
 		};
-		D1FE4FBA295A1EA3002BBA20 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C4B45DAD22739FFF0050C59B /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C4B45DB422739FFF0050C59B;
-			remoteInfo = SplitTunnelProxy;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		97199AC12B6902BB0095C516 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				97199B292B6904240095C516 /* SplitTunnelProxyExtensionFramework.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		971DE35B2B59172A008CE5C2 /* Copy Files */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -226,6 +249,11 @@
 		52E84CF72B54F22200B67912 /* SessionChannelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionChannelProtocol.swift; sourceTree = "<group>"; };
 		52E84CFA2B54F77400B67912 /* ChannelWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelWrapper.swift; sourceTree = "<group>"; };
 		52EA0A732B59205200CD8EFE /* MockLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLogger.swift; sourceTree = "<group>"; };
+		97199AB82B6902BA0095C516 /* SplitTunnelProxyExtensionFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SplitTunnelProxyExtensionFramework.h; sourceTree = "<group>"; };
+		97199B152B6904230095C516 /* SplitTunnelProxyExtensionFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SplitTunnelProxyExtensionFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		97199B172B6904230095C516 /* SplitTunnelProxyExtensionFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SplitTunnelProxyExtensionFramework.h; sourceTree = "<group>"; };
+		97199B1C2B6904240095C516 /* SplitTunnelProxyExtensionFrameworkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SplitTunnelProxyExtensionFrameworkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		97199B232B6904240095C516 /* SplitTunnelProxyExtensionFrameworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitTunnelProxyExtensionFrameworkTests.swift; sourceTree = "<group>"; };
 		97607D112B6003F100025251 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		976B8CD62B0B55F60097FE7F /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		9785C0C72B5921A6002A982D /* RequestDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RequestDelegate.swift; path = ProxyCLI/RequestDelegate.swift; sourceTree = SOURCE_ROOT; };
@@ -233,11 +261,11 @@
 		9785C0C92B5921A6002A982D /* ProxyCLIApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProxyCLIApp.swift; path = ProxyCLI/ProxyCLIApp.swift; sourceTree = SOURCE_ROOT; };
 		9785C0CA2B5921A7002A982D /* SysExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SysExt.swift; path = ProxyCLI/SysExt.swift; sourceTree = SOURCE_ROOT; };
 		9785C0CB2B5921A7002A982D /* ProxyCLI.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; name = ProxyCLI.entitlements; path = ProxyCLI/ProxyCLI.entitlements; sourceTree = SOURCE_ROOT; };
-		9785C0DE2B592271002A982D /* SplitTunnelProxyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SplitTunnelProxyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9785C0DF2B592271002A982D /* PIA Split Tunnel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PIA Split Tunnel.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		97AD92092B35876200405E3A /* com.privateinternetaccess.vpn.splittunnel.systemextension */ = {isa = PBXFileReference; explicitFileType = "wrapper.system-extension"; includeInIndex = 0; path = com.privateinternetaccess.vpn.splittunnel.systemextension; sourceTree = BUILT_PRODUCTS_DIR; };
 		97B1169B2B0CEF910028B01E /* build.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = build.xcconfig; sourceTree = "<group>"; };
 		97C805092B46BC63005D814B /* SplitTunnelProxy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SplitTunnelProxy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		97FADFE02B69234B00265334 /* SplitTunnelProxyExtensionFrameworkTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = SplitTunnelProxyExtensionFrameworkTests.xctestplan; sourceTree = "<group>"; };
 		C40A5C4A229DD6A500627D50 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		C40A5C4C229DD6A500627D50 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C40A5C4D229DD6A500627D50 /* ProxyExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ProxyExtension.entitlements; sourceTree = "<group>"; };
@@ -261,6 +289,34 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		97199B122B6904230095C516 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				97199B7C2B6905750095C516 /* libbsm.tbd in Frameworks */,
+				97199B7B2B69056D0095C516 /* libproc.tbd in Frameworks */,
+				97199B7A2B6905100095C516 /* NetworkExtension.framework in Frameworks */,
+				97199B6F2B6904D00095C516 /* NIOConcurrencyHelpers in Frameworks */,
+				97199B752B6904D00095C516 /* NIOPosix in Frameworks */,
+				97199B732B6904D00095C516 /* NIOFoundationCompat in Frameworks */,
+				97199B792B6904F00095C516 /* Puppy in Frameworks */,
+				97199B6B2B6904D00095C516 /* _NIOConcurrency in Frameworks */,
+				97199B712B6904D00095C516 /* NIOCore in Frameworks */,
+				97199B772B6904D00095C516 /* NIOTestUtils in Frameworks */,
+				97199B6D2B6904D00095C516 /* NIO in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		97199B192B6904240095C516 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				97199B822B6906010095C516 /* Nimble in Frameworks */,
+				97199B802B6905FD0095C516 /* Quick in Frameworks */,
+				97199B1D2B6904240095C516 /* SplitTunnelProxyExtensionFramework.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9785C0B52B59219A002A982D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -291,26 +347,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				97199B282B6904240095C516 /* SplitTunnelProxyExtensionFramework.framework in Frameworks */,
 				C4B45DDE2273A3450050C59B /* NetworkExtension.framework in Frameworks */,
 				9704D2AD2B03C97400A899D7 /* Puppy in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D1FE4FB3295A1EA3002BBA20 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				526CFC342B3AD94A00F31493 /* Puppy in Frameworks */,
-				526208122B5709B500C5C0E4 /* libbsm.tbd in Frameworks */,
-				5235FB3D2B51458800F3B772 /* NIOFoundationCompat in Frameworks */,
-				5235FB392B51458800F3B772 /* NIOCore in Frameworks */,
-				527F56B22B31B43B003E7DF7 /* Quick in Frameworks */,
-				5235FB3B2B51458800F3B772 /* NIOEmbedded in Frameworks */,
-				5235FB3F2B51459200F3B772 /* NIOTestUtils in Frameworks */,
-				527F56B42B31B440003E7DF7 /* Nimble in Frameworks */,
-				5235FB372B51458800F3B772 /* NIOConcurrencyHelpers in Frameworks */,
-				5235FB332B51458800F3B772 /* _NIOConcurrency in Frameworks */,
-				5235FB352B51458800F3B772 /* NIO in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -348,6 +387,30 @@
 			path = Mocks;
 			sourceTree = "<group>";
 		};
+		97199AB72B6902BA0095C516 /* SplitTunnelProxyExtensionFramework */ = {
+			isa = PBXGroup;
+			children = (
+				97199AB82B6902BA0095C516 /* SplitTunnelProxyExtensionFramework.h */,
+			);
+			path = SplitTunnelProxyExtensionFramework;
+			sourceTree = "<group>";
+		};
+		97199B162B6904230095C516 /* SplitTunnelProxyExtensionFramework */ = {
+			isa = PBXGroup;
+			children = (
+				97199B172B6904230095C516 /* SplitTunnelProxyExtensionFramework.h */,
+			);
+			path = SplitTunnelProxyExtensionFramework;
+			sourceTree = "<group>";
+		};
+		97199B222B6904240095C516 /* SplitTunnelProxyExtensionFrameworkTests */ = {
+			isa = PBXGroup;
+			children = (
+				97199B232B6904240095C516 /* SplitTunnelProxyExtensionFrameworkTests.swift */,
+			);
+			path = SplitTunnelProxyExtensionFrameworkTests;
+			sourceTree = "<group>";
+		};
 		9785C0B92B59219A002A982D /* ProxyCLI */ = {
 			isa = PBXGroup;
 			children = (
@@ -383,11 +446,16 @@
 				C40A5C47229DD6A500627D50 /* ProxyExtension */,
 				D1FE4FB7295A1EA3002BBA20 /* ProxyTests */,
 				9785C0B92B59219A002A982D /* ProxyCLI */,
+				97199AB72B6902BA0095C516 /* SplitTunnelProxyExtensionFramework */,
+				97199B162B6904230095C516 /* SplitTunnelProxyExtensionFramework */,
+				97199B222B6904240095C516 /* SplitTunnelProxyExtensionFrameworkTests */,
 				C4B45DDC2273A3450050C59B /* Frameworks */,
 				97AD92092B35876200405E3A /* com.privateinternetaccess.vpn.splittunnel.systemextension */,
 				97C805092B46BC63005D814B /* SplitTunnelProxy.app */,
-				9785C0DE2B592271002A982D /* SplitTunnelProxyTests.xctest */,
 				9785C0DF2B592271002A982D /* PIA Split Tunnel.app */,
+				97199B152B6904230095C516 /* SplitTunnelProxyExtensionFramework.framework */,
+				97199B1C2B6904240095C516 /* SplitTunnelProxyExtensionFrameworkTests.xctest */,
+				97FADFE02B69234B00265334 /* SplitTunnelProxyExtensionFrameworkTests.xctestplan */,
 			);
 			sourceTree = "<group>";
 		};
@@ -500,7 +568,67 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		97199B102B6904230095C516 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
+		97199B142B6904230095C516 /* SplitTunnelProxyExtensionFramework */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 97199B2A2B6904240095C516 /* Build configuration list for PBXNativeTarget "SplitTunnelProxyExtensionFramework" */;
+			buildPhases = (
+				97199B102B6904230095C516 /* Headers */,
+				C40A5C41229DD6A500627D50 /* Sources */,
+				97199B122B6904230095C516 /* Frameworks */,
+				97199B132B6904230095C516 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SplitTunnelProxyExtensionFramework;
+			packageProductDependencies = (
+				97199B6A2B6904D00095C516 /* _NIOConcurrency */,
+				97199B6C2B6904D00095C516 /* NIO */,
+				97199B6E2B6904D00095C516 /* NIOConcurrencyHelpers */,
+				97199B702B6904D00095C516 /* NIOCore */,
+				97199B722B6904D00095C516 /* NIOFoundationCompat */,
+				97199B742B6904D00095C516 /* NIOPosix */,
+				97199B762B6904D00095C516 /* NIOTestUtils */,
+				97199B782B6904F00095C516 /* Puppy */,
+			);
+			productName = SplitTunnelProxyExtensionFramework;
+			productReference = 97199B152B6904230095C516 /* SplitTunnelProxyExtensionFramework.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		97199B1B2B6904240095C516 /* SplitTunnelProxyExtensionFrameworkTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 97199B2D2B6904240095C516 /* Build configuration list for PBXNativeTarget "SplitTunnelProxyExtensionFrameworkTests" */;
+			buildPhases = (
+				97199B182B6904240095C516 /* Sources */,
+				97199B192B6904240095C516 /* Frameworks */,
+				97199B1A2B6904240095C516 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				97199B1F2B6904240095C516 /* PBXTargetDependency */,
+			);
+			name = SplitTunnelProxyExtensionFrameworkTests;
+			packageProductDependencies = (
+				97199B7F2B6905FD0095C516 /* Quick */,
+				97199B812B6906010095C516 /* Nimble */,
+			);
+			productName = SplitTunnelProxyExtensionFrameworkTests;
+			productReference = 97199B1C2B6904240095C516 /* SplitTunnelProxyExtensionFrameworkTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		9785C0B72B59219A002A982D /* PIA Split Tunnel */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 9785C0C62B59219B002A982D /* Build configuration list for PBXNativeTarget "PIA Split Tunnel" */;
@@ -557,11 +685,13 @@
 				C4B45DB222739FFF0050C59B /* Frameworks */,
 				C4B45DB322739FFF0050C59B /* Resources */,
 				971DE35B2B59172A008CE5C2 /* Copy Files */,
+				97199AC12B6902BB0095C516 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				971DE35A2B591722008CE5C2 /* PBXTargetDependency */,
+				97199B272B6904240095C516 /* PBXTargetDependency */,
 			);
 			name = SplitTunnelProxy;
 			packageProductDependencies = (
@@ -570,36 +700,6 @@
 			productName = SplitTunnelProxy;
 			productReference = 97C805092B46BC63005D814B /* SplitTunnelProxy.app */;
 			productType = "com.apple.product-type.application";
-		};
-		D1FE4FB5295A1EA3002BBA20 /* SplitTunnelProxyTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = D1FE4FBC295A1EA3002BBA20 /* Build configuration list for PBXNativeTarget "SplitTunnelProxyTests" */;
-			buildPhases = (
-				D1FE4FB2295A1EA3002BBA20 /* Sources */,
-				D1FE4FB3295A1EA3002BBA20 /* Frameworks */,
-				D1FE4FB4295A1EA3002BBA20 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				D1FE4FBB295A1EA3002BBA20 /* PBXTargetDependency */,
-			);
-			name = SplitTunnelProxyTests;
-			packageProductDependencies = (
-				527F56B12B31B43B003E7DF7 /* Quick */,
-				527F56B32B31B440003E7DF7 /* Nimble */,
-				526CFC332B3AD94A00F31493 /* Puppy */,
-				5235FB322B51458800F3B772 /* _NIOConcurrency */,
-				5235FB342B51458800F3B772 /* NIO */,
-				5235FB362B51458800F3B772 /* NIOConcurrencyHelpers */,
-				5235FB382B51458800F3B772 /* NIOCore */,
-				5235FB3A2B51458800F3B772 /* NIOEmbedded */,
-				5235FB3C2B51458800F3B772 /* NIOFoundationCompat */,
-				5235FB3E2B51459200F3B772 /* NIOTestUtils */,
-			);
-			productName = SplitTunnelProxyTests;
-			productReference = 9785C0DE2B592271002A982D /* SplitTunnelProxyTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -613,6 +713,12 @@
 				LastUpgradeCheck = 1500;
 				ORGANIZATIONNAME = PIA;
 				TargetAttributes = {
+					97199B142B6904230095C516 = {
+						CreatedOnToolsVersion = 15.0.1;
+					};
+					97199B1B2B6904240095C516 = {
+						CreatedOnToolsVersion = 15.0.1;
+					};
 					9785C0B72B59219A002A982D = {
 						CreatedOnToolsVersion = 15.0.1;
 					};
@@ -621,10 +727,6 @@
 					};
 					C4B45DB422739FFF0050C59B = {
 						CreatedOnToolsVersion = 11.0;
-					};
-					D1FE4FB5295A1EA3002BBA20 = {
-						CreatedOnToolsVersion = 14.2;
-						TestTargetID = C4B45DB422739FFF0050C59B;
 					};
 				};
 			};
@@ -650,13 +752,28 @@
 			targets = (
 				C4B45DB422739FFF0050C59B /* SplitTunnelProxy */,
 				C40A5C44229DD6A500627D50 /* SplitTunnelProxyExtension */,
-				D1FE4FB5295A1EA3002BBA20 /* SplitTunnelProxyTests */,
 				9785C0B72B59219A002A982D /* PIA Split Tunnel */,
+				97199B142B6904230095C516 /* SplitTunnelProxyExtensionFramework */,
+				97199B1B2B6904240095C516 /* SplitTunnelProxyExtensionFrameworkTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		97199B132B6904230095C516 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		97199B1A2B6904240095C516 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9785C0B62B59219A002A982D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -679,13 +796,6 @@
 			files = (
 				C4B45DBD2273A0020050C59B /* Assets.xcassets in Resources */,
 				C4B45DC02273A0020050C59B /* Main.storyboard in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D1FE4FB4295A1EA3002BBA20 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -712,8 +822,39 @@
 			shellScript = "./build_scripts/update_build_number.sh\n";
 		};
 /* End PBXShellScriptBuildPhase section */
-
-/* Begin PBXSourcesBuildPhase section */
+		97199B182B6904240095C516 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				97199B302B6904330095C516 /* Mock.swift in Sources */,
+				97199B312B6904330095C516 /* MockFlowUDP.swift in Sources */,
+				97199B322B6904330095C516 /* MockProxySessionFactory.swift in Sources */,
+				97199B332B6904330095C516 /* MockChannel.swift in Sources */,
+				97199B342B6904330095C516 /* MockProxyEngine.swift in Sources */,
+				97199B352B6904330095C516 /* MockLogger.swift in Sources */,
+				97199B362B6904330095C516 /* MockNetworkInterface.swift in Sources */,
+				97199B372B6904330095C516 /* MockProxySession.swift in Sources */,
+				97199B382B6904330095C516 /* MockFlowHandler.swift in Sources */,
+				97199B392B6904330095C516 /* MockMessageHandler.swift in Sources */,
+				97199B3A2B6904330095C516 /* MockFlowTCP.swift in Sources */,
+				97199B3B2B6904330095C516 /* AppPolicyTest.swift in Sources */,
+				97199B3C2B6904330095C516 /* VpnStateTest.swift in Sources */,
+				97199B3D2B6904330095C516 /* ProxySessionTCPTest.swift in Sources */,
+				97199B3E2B6904330095C516 /* ProxySessionUDPTest.swift in Sources */,
+				97199B402B6904330095C516 /* ProxyEngineTest.swift in Sources */,
+				97199B412B6904330095C516 /* LoggerTest.swift in Sources */,
+				97199B422B6904330095C516 /* InboundHandlerTCPTest.swift in Sources */,
+				97199B432B6904330095C516 /* InboundHandlerUDPTest.swift in Sources */,
+				97199B442B6904330095C516 /* DefaultProxySessionFactoryTest.swift in Sources */,
+				97199B452B6904330095C516 /* FlowHandlerTest.swift in Sources */,
+				97199B462B6904330095C516 /* MessageHandlerTest.swift in Sources */,
+				97199B472B6904330095C516 /* ChannelCreatorUDPTest.swift in Sources */,
+				97199B482B6904330095C516 /* ChannelCreatorTCPTest.swift in Sources */,
+				97199B492B6904330095C516 /* NetworkInterfaceTest.swift in Sources */,
+				97199B4A2B6904330095C516 /* ChannelWrapperTest.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9785C0B42B59219A002A982D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -779,82 +920,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D1FE4FB2295A1EA3002BBA20 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				5278E5BD2B5B89AA00210466 /* FlowForwarderTCP.swift in Sources */,
-				52105C452B63F3C600E7D4E0 /* SplitTunnelNetworkConfig.swift in Sources */,
-				52105C4D2B6652DE00E7D4E0 /* MockFlowHandler.swift in Sources */,
-				52699E602B56AC22004FBF20 /* SplitTunnelProxyProviderTest.swift in Sources */,
-				D19C05F42B50A74500E804DE /* Logger.swift in Sources */,
-				52E84CF32B5406B200B67912 /* ProxySessionTCPTest.swift in Sources */,
-				5235FB412B5145CE00F3B772 /* ProxySessionFactory.swift in Sources */,
-				5235FB462B5145CE00F3B772 /* ProxySessionTCP.swift in Sources */,
-				52699E632B56BBEE004FBF20 /* ProxyEngine.swift in Sources */,
-				5235FB482B5145FD00F3B772 /* IDGenerator.swift in Sources */,
-				52105C512B66725800E7D4E0 /* FlowHandlerTest.swift in Sources */,
-				5278E59B2B59582700210466 /* FlowPolicy.swift in Sources */,
-				5220075D2B57F5E70034BCEA /* SplitTunnelProxyProvider.swift in Sources */,
-				527F56AE2B31A5DA003E7DF7 /* AppPolicy.swift in Sources */,
-				D19C05F32B50A67500E804DE /* VpnState.swift in Sources */,
-				5278E5B72B5B859600210466 /* InboundHandlerUDP.swift in Sources */,
-				52105C482B63FDAE00E7D4E0 /* FirewallWhitelister.swift in Sources */,
-				5278E5952B5954BA00210466 /* ProxyEngineTest.swift in Sources */,
-				5278E5C02B5B8E6400210466 /* InboundHandlerTCP.swift in Sources */,
-				52105C422B63AEC400E7D4E0 /* MockProxySession.swift in Sources */,
-				52105C552B669C4A00E7D4E0 /* ChannelCreatorUDPTest.swift in Sources */,
-				52E84CF62B5439CA00B67912 /* MockChannel.swift in Sources */,
-				52105C5B2B66BB6F00E7D4E0 /* NetworkInterfaceTest.swift in Sources */,
-				52105C5D2B67125D00E7D4E0 /* ChannelWrapperTest.swift in Sources */,
-				52105C4F2B6667B000E7D4E0 /* MockMessageHandler.swift in Sources */,
-				52E84CF92B54F22200B67912 /* SessionChannelProtocol.swift in Sources */,
-				5235FB432B5145CE00F3B772 /* ProxySessionUDP.swift in Sources */,
-				5235FB492B5145FD00F3B772 /* NetworkInterface.swift in Sources */,
-				5278E59F2B598FBB00210466 /* LoggerTest.swift in Sources */,
-				52105C532B668E3D00E7D4E0 /* MessageHandlerTest.swift in Sources */,
-				5220075C2B57F3850034BCEA /* MockProxyEngine.swift in Sources */,
-				5278E5B42B5B006000210466 /* FlowForwarderUDP.swift in Sources */,
-				52105C572B66ACDA00E7D4E0 /* ChannelCreatorTCPTest.swift in Sources */,
-				52E84CFC2B54F77400B67912 /* ChannelWrapper.swift in Sources */,
-				5278E5A92B5A7E3D00210466 /* InboundHandlerTCPTest.swift in Sources */,
-				5235FB4C2B5145FD00F3B772 /* ProcessUtilities.swift in Sources */,
-				52105C3C2B628CA400E7D4E0 /* MockNetworkInterface.swift in Sources */,
-				5235FB442B5145CE00F3B772 /* NEAppProxyFlow+Extensions.swift in Sources */,
-				5235FB502B5157DF00F3B772 /* MockFlowUDP.swift in Sources */,
-				52D4C8CF2B52FBEB0059F7DD /* InboundHandler.swift in Sources */,
-				5278E5BA2B5B885D00210466 /* ChannelCreatorTCP.swift in Sources */,
-				5235FB522B51582C00F3B772 /* MockProxySessionFactory.swift in Sources */,
-				5235FB4A2B5145FD00F3B772 /* IPCConnection.swift in Sources */,
-				5278E5AB2B5A963600210466 /* InboundHandlerUDPTest.swift in Sources */,
-				52105C3F2B62A44B00E7D4E0 /* FlowHandler.swift in Sources */,
-				52EA0A742B59205200CD8EFE /* MockLogger.swift in Sources */,
-				5235FB402B5145CE00F3B772 /* FlowProtocols.swift in Sources */,
-				52105C4B2B640D8100E7D4E0 /* MessageHandler.swift in Sources */,
-				5235FB4E2B51541F00F3B772 /* Mock.swift in Sources */,
-				527F56AA2B31A098003E7DF7 /* AppPolicyTest.swift in Sources */,
-				D19C05F62B50A8CB00E804DE /* VpnStateTest.swift in Sources */,
-				52A5F9E02B5524560095095D /* ProxySessionUDPTest.swift in Sources */,
-				5235FB452B5145CE00F3B772 /* ProxySession.swift in Sources */,
-				5278E5AD2B5A9EBA00210466 /* DefaultProxySessionFactoryTest.swift in Sources */,
-				52105C592B66B50400E7D4E0 /* MockFlowTCP.swift in Sources */,
-				5278E5B12B5AFE1E00210466 /* ChannelCreatorUDP.swift in Sources */,
-				5235FB4B2B5145FD00F3B772 /* Formatters.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		97199B1F2B6904240095C516 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 97199B142B6904230095C516 /* SplitTunnelProxyExtensionFramework */;
+			targetProxy = 97199B1E2B6904240095C516 /* PBXContainerItemProxy */;
+		};
+		97199B272B6904240095C516 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 97199B142B6904230095C516 /* SplitTunnelProxyExtensionFramework */;
+			targetProxy = 97199B262B6904240095C516 /* PBXContainerItemProxy */;
+		};
 		971DE35A2B591722008CE5C2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C40A5C44229DD6A500627D50 /* SplitTunnelProxyExtension */;
 			targetProxy = 971DE3592B591722008CE5C2 /* PBXContainerItemProxy */;
-		};
-		D1FE4FBB295A1EA3002BBA20 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C4B45DB422739FFF0050C59B /* SplitTunnelProxy */;
-			targetProxy = D1FE4FBA295A1EA3002BBA20 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -870,6 +952,132 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		97199B2B2B6904240095C516 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 PIA. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = com.privateinternetaccess.vpn.SplitTunnelProxyExtensionFramework;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		97199B2C2B6904240095C516 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 PIA. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = com.privateinternetaccess.vpn.SplitTunnelProxyExtensionFramework;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		97199B2E2B6904240095C516 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.privateinternetaccess.vpn.SplitTunnelProxyExtensionFrameworkTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		97199B2F2B6904240095C516 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.privateinternetaccess.vpn.SplitTunnelProxyExtensionFrameworkTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		9785C0C42B59219B002A982D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1131,6 +1339,7 @@
 		C4B45DC62273A0020050C59B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ProxyApp/ProxyApp.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
@@ -1156,6 +1365,7 @@
 		C4B45DC72273A0020050C59B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ProxyApp/ProxyApp.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
@@ -1178,47 +1388,27 @@
 			};
 			name = Release;
 		};
-		D1FE4FBD295A1EA3002BBA20 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 5357M5NW9W;
-				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.privateinternetaccess.vpn.splittunnel.tests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SplitTunnelProxy.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SplitTunnelProxy";
-			};
-			name = Debug;
-		};
-		D1FE4FBE295A1EA3002BBA20 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 5357M5NW9W;
-				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.privateinternetaccess.vpn.splittunnel.tests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SplitTunnelProxy.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SplitTunnelProxy";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		97199B2A2B6904240095C516 /* Build configuration list for PBXNativeTarget "SplitTunnelProxyExtensionFramework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				97199B2B2B6904240095C516 /* Debug */,
+				97199B2C2B6904240095C516 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		97199B2D2B6904240095C516 /* Build configuration list for PBXNativeTarget "SplitTunnelProxyExtensionFrameworkTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				97199B2E2B6904240095C516 /* Debug */,
+				97199B2F2B6904240095C516 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		9785C0C62B59219B002A982D /* Build configuration list for PBXNativeTarget "PIA Split Tunnel" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1251,15 +1441,6 @@
 			buildConfigurations = (
 				C4B45DC62273A0020050C59B /* Debug */,
 				C4B45DC72273A0020050C59B /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		D1FE4FBC295A1EA3002BBA20 /* Build configuration list for PBXNativeTarget "SplitTunnelProxyTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				D1FE4FBD295A1EA3002BBA20 /* Debug */,
-				D1FE4FBE295A1EA3002BBA20 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1310,41 +1491,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		5235FB322B51458800F3B772 /* _NIOConcurrency */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = _NIOConcurrency;
-		};
-		5235FB342B51458800F3B772 /* NIO */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = NIO;
-		};
-		5235FB362B51458800F3B772 /* NIOConcurrencyHelpers */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = NIOConcurrencyHelpers;
-		};
-		5235FB382B51458800F3B772 /* NIOCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = NIOCore;
-		};
-		5235FB3A2B51458800F3B772 /* NIOEmbedded */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = NIOEmbedded;
-		};
-		5235FB3C2B51458800F3B772 /* NIOFoundationCompat */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = NIOFoundationCompat;
-		};
-		5235FB3E2B51459200F3B772 /* NIOTestUtils */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = NIOTestUtils;
-		};
 		526CFC0A2B3AD15B00F31493 /* NIO */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
@@ -1380,25 +1526,60 @@
 			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
 			productName = _NIOConcurrency;
 		};
-		526CFC332B3AD94A00F31493 /* Puppy */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 97E7B8AB2AFB565700138C6A /* XCRemoteSwiftPackageReference "Puppy" */;
-			productName = Puppy;
-		};
-		527F56B12B31B43B003E7DF7 /* Quick */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 527F56AF2B31B358003E7DF7 /* XCRemoteSwiftPackageReference "Quick" */;
-			productName = Quick;
-		};
-		527F56B32B31B440003E7DF7 /* Nimble */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 527F56B02B31B37E003E7DF7 /* XCRemoteSwiftPackageReference "Nimble" */;
-			productName = Nimble;
-		};
 		9704D2AC2B03C97400A899D7 /* Puppy */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 97E7B8AB2AFB565700138C6A /* XCRemoteSwiftPackageReference "Puppy" */;
 			productName = Puppy;
+		};
+		97199B6A2B6904D00095C516 /* _NIOConcurrency */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = _NIOConcurrency;
+		};
+		97199B6C2B6904D00095C516 /* NIO */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIO;
+		};
+		97199B6E2B6904D00095C516 /* NIOConcurrencyHelpers */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOConcurrencyHelpers;
+		};
+		97199B702B6904D00095C516 /* NIOCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOCore;
+		};
+		97199B722B6904D00095C516 /* NIOFoundationCompat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOFoundationCompat;
+		};
+		97199B742B6904D00095C516 /* NIOPosix */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOPosix;
+		};
+		97199B762B6904D00095C516 /* NIOTestUtils */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 526CFC092B3AD15B00F31493 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOTestUtils;
+		};
+		97199B782B6904F00095C516 /* Puppy */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 97E7B8AB2AFB565700138C6A /* XCRemoteSwiftPackageReference "Puppy" */;
+			productName = Puppy;
+		};
+		97199B7F2B6905FD0095C516 /* Quick */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 527F56AF2B31B358003E7DF7 /* XCRemoteSwiftPackageReference "Quick" */;
+			productName = Quick;
+		};
+		97199B812B6906010095C516 /* Nimble */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 527F56B02B31B37E003E7DF7 /* XCRemoteSwiftPackageReference "Nimble" */;
+			productName = Nimble;
 		};
 		9785C0E12B592299002A982D /* ArgumentParser */ = {
 			isa = XCSwiftPackageProductDependency;

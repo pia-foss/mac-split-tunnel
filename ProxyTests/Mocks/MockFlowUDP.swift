@@ -3,6 +3,7 @@ import Foundation
 import NetworkExtension
 
 // Mocks a FlowUDP for use in tests
+@testable import SplitTunnelProxyExtensionFramework
 final class MockFlowUDP: FlowUDP, Equatable, Mock {
     // Required by Mock
     var methodsCalled: Set<String> = []

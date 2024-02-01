@@ -8,6 +8,7 @@
 
 import Foundation
 
+@testable import SplitTunnelProxyExtensionFramework
 final class MockNetworkInterface: NetworkInterfaceProtocol, Mock {
     // Required by Mock
     var methodsCalled: Set<String> = []
