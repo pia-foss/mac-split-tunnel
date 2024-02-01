@@ -37,27 +37,35 @@ struct AppPolicy {
         // If we're connected to the VPN then we just have to check
         // if the app is managed by us.
         if vpnState.connected {
-            return isManagedApp(app: normalizedDescriptor) ? .proxy : .ignore
+            return isProxiedApp(app: normalizedDescriptor) ? .proxy : .ignore
 
         // If the VPN is not connected then we ignore all apps except vpnOnly apps
         // which we block.
         } else {
-            return vpnOnlyApps.contains(normalizedDescriptor) ? .block : .ignore
+            return isMatchedApp(app: normalizedDescriptor, appList: vpnOnlyApps) ? .block : .ignore
         }
     }
 
-    // A managed app is one that we proxy.
+    // An app that we proxy.
     // In the case of routeVpn == true, we check for the app in bypassApps:
     // this is because we need to proxy these apps to escape the default routing.
     // In the case routeVpn == false, we check for it in vpnOnlyApps
     // this is because we need to proxy these apps to bind them to the VPN interface.
-    private func isManagedApp(app: String) -> Bool {
+    private func isProxiedApp(app: String) -> Bool {
         let managedApps = vpnState.routeVpn ? bypassApps : vpnOnlyApps
 
+        return isMatchedApp(app: app, appList: managedApps)
+    }
+
+    // Is the app found in the given list?
+    // We treat app bundle ids differently - if a given bundle id
+    // shares a root with one in our list, then we match it too.
+    // i.e com.google.chrome.helper will 'match' an id in our list with just com.google.chrome
+    private func isMatchedApp(app: String, appList: [String]) -> Bool {
         if isAppBundleId(app: app) {
-            return managedApps.contains { app.hasPrefix($0) }
+            return appList.contains { app.hasPrefix($0) }
         } else {
-            return managedApps.contains(app)
+            return appList.contains(app)
         }
     }
 
