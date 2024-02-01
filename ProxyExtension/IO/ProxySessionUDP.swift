@@ -41,7 +41,9 @@ final class ProxySessionUDP: ProxySession {
                 .scheduleFlowRead(onBytesTransmitted)
         } else {
             createChannel(onBytesReceived).whenSuccess { nioChannel in
-                FlowForwarderUDP(id: self.id, flow: self.flow, channel: ChannelWrapper(nioChannel))
+                self.channel = ChannelWrapper(nioChannel)
+
+                FlowForwarderUDP(id: self.id, flow: self.flow, channel: self.channel)
                     .scheduleFlowRead(onBytesTransmitted)
             }
         }

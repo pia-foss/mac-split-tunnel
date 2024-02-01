@@ -47,6 +47,7 @@ final class FlowHandler: FlowHandlerProtocol {
         case .proxy:
             return startProxySession(flow: flow, sessionConfig: sessionConfig)
         case .block:
+            log(.info, "blocking a vpnOnly flow from \(flow.sourceAppSigningIdentifier)")
             flow.closeReadAndWrite()
             // We return true to indicate to the OS we want to handle the flow, so the app is blocked.
             return true

@@ -41,8 +41,10 @@ final class ProxySessionTCP: ProxySession {
                 .scheduleFlowRead(onBytesTransmitted)
         } else {
             createChannel(onBytesReceived).whenSuccess { nioChannel in
-                FlowForwarderTCP(id: self.id, flow: self.flow, 
-                    channel: ChannelWrapper(nioChannel))
+                self.channel = ChannelWrapper(nioChannel)
+
+                FlowForwarderTCP(id: self.id, flow: self.flow,
+                                 channel: self.channel)
                     .scheduleFlowRead(onBytesTransmitted)
             }
         }

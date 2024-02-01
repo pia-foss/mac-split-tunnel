@@ -21,8 +21,9 @@ final class ChannelCreatorTCP {
                 ProxySessionError.BadEndpoint("flow.remoteEndpoint is not an NWHostEndpoint"))
         }
 
-        log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) " + 
-            "Creating, binding and connecting a new TCP socket - endpoint: \(endpoint)")
+
+        log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) " +
+            "Creating, binding and connecting a new TCP socket - endpoint: \(endpoint) with bindIp: \(config.bindIp)")
 
         let bootstrap = ClientBootstrap(group: config.eventLoopGroup)
             .channelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)
@@ -42,6 +43,7 @@ final class ChannelCreatorTCP {
             let socketAddress = try SocketAddress(ipAddress: config.bindIp, port: 0)
             let channelFuture = bootstrap.bind(to: socketAddress)
                 .connect(host: endpoint.hostname, port: Int(endpoint.port)!)
+
 
             return channelFuture
         } catch {
