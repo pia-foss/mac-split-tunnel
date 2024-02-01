@@ -30,7 +30,7 @@ class AppPolicySpec: QuickSpec {
                     expect(appPolicy.policyFor("COM.APPLE.FOO")).to(equal(AppPolicy.Policy.ignore))
                 }
 
-                it("should include apps that are prefixed by an app from the bypass list") {
+                it("should include apps that share a bundle id root with one in the bypass list") {
                     expect(appPolicy.policyFor("com.apple.curl.helper")).to(equal(AppPolicy.Policy.proxy))
                 }
 
@@ -63,6 +63,10 @@ class AppPolicySpec: QuickSpec {
 
                 it("should block apps in the vpnOnly list") {
                     expect(appPolicy.policyFor("com.apple.safari")).to(equal(AppPolicy.Policy.block))
+                }
+
+                it("should block apps if they share a bundle id root with one in the vpnOnly list") {
+                    expect(appPolicy.policyFor("com.apple.safari.foo.bar")).to(equal(AppPolicy.Policy.block))
                 }
 
                 it("should ignore apps in the bypass list") {

@@ -5,7 +5,7 @@ import NetworkExtension
 @testable import SplitTunnelProxyExtensionFramework
 final class FlowHandlerTest: QuickSpec {
     override class func spec() {
-        let vpnState = VpnState(bypassApps: ["com.apple.curl"], vpnOnlyApps: [""],
+        let vpnState = VpnState(bypassApps: ["com.apple.curl"], vpnOnlyApps: [],
                                 networkInterface: "en0", serverAddress: "127.0.01",
                                 routeVpn: true, connected: true, groupName: "piavpn")
 
@@ -27,7 +27,7 @@ final class FlowHandlerTest: QuickSpec {
                 }
 
                 context("the app is in the bypass list and vpn is connected") {
-                    let connectedVpnState = VpnState(bypassApps: ["com.apple.curl"], vpnOnlyApps: [""],
+                    let connectedVpnState = VpnState(bypassApps: ["com.apple.curl"], vpnOnlyApps: [],
                                             networkInterface: "en0", serverAddress: "127.0.01",
                                             routeVpn: true, connected: true, groupName: "piavpn")
 
@@ -61,7 +61,7 @@ final class FlowHandlerTest: QuickSpec {
                 }
 
                 context("the app is in the bypass list and vpn is disconnected") {
-                    let disconnectedVpnState = VpnState(bypassApps: ["com.apple.curl"], vpnOnlyApps: [""],
+                    let disconnectedVpnState = VpnState(bypassApps: ["com.apple.curl"], vpnOnlyApps: [],
                                                         networkInterface: "en0", serverAddress: "127.0.01",
                                                         routeVpn: true, connected: false, groupName: "piavpn")
                     it("ignores the app") {
