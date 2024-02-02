@@ -40,7 +40,7 @@ final class FlowHandler: FlowHandlerProtocol {
             return false
         }
 
-        let sessionConfig = SessionConfig(interface: NetworkInterface(interfaceName: vpnState.networkInterface),
+        let sessionConfig = SessionConfig(interface: NetworkInterface(interfaceName: vpnState.bindInterface),
                                           eventLoopGroup: eventLoopGroup)
 
         switch FlowPolicy.policyFor(flow: flow, vpnState: vpnState) {

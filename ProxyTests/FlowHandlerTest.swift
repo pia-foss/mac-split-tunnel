@@ -6,8 +6,8 @@ import NetworkExtension
 final class FlowHandlerTest: QuickSpec {
     override class func spec() {
         let vpnState = VpnState(bypassApps: ["com.apple.curl"], vpnOnlyApps: [],
-                                networkInterface: "en0", serverAddress: "127.0.01",
-                                routeVpn: true, connected: true, groupName: "piavpn")
+                                bindInterface: "en0", serverAddress: "127.0.01",
+                                routeVpn: true, isConnected: true, whitelistGroupName: "piavpn")
 
         describe("FlowHandlerTest") {
             context("handleNewFlow") {
@@ -28,8 +28,8 @@ final class FlowHandlerTest: QuickSpec {
 
                 context("the app is in the bypass list and vpn is connected") {
                     let connectedVpnState = VpnState(bypassApps: ["com.apple.curl"], vpnOnlyApps: [],
-                                            networkInterface: "en0", serverAddress: "127.0.01",
-                                            routeVpn: true, connected: true, groupName: "piavpn")
+                                            bindInterface: "en0", serverAddress: "127.0.01",
+                                            routeVpn: true, isConnected: true, whitelistGroupName: "piavpn")
 
                     it("manages the app with a TCP flow") {
                         let mockFlow = MockFlowTCP()
@@ -62,8 +62,8 @@ final class FlowHandlerTest: QuickSpec {
 
                 context("the app is in the bypass list and vpn is disconnected") {
                     let disconnectedVpnState = VpnState(bypassApps: ["com.apple.curl"], vpnOnlyApps: [],
-                                                        networkInterface: "en0", serverAddress: "127.0.01",
-                                                        routeVpn: true, connected: false, groupName: "piavpn")
+                                                        bindInterface: "en0", serverAddress: "127.0.01",
+                                                        routeVpn: true, isConnected: false, whitelistGroupName: "piavpn")
                     it("ignores the app") {
                         let mockFlow = MockFlowTCP()
                         mockFlow.sourceAppSigningIdentifier = "com.apple.curl"
@@ -79,8 +79,8 @@ final class FlowHandlerTest: QuickSpec {
 
                 context("the app is in the vpnOnly list and vpn is connected") {
                     let disconnectedVpnState = VpnState(bypassApps: [], vpnOnlyApps: ["com.google.chrome"],
-                                                        networkInterface: "en0", serverAddress: "127.0.01",
-                                                        routeVpn: true, connected: true, groupName: "piavpn")
+                                                        bindInterface: "en0", serverAddress: "127.0.01",
+                                                        routeVpn: true, isConnected: true, whitelistGroupName: "piavpn")
                     it("ignores the app") {
                         let mockFlow = MockFlowTCP()
                         mockFlow.sourceAppSigningIdentifier = "com.google.chrome"
@@ -96,8 +96,8 @@ final class FlowHandlerTest: QuickSpec {
 
                 context("the app is in the vpnOnly list and vpn is disconnected") {
                     let disconnectedVpnState = VpnState(bypassApps: [], vpnOnlyApps: ["com.google.chrome"],
-                                                        networkInterface: "en0", serverAddress: "127.0.01",
-                                                        routeVpn: true, connected: false, groupName: "piavpn")
+                                                        bindInterface: "en0", serverAddress: "127.0.01",
+                                                        routeVpn: true, isConnected: false, whitelistGroupName: "piavpn")
                     it("blocks the app") {
                         let mockFlow = MockFlowTCP()
                         mockFlow.sourceAppSigningIdentifier = "com.google.chrome"

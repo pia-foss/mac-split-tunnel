@@ -50,7 +50,7 @@ final class SplitTunnelProxyProvider : NETransparentProxyProvider {
         self.engine = self.engine ?? ProxyEngine(vpnState: vpnState)
 
         // Whitelist this process in the firewall - error logging happens in function
-        guard FirewallWhitelister(groupName: vpnState.groupName).whitelist() else {
+        guard FirewallWhitelister(groupName: vpnState.whitelistGroupName).whitelist() else {
             return
         }
 

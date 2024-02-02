@@ -2,8 +2,6 @@ import Foundation
 
 // Responsible for determining the policy to apply to a given app -
 // We can either: proxy, block or ignore the app
-// This object also depends on the routeVpn, connected, bypassApps,
-// and vpnOnlyApps being up to date.
 struct AppPolicy {
     // A term that covers both AppIDs and App Paths
     typealias Descriptor = String
@@ -35,8 +33,8 @@ struct AppPolicy {
         // Normalize the descriptor
         let normalizedDescriptor = descriptor.lowercased()
         // If we're connected to the VPN then we just have to check
-        // if the app is managed by us.
-        if vpnState.connected {
+        // if the app is proxied.
+        if vpnState.isConnected {
             return isProxiedApp(app: normalizedDescriptor) ? .proxy : .ignore
 
         // If the VPN is not connected then we ignore all apps except vpnOnly apps

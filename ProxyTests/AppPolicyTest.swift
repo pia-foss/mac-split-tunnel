@@ -6,7 +6,7 @@ class AppPolicySpec: QuickSpec {
     override class func spec() {
         describe("AppPolicy") {
             context("when the VPN is connected with default route") {
-                let vpnState = VpnState(bypassApps: ["com.apple.curl"], vpnOnlyApps: ["com.apple.safari"], routeVpn: true, connected: true)
+                let vpnState = VpnState(bypassApps: ["com.apple.curl"], vpnOnlyApps: ["com.apple.safari"], routeVpn: true, isConnected: true)
                 let appPolicy = AppPolicy(vpnState: vpnState)
 
                 it("should proxy apps in the bypass list") {
@@ -40,7 +40,7 @@ class AppPolicySpec: QuickSpec {
             }
 
             context("when the VPN is connected without default route") {
-                let vpnState = VpnState(bypassApps: ["com.apple.curl"], vpnOnlyApps: ["com.apple.safari"], routeVpn: false, connected: true)
+                let vpnState = VpnState(bypassApps: ["com.apple.curl"], vpnOnlyApps: ["com.apple.safari"], routeVpn: false, isConnected: true)
                 let appPolicy = AppPolicy(vpnState: vpnState)
 
                 it("should proxy apps in the vpnOnly list") {
@@ -57,7 +57,7 @@ class AppPolicySpec: QuickSpec {
             }
 
             context("when the VPN is disconnected") {
-                let vpnState = VpnState(bypassApps: ["com.apple.curl"], vpnOnlyApps: ["com.apple.safari"], routeVpn: true, connected: false)
+                let vpnState = VpnState(bypassApps: ["com.apple.curl"], vpnOnlyApps: ["com.apple.safari"], routeVpn: true, isConnected: false)
                 let appPolicy = AppPolicy(vpnState: vpnState)
 
 
@@ -80,7 +80,7 @@ class AppPolicySpec: QuickSpec {
             }
 
             context("when VpnState has mixed case app descriptors") {
-                let vpnState = VpnState(bypassApps: ["com.FOO.bar"], vpnOnlyApps: ["com.BAR.foo"], routeVpn: true, connected: true)
+                let vpnState = VpnState(bypassApps: ["com.FOO.bar"], vpnOnlyApps: ["com.BAR.foo"], routeVpn: true, isConnected: true)
                 let appPolicy = AppPolicy(vpnState: vpnState)
 
                 it("should proxy irrespective of descriptor case") {
@@ -93,7 +93,7 @@ class AppPolicySpec: QuickSpec {
             }
 
             context("when checking policy by app path") {
-                let vpnState = VpnState(bypassApps: ["/usr/bin/curl"], vpnOnlyApps: ["/usr/bin/safari"], routeVpn: false, connected: true)
+                let vpnState = VpnState(bypassApps: ["/usr/bin/curl"], vpnOnlyApps: ["/usr/bin/safari"], routeVpn: false, isConnected: true)
                 let appPolicy = AppPolicy(vpnState: vpnState)
 
                 it("should ignore apps in the bypass list when VPN is connected") {
