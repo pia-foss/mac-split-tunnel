@@ -57,9 +57,7 @@ final class FlowPolicy {
         auditToken.withUnsafeBytes { bytes in
             let auditTokenValue = bytes.bindMemory(to: audit_token_t.self).baseAddress!.pointee
 
-            // The full C signature is: audit_token_to_au32(audit_token_t atoken, uid_t *auidp, uid_t *euidp, gid_t *egidp, uid_t *ruidp, gid_t *rgidp, pid_t *pidp, au_asid_t *asidp, au_tid_t *tidp)
-            // We pass in nil if we're not interested in that value - here we only want the PID, so that's all we request.
-            audit_token_to_au32(auditTokenValue, nil, nil, nil, nil, nil, &pid, nil, nil)
+            pid = audit_token_to_pid(auditTokenValue)
         }
 
         guard pid != 0 else {

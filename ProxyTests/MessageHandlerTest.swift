@@ -50,11 +50,11 @@ final class MessageHandlerTest: QuickSpec {
 
                     expect(vpnState.bypassApps).to(equal(["com.bypass"]))
                     expect(vpnState.vpnOnlyApps).to(equal(["com.vpnonly"]))
-                    expect(vpnState.networkInterface).to(equal("en0"))
+                    expect(vpnState.bindInterface).to(equal("en0"))
                     expect(vpnState.serverAddress).to(equal("1.1.1.1"))
                     expect(vpnState.routeVpn).to(equal(true))
-                    expect(vpnState.connected).to(equal(true))
-                    expect(vpnState.groupName).to(equal("acmevpn"))
+                    expect(vpnState.isConnected).to(equal(true))
+                    expect(vpnState.whitelistGroupName).to(equal("acmevpn"))
                 }
                 
                 // A response completion handler is an optional callback that is invoked
