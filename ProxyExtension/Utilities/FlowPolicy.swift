@@ -1,5 +1,4 @@
 import Foundation
-import NetworkExtension
 
 // Given a flow, find the policy for that flow - ignore, block, proxy
 // This class just wraps AppPolicy, which takes an app "descriptor", either
@@ -32,7 +31,7 @@ final class FlowPolicy {
 
         // Block Ipv6 vpnOnly flows regardless of policy
         // Do not block Ipv6 bypass flows (let them get proxied)
-        if mode == .vpnOnly && !isFlowIPv4(flow) {
+        if mode == .vpnOnly && flow.isIpv6() {
             return .block
         } else {
             return policy
@@ -88,21 +87,5 @@ final class FlowPolicy {
         }
 
         return path
-    }
-
-    private func isFlowIPv4(_ flow: Flow) -> Bool {
-        if let flowTCP = flow as? FlowTCP {
-            // Check if the address is an IPv6 address, and negate it. IPv6 addresses always contain a ":"
-            // We can't do the opposite (such as just checking for "." for an IPv4 address) due to IPv4-mapped IPv6 addresses
-            // which are IPv6 addresses but include IPv4 address notation.
-            if let endpoint = flowTCP.remoteEndpoint as? NWHostEndpoint {
-                // We have a valid NWHostEndpoint - let's see if it's IPv6
-                if endpoint.hostname.contains(":") {
-                    return false
-                }
-            }
-        }
-
-        return true
     }
 }

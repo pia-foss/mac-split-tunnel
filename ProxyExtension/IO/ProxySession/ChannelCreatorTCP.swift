@@ -41,14 +41,14 @@ final class ChannelCreatorTCP {
         do {
 
             // If we have an IPv4 socket - bind, otherwise (IPv6) skip the bind
-            if !endpoint.hostname.contains(":") {
+            if flow.isIpv4() {
                 let socketAddress = try SocketAddress(ipAddress: config.bindIp, port: 0)
                 _ = bootstrap.bind(to: socketAddress)
             }
 
             let channelFuture = bootstrap.connect(host: endpoint.hostname, port: Int(endpoint.port)!)
             return channelFuture
-            
+
         } catch {
             return makeFailedFuture(error)
         }
