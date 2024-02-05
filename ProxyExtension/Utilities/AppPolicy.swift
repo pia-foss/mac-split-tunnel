@@ -16,6 +16,9 @@ struct AppPolicy {
         case proxy, block, ignore
     }
 
+    // Is the app - bypass, vpnOnly or unspecified
+    // unspecified means there is no rule for the app, and it
+    // should follow the system default
     enum Mode {
         case bypass, vpnOnly, unspecified
     }
@@ -36,14 +39,14 @@ struct AppPolicy {
     }
 
     public func modeFor(_ descriptor: Descriptor) -> Mode {
-        if vpnState.routeVpn {
-            if isMatchedApp(descriptor, appList: bypassApps) {
-                return .bypass
-            }
-        } else {
-            if isMatchedApp(descriptor, appList: vpnOnlyApps) {
-                return .vpnOnly
-            }
+        // Normalize the descriptor
+        let normalizedDescriptor = descriptor.lowercased()
+
+        // Assumption here is that an app cannot be in both lists at once
+        if isMatchedApp(normalizedDescriptor, appList: bypassApps) {
+            return .bypass
+        } else if isMatchedApp(normalizedDescriptor, appList: vpnOnlyApps) {
+            return .vpnOnly
         }
 
         return .unspecified
@@ -72,12 +75,8 @@ struct AppPolicy {
     // In the case routeVpn == false, we check for it in vpnOnlyApps
     // this is because we need to proxy these apps to bind them to the VPN interface.
     private func isProxiedApp(_ descriptor: String) -> Bool {
-        switch modeFor(descriptor) {
-        case .bypass, .vpnOnly:
-            return true
-        default:
-            return false
-        }
+        let managedApps = vpnState.routeVpn ? bypassApps : vpnOnlyApps
+        return isMatchedApp(descriptor, appList: managedApps)
     }
 
     // Is the app found in the given list?

@@ -30,7 +30,7 @@ final class FlowPolicy {
         let policy = AppPolicy.policyFor(descriptor, vpnState: vpnState)
         let mode = AppPolicy.modeFor(descriptor, vpnState: vpnState)
 
-        // Block Ipv6 vpnOnly flows
+        // Block Ipv6 vpnOnly flows regardless of policy
         // Do not block Ipv6 bypass flows (let them get proxied)
         if mode == .vpnOnly && !isFlowIPv4(flow) {
             return .block
