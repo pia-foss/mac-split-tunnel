@@ -39,13 +39,16 @@ final class ChannelCreatorTCP {
     private func bindSourceAddressAndConnect(_ bootstrap: ClientBootstrap, endpoint: NWHostEndpoint) 
         -> EventLoopFuture<Channel> {
         do {
-            // This is the only call that can throw an exception
-            let socketAddress = try SocketAddress(ipAddress: config.bindIp, port: 0)
-            let channelFuture = bootstrap.bind(to: socketAddress)
-                .connect(host: endpoint.hostname, port: Int(endpoint.port)!)
 
+            // If we have an IPv4 socket - bind, otherwise (IPv6) skip the bind
+            if !endpoint.hostname.contains(":") {
+                let socketAddress = try SocketAddress(ipAddress: config.bindIp, port: 0)
+                _ = bootstrap.bind(to: socketAddress)
+            }
 
+            let channelFuture = bootstrap.connect(host: endpoint.hostname, port: Int(endpoint.port)!)
             return channelFuture
+            
         } catch {
             return makeFailedFuture(error)
         }

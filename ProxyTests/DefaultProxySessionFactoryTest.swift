@@ -20,8 +20,7 @@ class DefaultProxySessionFactoryTest: QuickSpec {
             interface: MockNetworkInterface(),
             // We don't need this in tests, and it's not used anyway
             // since we set an explicit channel (using the session.channel setter)
-            eventLoopGroup: nil
-        )
+            eventLoopGroup: nil)
 
         describe("DefaultProxySessionFactory") {
             it("creates a ProxySessionUDP when given a FlowUDP") {

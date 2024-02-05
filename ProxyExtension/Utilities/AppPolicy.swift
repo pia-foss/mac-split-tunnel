@@ -16,6 +16,10 @@ struct AppPolicy {
         case proxy, block, ignore
     }
 
+    enum Mode {
+        case bypass, vpnOnly, unspecified
+    }
+
     init(vpnState: VpnState) {
         self.vpnState = vpnState
         // Normalize app descriptors to lowercase
@@ -27,6 +31,24 @@ struct AppPolicy {
         AppPolicy(vpnState: vpnState).policyFor(descriptor)
     }
 
+    public static func modeFor(_ descriptor: Descriptor, vpnState: VpnState) -> Mode {
+        AppPolicy(vpnState: vpnState).modeFor(descriptor)
+    }
+
+    public func modeFor(_ descriptor: Descriptor) -> Mode {
+        if vpnState.routeVpn {
+            if isMatchedApp(descriptor, appList: bypassApps) {
+                return .bypass
+            }
+        } else {
+            if isMatchedApp(descriptor, appList: vpnOnlyApps) {
+                return .vpnOnly
+            }
+        }
+
+        return .unspecified
+    }
+
     // Determine the policy by Descriptor (either app ID or app path)
     // i.e com.apple.curl (for app id) or /usr/bin/curl (for app path)
     public func policyFor(_ descriptor: Descriptor) -> Policy {
@@ -35,12 +57,12 @@ struct AppPolicy {
         // If we're connected to the VPN then we just have to check
         // if the app is proxied.
         if vpnState.isConnected {
-            return isProxiedApp(app: normalizedDescriptor) ? .proxy : .ignore
+            return isProxiedApp(normalizedDescriptor) ? .proxy : .ignore
 
         // If the VPN is not connected then we ignore all apps except vpnOnly apps
         // which we block.
         } else {
-            return isMatchedApp(app: normalizedDescriptor, appList: vpnOnlyApps) ? .block : .ignore
+            return isMatchedApp(normalizedDescriptor, appList: vpnOnlyApps) ? .block : .ignore
         }
     }
 
@@ -49,21 +71,24 @@ struct AppPolicy {
     // this is because we need to proxy these apps to escape the default routing.
     // In the case routeVpn == false, we check for it in vpnOnlyApps
     // this is because we need to proxy these apps to bind them to the VPN interface.
-    private func isProxiedApp(app: String) -> Bool {
-        let managedApps = vpnState.routeVpn ? bypassApps : vpnOnlyApps
-
-        return isMatchedApp(app: app, appList: managedApps)
+    private func isProxiedApp(_ descriptor: String) -> Bool {
+        switch modeFor(descriptor) {
+        case .bypass, .vpnOnly:
+            return true
+        default:
+            return false
+        }
     }
 
     // Is the app found in the given list?
     // We treat app bundle ids differently - if a given bundle id
     // shares a root with one in our list, then we match it too.
     // i.e com.google.chrome.helper will 'match' an id in our list with just com.google.chrome
-    private func isMatchedApp(app: String, appList: [String]) -> Bool {
-        if isAppBundleId(app: app) {
-            return appList.contains { app.hasPrefix($0) }
+    private func isMatchedApp(_ descriptor: String, appList: [String]) -> Bool {
+        if isAppBundleId(descriptor) {
+            return appList.contains { descriptor.hasPrefix($0) }
         } else {
-            return appList.contains(app)
+            return appList.contains(descriptor)
         }
     }
 
@@ -71,8 +96,8 @@ struct AppPolicy {
     // We consider an app anything that is made entirely of numbers,
     // letters, and the period sign `.`
     // That discards any binary path, as they necessarily contain slashes `/`.
-    private func isAppBundleId(app: String) -> Bool {
+    private func isAppBundleId(_ descriptor: String) -> Bool {
         let bundleCharacters = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: ".-"))
-        return app.unicodeScalars.allSatisfy { bundleCharacters.contains($0) }
+        return descriptor.unicodeScalars.allSatisfy { bundleCharacters.contains($0) }
     }
 }

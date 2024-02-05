@@ -36,12 +36,11 @@ final class FlowHandler: FlowHandlerProtocol {
     }
 
     public func handleNewFlow(_ flow: Flow, vpnState: VpnState) -> Bool {
-        guard isFlowIPv4(flow) else {
-            return false
-        }
 
-        let sessionConfig = SessionConfig(interface: NetworkInterface(interfaceName: vpnState.bindInterface),
-                                          eventLoopGroup: eventLoopGroup)
+        let sessionConfig = SessionConfig(
+            interface: NetworkInterface(interfaceName: vpnState.bindInterface),
+            eventLoopGroup: eventLoopGroup
+        )
 
         switch FlowPolicy.policyFor(flow: flow, vpnState: vpnState) {
         case .proxy:
@@ -76,28 +75,6 @@ final class FlowHandler: FlowHandlerProtocol {
         } else if let udpFlow = flow as? FlowUDP {
             let udpSession = proxySessionFactory.createUDP(flow: udpFlow, config: sessionConfig, id: nextId)
             udpSession.start()
-        }
-    }
-
-    // Is the flow IPv4 ? (we only support IPv4 flows at present)
-    private func isFlowIPv4(_ flow: Flow) -> Bool {
-        if let flowTCP = flow as? FlowTCP {
-            // Check if the address is an IPv6 address, and negate it. IPv6 addresses always contain a ":"
-            // We can't do the opposite (such as just checking for "." for an IPv4 address) due to IPv4-mapped IPv6 addresses
-            // which are IPv6 addresses but include IPv4 address notation.
-            if let endpoint = flowTCP.remoteEndpoint as? NWHostEndpoint {
-                // We have a valid NWHostEndpoint - let's see if it's IPv6
-                if endpoint.hostname.contains(":") {
-                    return false
-                } else {
-                    return true
-                }
-            } else {
-                // We cannot know for sure, just assume it's IPv4
-                return true
-            }
-        } else {
-            return true
         }
     }
 }

@@ -1,4 +1,5 @@
 import Foundation
+import NetworkExtension
 
 // Given a flow, find the policy for that flow - ignore, block, proxy
 // This class just wraps AppPolicy, which takes an app "descriptor", either
@@ -16,29 +17,44 @@ final class FlowPolicy {
         FlowPolicy(vpnState: vpnState).policyFor(flow: flow)
     }
 
+    public static func modeFor(flow: Flow, vpnState: VpnState) -> AppPolicy.Mode {
+        FlowPolicy(vpnState: vpnState).modeFor(flow: flow)
+    }
+
     // Given a flow, return the app policy to apply (.proxy, .block. ignore)
     public func policyFor(flow: Flow) -> AppPolicy.Policy {
-        // First try to find a policy for the app using the appId
-        let appID = flow.sourceAppSigningIdentifier
-        let appIdPolicy = AppPolicy.policyFor(appID, vpnState: vpnState)
-
-        // If we fail to find a policy from the appId
-        // then try using the path (extracted from the audit token)
-        // Otherwise, if we find a policy from the appID, return that policy
-        guard appIdPolicy == .ignore else {
-            return appIdPolicy
-        }
-
-        // We failed to find a policy based on appId - let's try the app path
-        // In order to find the app path we first have to extract it from the flow's audit token
-        let auditToken = flow.sourceAppAuditToken
-
-        guard let path = pathFromAuditToken(token: auditToken) else {
+        guard let descriptor = descriptorFor(flow: flow) else {
             return .ignore
         }
 
-        // Return the policy for the app (by its path)
-        return AppPolicy.policyFor(path, vpnState: vpnState)
+        let policy = AppPolicy.policyFor(descriptor, vpnState: vpnState)
+        let mode = AppPolicy.modeFor(descriptor, vpnState: vpnState)
+
+        // Block Ipv6 vpnOnly flows
+        // Do not block Ipv6 bypass flows (let them get proxied)
+        if mode == .vpnOnly && !isFlowIPv4(flow) {
+            return .block
+        } else {
+            return policy
+        }
+    }
+
+    public func modeFor(flow: Flow) -> AppPolicy.Mode {
+        guard let descriptor = descriptorFor(flow: flow) else {
+            return .unspecified
+        }
+        return AppPolicy.modeFor(descriptor, vpnState: vpnState)
+    }
+
+    public func descriptorFor(flow: Flow) -> String? {
+        // First try to find an identifier for the app using the appId
+        let appID = flow.sourceAppSigningIdentifier
+        if !appID.isEmpty {
+            return appID
+        } else {
+            // Fall back to appPath if appID is not available
+            return pathFromAuditToken(token: flow.sourceAppAuditToken)
+        }
     }
 
     // Given an audit token of an app flow - extract out the executable path for
@@ -74,4 +90,19 @@ final class FlowPolicy {
         return path
     }
 
+    private func isFlowIPv4(_ flow: Flow) -> Bool {
+        if let flowTCP = flow as? FlowTCP {
+            // Check if the address is an IPv6 address, and negate it. IPv6 addresses always contain a ":"
+            // We can't do the opposite (such as just checking for "." for an IPv4 address) due to IPv4-mapped IPv6 addresses
+            // which are IPv6 addresses but include IPv4 address notation.
+            if let endpoint = flowTCP.remoteEndpoint as? NWHostEndpoint {
+                // We have a valid NWHostEndpoint - let's see if it's IPv6
+                if endpoint.hostname.contains(":") {
+                    return false
+                }
+            }
+        }
+
+        return true
+    }
 }

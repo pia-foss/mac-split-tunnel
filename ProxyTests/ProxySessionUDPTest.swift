@@ -20,9 +20,8 @@ class ProxySessionUDPTest: QuickSpec {
             interface: MockNetworkInterface(),
             // We don't need this in tests, and it's not used anyway
             // since we set an explicit channel (using the session.channel setter)
-            eventLoopGroup: nil
-        )
-        
+            eventLoopGroup: nil)
+
         describe("ProxySessionUDP") {
             context("when starting a new UDP flow") {
                 it("performs a read on the flow") {
