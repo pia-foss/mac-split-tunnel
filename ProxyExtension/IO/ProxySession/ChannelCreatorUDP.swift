@@ -1,4 +1,5 @@
 import NIO
+import NetworkExtension
 
 // Create a UDP channel and set up the inbound handler
 final class ChannelCreatorUDP {
@@ -15,8 +16,10 @@ final class ChannelCreatorUDP {
     public func create(_ onBytesReceived: @escaping (UInt64) -> Void) 
         -> EventLoopFuture<Channel> {
 
+        let localEndpoint = flow.localEndpoint as? NWHostEndpoint
+
        log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) " +
-           "Creating and binding a new UDP socket with bindIp: \(config.bindIp)")
+           "Creating and binding a new UDP socket with bindIp: \(config.bindIp) and localEndpoint: \(localEndpoint?.description ?? "N/A")")
 
         let bootstrap = DatagramBootstrap(group: config.eventLoopGroup)
             .channelInitializer { channel in

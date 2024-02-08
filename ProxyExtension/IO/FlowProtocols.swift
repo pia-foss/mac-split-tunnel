@@ -50,4 +50,5 @@ protocol FlowTCP: Flow {
 protocol FlowUDP: Flow {
     func readDatagrams(completionHandler: @escaping ([Data]?, [NWEndpoint]?, Error?) -> Void)
     func writeDatagrams(_ datagrams: [Data], sentBy remoteEndpoints: [NWEndpoint], completionHandler: @escaping (Error?) -> Void)
+    var localEndpoint: NWEndpoint? { get }
 }
