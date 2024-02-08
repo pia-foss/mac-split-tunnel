@@ -34,8 +34,13 @@ final class ChannelCreatorUDP {
     private func bindSourceAddress(_ bootstrap: DatagramBootstrap) 
         -> EventLoopFuture<Channel> {
         do {
+
+            // For IPv4 flows we want to bind to the "bind ip" but for IPv6 flows
+            // we want to bind to the IPv6 wildcard address "::" (just out of paranoia)
+            let bindIpAddress = flow.isIpv4() ? config.bindIp : "::"
+
             // This is the only call that can throw an exception
-            let socketAddress = try SocketAddress(ipAddress: config.bindIp, port: 0)
+            let socketAddress = try SocketAddress(ipAddress: bindIpAddress, port: 0)
             // Not calling connect() on a UDP socket.
             // Doing that will turn the socket into a "connected datagram socket".
             // That will prevent the application from exchanging data with multiple endpoints

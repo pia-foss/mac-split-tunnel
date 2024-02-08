@@ -31,6 +31,15 @@ extension Flow {
                     return true
                 }
             }
+        } else if let flowUDP = self as? FlowUDP {
+            // Use localEndpoint for UDP flows as UDP (as a "connectionless protocol")
+            // doesn't have a fixed remoteEndpoint
+            if let endpoint = flowUDP.localEndpoint as? NWHostEndpoint {
+                // We have a valid NWHostEndpoint - let's see if it's IPv6
+                if endpoint.hostname.contains(":") {
+                    return true
+                }
+            }
         }
 
         return false
