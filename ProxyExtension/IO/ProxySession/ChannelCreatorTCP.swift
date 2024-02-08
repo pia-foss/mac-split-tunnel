@@ -48,7 +48,7 @@ final class ChannelCreatorTCP {
             let channelFuture = bootstrap.connect(host: endpoint.hostname, port: Int(endpoint.port)!)
 
             log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) " +
-                "Creating, binding and connecting a new TCP socket - endpoint: \(endpoint) with bindIp: \(flow.isIpv4() ? config.bindIp : "none (ipv6)") ")
+                "Creating, binding and connecting a new TCP socket - endpoint: \(endpoint) with bindIp: \(bindIpAddress)")
 
             return channelFuture
 

@@ -16,11 +16,6 @@ final class ChannelCreatorUDP {
     public func create(_ onBytesReceived: @escaping (UInt64) -> Void) 
         -> EventLoopFuture<Channel> {
 
-        let localEndpoint = flow.localEndpoint as? NWHostEndpoint
-
-       log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) " +
-           "Creating and binding a new UDP socket with bindIp: \(config.bindIp) and localEndpoint: \(localEndpoint?.description ?? "N/A")")
-
         let bootstrap = DatagramBootstrap(group: config.eventLoopGroup)
             .channelInitializer { channel in
                 let inboundHandler = InboundHandlerUDP(flow: self.flow, id: self.id, 
@@ -41,10 +36,13 @@ final class ChannelCreatorUDP {
 
             // This is the only call that can throw an exception
             let socketAddress = try SocketAddress(ipAddress: bindIpAddress, port: 0)
-            // Not calling connect() on a UDP socket.
-            // Doing that will turn the socket into a "connected datagram socket".
-            // That will prevent the application from exchanging data with multiple endpoints
+
             let channelFuture = bootstrap.bind(to: socketAddress)
+
+            let localEndpoint = flow.localEndpoint as? NWHostEndpoint
+
+            log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) " +
+                "Creating and binding a new UDP socket with bindIp: \(bindIpAddress) and localEndpoint: \(localEndpoint?.description ?? "N/A")")
 
             return channelFuture
         } catch {
