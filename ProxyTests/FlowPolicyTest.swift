@@ -54,7 +54,7 @@ class FlowPolicySpec: QuickSpec {
                 }
             }
 
-            context("vpnOnly flows when disconnect") {
+            context("vpnOnly flows when disconnected") {
                 let vpnState = VpnState(bypassApps: ["com.apple.curl"], vpnOnlyApps: ["com.apple.safari"], routeVpn: false, isConnected: false)
 
                 it("blocks Ipv4 vpnOnly flows") {
