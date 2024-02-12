@@ -30,19 +30,26 @@ final class ChannelCreatorUDP {
         -> EventLoopFuture<Channel> {
         do {
 
+            var localEndpoint: String
+            // Used by IPv6
+            if let endpoint = flow.localEndpoint as? NWHostEndpoint {
+                localEndpoint = endpoint.hostname
+            } else {
+                log(.warning, "id: \(self.id) Could not convert flow.localEndpoint to NWHostEndpoint, defaulting to :: for ipv6 flows")
+                localEndpoint = "::"
+            }
+
             // For IPv4 flows we want to bind to the "bind ip" but for IPv6 flows
             // we want to bind to the IPv6 wildcard address "::" (just out of paranoia)
-            let bindIpAddress = flow.isIpv4() ? config.bindIp : "::"
+            let bindIpAddress = flow.isIpv4() ? config.bindIp : localEndpoint
 
             // This is the only call that can throw an exception
             let socketAddress = try SocketAddress(ipAddress: bindIpAddress, port: 0)
 
             let channelFuture = bootstrap.bind(to: socketAddress)
 
-            let localEndpoint = flow.localEndpoint as? NWHostEndpoint
-
             log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) " +
-                "Creating and binding a new UDP socket with bindIp: \(bindIpAddress) and localEndpoint: \(localEndpoint?.description ?? "N/A")")
+                "Creating and binding a new UDP socket with bindIp: \(bindIpAddress) and localEndpoint: \(flow.localEndpoint?.description ?? "N/A")")
 
             return channelFuture
         } catch {
