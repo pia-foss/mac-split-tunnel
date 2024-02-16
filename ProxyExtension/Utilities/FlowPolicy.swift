@@ -27,7 +27,7 @@ final class FlowPolicy {
             let policy = AppPolicy.policyFor(descriptor, vpnState: self.vpnState)
             let mode = AppPolicy.modeFor(descriptor, vpnState: self.vpnState)
 
-            // Special-case ALWAYS ignore vpnOnly ipv6 Flows!
+            // Special-case ALWAYS block vpnOnly ipv6 Flows!
             if mode == .vpnOnly, flow.isIpv6() {
                 return .block
             } else {

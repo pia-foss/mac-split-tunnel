@@ -40,10 +40,12 @@ final class ChannelCreatorUDP {
             }
 
             // For IPv4 flows we want to bind to the "bind ip" but for IPv6 flows
-            // we want to bind to the IPv6 wildcard address "::" (just out of paranoia)
+            // we want to bind to the IPv6 localEndpoint - UDP sockets (even clients) must
+            // be explicitly bound.
             let bindIpAddress = flow.isIpv4() ? config.bindIp : localEndpoint
 
             // This is the only call that can throw an exception
+            // We don't specify the port so the OS assigns one.
             let socketAddress = try SocketAddress(ipAddress: bindIpAddress, port: 0)
 
             let channelFuture = bootstrap.bind(to: socketAddress)

@@ -22,7 +22,6 @@ class AppPolicySpec: QuickSpec {
 
                     // Case is irrelevant
                     expect(appPolicy.policyFor("coM.appLe.SAfari")).to(equal(AppPolicy.Policy.ignore))
-
                     expect(appPolicy.modeFor("coM.appLe.SAfari")).to(equal(AppPolicy.Mode.vpnOnly))
                 }
 
