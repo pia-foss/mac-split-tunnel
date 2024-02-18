@@ -6,8 +6,7 @@ import NIO
 // * The bindIp - which we use to bind ipv4 sockets to change default routing behaviour
 // * The eventLoopGroup - required to setup the NIO Inbound Handlers
 struct SessionConfig {
-    var bindIp: String { interface.ip4()! }
-    let interface: NetworkInterfaceProtocol
+    let bindIp: String
     // We need to make this optional so that we can
     // leave it nil in tests - tests do not use an EventLoopGroup
     let eventLoopGroup: MultiThreadedEventLoopGroup!
@@ -36,13 +35,9 @@ final class FlowHandler: FlowHandlerProtocol {
     }
 
     public func handleNewFlow(_ flow: Flow, vpnState: VpnState) -> Bool {
-        let sessionConfig = SessionConfig(
-            interface: NetworkInterface(interfaceName: vpnState.bindInterface),
-            eventLoopGroup: eventLoopGroup)
-
         switch FlowPolicy.policyFor(flow: flow, vpnState: vpnState) {
         case .proxy:
-            return startProxySession(flow: flow, sessionConfig: sessionConfig)
+            return startProxySession(flow: flow, vpnState: vpnState)
         case .block:
             log(.info, "blocking a vpnOnly flow from \(flow.sourceAppSigningIdentifier)")
             flow.closeReadAndWrite()
@@ -53,13 +48,18 @@ final class FlowHandler: FlowHandlerProtocol {
         }
     }
 
-    private func startProxySession(flow: Flow, sessionConfig: SessionConfig) -> Bool {
-        guard sessionConfig.interface.ip4() != nil else {
-            log(.error, "Cannot find ipv4 ip for interface: \(sessionConfig.interface.interfaceName)" +
+    private func startProxySession(flow: Flow, vpnState: VpnState) -> Bool {
+        let interface = NetworkInterface(interfaceName: vpnState.bindInterface)
+
+        // Verify we have a valid bindIp - if not, trace it and ignore the flow
+        guard let bindIp = interface.ip4() else {
+            log(.error, "Cannot find ipv4 ip for interface: \(interface.interfaceName)" +
                 " - ignoring matched flow: \(flow.sourceAppSigningIdentifier)")
             // TODO: Should block the flow instead - especially for vpnOnly flows?
             return false
         }
+
+        let sessionConfig = SessionConfig(bindIp: bindIp, eventLoopGroup: eventLoopGroup)
 
         flow.openFlow { error in
             guard error == nil else {

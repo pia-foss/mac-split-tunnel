@@ -17,7 +17,7 @@ import NIO
 class DefaultProxySessionFactoryTest: QuickSpec {
     override class func spec() {
         let sessionConfig = SessionConfig(
-            interface: MockNetworkInterface(),
+            bindIp: "", // Not used
             // We don't need this in tests, and it's not used anyway
             // since we set an explicit channel (using the session.channel setter)
             eventLoopGroup: nil)
