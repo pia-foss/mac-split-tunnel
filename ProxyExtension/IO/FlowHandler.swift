@@ -36,7 +36,6 @@ final class FlowHandler: FlowHandlerProtocol {
     }
 
     public func handleNewFlow(_ flow: Flow, vpnState: VpnState) -> Bool {
-
         let sessionConfig = SessionConfig(
             interface: NetworkInterface(interfaceName: vpnState.bindInterface),
             eventLoopGroup: eventLoopGroup)
@@ -55,6 +54,13 @@ final class FlowHandler: FlowHandlerProtocol {
     }
 
     private func startProxySession(flow: Flow, sessionConfig: SessionConfig) -> Bool {
+        guard sessionConfig.interface.ip4() != nil else {
+            log(.error, "Cannot find ipv4 ip for interface: \(sessionConfig.interface.interfaceName)" +
+                " - ignoring matched flow: \(flow.sourceAppSigningIdentifier)")
+            // TODO: Should block the flow instead - especially for vpnOnly flows?
+            return false
+        }
+
         flow.openFlow { error in
             guard error == nil else {
                 log(.error, "\(flow.sourceAppSigningIdentifier) \"\(error!.localizedDescription)\" in \(String(describing: flow.self)) open()")

@@ -39,7 +39,7 @@ final class ChannelCreatorTCP {
             // Determine the appropriate IP address based on 
             // whether the flow is IPv4 or IPv6
             // For IPv4 flows we want to bind to the "bind ip" but for IPv6 flows
-            // we want to bind to the IPv6 wildcard address "::" (just out of paranoia)
+            // we want to bind to the IPv6 wildcard address "::" (just out of paranoia, probably do not need to do this).
             let bindIpAddress = flow.isIpv4() ? config.bindIp : "::"
 
             let socketAddress = try SocketAddress(ipAddress: bindIpAddress, port: 0)

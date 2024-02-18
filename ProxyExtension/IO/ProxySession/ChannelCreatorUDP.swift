@@ -40,8 +40,8 @@ final class ChannelCreatorUDP {
             }
 
             // For IPv4 flows we want to bind to the "bind ip" but for IPv6 flows
-            // we want to bind to the IPv6 localEndpoint - UDP sockets (even clients) must
-            // be explicitly bound.
+            // we want to bind to the IPv6 localEndpoint - we may not need this in practice,
+            // re-evalute it.
             let bindIpAddress = flow.isIpv4() ? config.bindIp : localEndpoint
 
             // This is the only call that can throw an exception

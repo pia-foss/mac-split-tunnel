@@ -21,6 +21,8 @@ final class MockNetworkInterface: NetworkInterfaceProtocol, Mock {
     }
 
     // Required by NetworkInterface
+    var interfaceName = "en0"
+
     func ip4() -> String? {
         record()
         return ip

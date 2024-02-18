@@ -3,6 +3,7 @@ import NetworkExtension
 
 protocol NetworkInterfaceProtocol {
     func ip4() -> String?
+    var interfaceName: String { get }
 }
 
 struct NetworkInterface: NetworkInterfaceProtocol {
