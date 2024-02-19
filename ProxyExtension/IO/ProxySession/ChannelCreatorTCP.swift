@@ -21,10 +21,6 @@ final class ChannelCreatorTCP {
                 ProxySessionError.BadEndpoint("flow.remoteEndpoint is not an NWHostEndpoint"))
         }
 
-
-        log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) " +
-            "Creating, binding and connecting a new TCP socket - endpoint: \(endpoint) with bindIp: \(config.bindIp)")
-
         let bootstrap = ClientBootstrap(group: config.eventLoopGroup)
             .channelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)
             .channelInitializer { channel in
@@ -39,13 +35,23 @@ final class ChannelCreatorTCP {
     private func bindSourceAddressAndConnect(_ bootstrap: ClientBootstrap, endpoint: NWHostEndpoint) 
         -> EventLoopFuture<Channel> {
         do {
-            // This is the only call that can throw an exception
-            let socketAddress = try SocketAddress(ipAddress: config.bindIp, port: 0)
-            let channelFuture = bootstrap.bind(to: socketAddress)
-                .connect(host: endpoint.hostname, port: Int(endpoint.port)!)
 
+            // Determine the appropriate IP address based on 
+            // whether the flow is IPv4 or IPv6
+            // For IPv4 flows we want to bind to the "bind ip" but for IPv6 flows
+            // we want to bind to the IPv6 wildcard address "::" (just out of paranoia, probably do not need to do this).
+            let bindIpAddress = flow.isIpv4() ? config.bindIp : "::"
+
+            let socketAddress = try SocketAddress(ipAddress: bindIpAddress, port: 0)
+            _ = bootstrap.bind(to: socketAddress)
+
+            let channelFuture = bootstrap.connect(host: endpoint.hostname, port: Int(endpoint.port)!)
+
+            log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) " +
+                "Creating, binding and connecting a new TCP socket - endpoint: \(endpoint) with bindIp: \(bindIpAddress)")
 
             return channelFuture
+
         } catch {
             return makeFailedFuture(error)
         }

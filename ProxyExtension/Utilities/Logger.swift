@@ -64,7 +64,7 @@ class Logger: LoggerProtocol {
 func log(_ type: LogLevel, _ text: String, file: String = #file, line: Int = #line) {
     let currentDate = Date()
     let formatter = DateFormatter()
-    formatter.dateFormat = "HH:mm:ss:SSSS"
+    formatter.dateFormat = "yyyy-MM-dd HH:mm:ss:SSSS"
     let currentTimeString = formatter.string(from: currentDate)
     let fileName = (file as NSString).lastPathComponent // Extracts just the filename
 

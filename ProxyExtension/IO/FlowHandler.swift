@@ -6,8 +6,7 @@ import NIO
 // * The bindIp - which we use to bind ipv4 sockets to change default routing behaviour
 // * The eventLoopGroup - required to setup the NIO Inbound Handlers
 struct SessionConfig {
-    var bindIp: String { interface.ip4()! }
-    let interface: NetworkInterfaceProtocol
+    let bindIp: String
     // We need to make this optional so that we can
     // leave it nil in tests - tests do not use an EventLoopGroup
     let eventLoopGroup: MultiThreadedEventLoopGroup!
@@ -36,16 +35,9 @@ final class FlowHandler: FlowHandlerProtocol {
     }
 
     public func handleNewFlow(_ flow: Flow, vpnState: VpnState) -> Bool {
-        guard isFlowIPv4(flow) else {
-            return false
-        }
-
-        let sessionConfig = SessionConfig(interface: NetworkInterface(interfaceName: vpnState.bindInterface),
-                                          eventLoopGroup: eventLoopGroup)
-
         switch FlowPolicy.policyFor(flow: flow, vpnState: vpnState) {
         case .proxy:
-            return startProxySession(flow: flow, sessionConfig: sessionConfig)
+            return startProxySession(flow: flow, vpnState: vpnState)
         case .block:
             log(.info, "blocking a vpnOnly flow from \(flow.sourceAppSigningIdentifier)")
             flow.closeReadAndWrite()
@@ -56,7 +48,19 @@ final class FlowHandler: FlowHandlerProtocol {
         }
     }
 
-    private func startProxySession(flow: Flow, sessionConfig: SessionConfig) -> Bool {
+    private func startProxySession(flow: Flow, vpnState: VpnState) -> Bool {
+        let interface = NetworkInterface(interfaceName: vpnState.bindInterface)
+
+        // Verify we have a valid bindIp - if not, trace it and ignore the flow
+        guard let bindIp = interface.ip4() else {
+            log(.error, "Cannot find ipv4 ip for interface: \(interface.interfaceName)" +
+                " - ignoring matched flow: \(flow.sourceAppSigningIdentifier)")
+            // TODO: Should block the flow instead - especially for vpnOnly flows?
+            return false
+        }
+
+        let sessionConfig = SessionConfig(bindIp: bindIp, eventLoopGroup: eventLoopGroup)
+
         flow.openFlow { error in
             guard error == nil else {
                 log(.error, "\(flow.sourceAppSigningIdentifier) \"\(error!.localizedDescription)\" in \(String(describing: flow.self)) open()")
@@ -76,28 +80,6 @@ final class FlowHandler: FlowHandlerProtocol {
         } else if let udpFlow = flow as? FlowUDP {
             let udpSession = proxySessionFactory.createUDP(flow: udpFlow, config: sessionConfig, id: nextId)
             udpSession.start()
-        }
-    }
-
-    // Is the flow IPv4 ? (we only support IPv4 flows at present)
-    private func isFlowIPv4(_ flow: Flow) -> Bool {
-        if let flowTCP = flow as? FlowTCP {
-            // Check if the address is an IPv6 address, and negate it. IPv6 addresses always contain a ":"
-            // We can't do the opposite (such as just checking for "." for an IPv4 address) due to IPv4-mapped IPv6 addresses
-            // which are IPv6 addresses but include IPv4 address notation.
-            if let endpoint = flowTCP.remoteEndpoint as? NWHostEndpoint {
-                // We have a valid NWHostEndpoint - let's see if it's IPv6
-                if endpoint.hostname.contains(":") {
-                    return false
-                } else {
-                    return true
-                }
-            } else {
-                // We cannot know for sure, just assume it's IPv4
-                return true
-            }
-        } else {
-            return true
         }
     }
 }

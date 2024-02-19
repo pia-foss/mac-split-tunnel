@@ -58,11 +58,26 @@ struct SplitTunnelNetworkConfig {
         // Exclude IPv4 LAN networks from the proxy
         // We don't need to exclude localhost as this is excluded by default
         let rfc1918NetworkRules = [
+            // LAN subnets
             subnetRule(subnet: "192.168.0.0", prefix: 16),
             subnetRule(subnet: "10.0.0.0", prefix: 8),
-            subnetRule(subnet: "172.16.0.0", prefix: 12)
+            subnetRule(subnet: "172.16.0.0", prefix: 12),
+            // local-host
+            subnetRule(subnet: "127.0.0.0", prefix: 8)
         ]
 
-        return rfc1918NetworkRules
+        // Exclude IPv6 LAN networks from the proxy
+        let ipv6LocalNetworkRules = [
+            // unique local
+            subnetRule(subnet: "fc00::", prefix: 7),
+            // link-local
+            subnetRule(subnet: "fe80::", prefix: 10),
+            // multi-cast
+            subnetRule(subnet: "ff00::", prefix: 8),
+            // local-host (unlike ipv4, this is a single address not a subnet)
+            subnetRule(subnet: "::1", prefix: 128)
+        ]
+
+        return rfc1918NetworkRules + ipv6LocalNetworkRules
     }
 }

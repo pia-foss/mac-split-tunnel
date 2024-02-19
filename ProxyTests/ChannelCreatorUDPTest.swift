@@ -13,7 +13,7 @@ final class ChannelCreatorUDPTest: QuickSpec {
                     let mockFlow = MockFlowUDP()
                     let config = SessionConfig(
                         // Use a localhost IP - a bind is guaranteed to succeed
-                        interface: MockNetworkInterface(ip: "127.0.0.1"),
+                        bindIp: "127.0.0.1",
                         eventLoopGroup: MultiThreadedEventLoopGroup(numberOfThreads: 1))
 
                     let channelCreator = ChannelCreatorUDP(id: 0, flow:  mockFlow, config: config)
@@ -39,7 +39,7 @@ final class ChannelCreatorUDPTest: QuickSpec {
                         // Use an invalid IP. Even though it's well-formed it is
                         // invalid because it won't match any
                         // Ip assigned to any of the local interfaces
-                        interface: MockNetworkInterface(ip: "8.8.8.8"),
+                        bindIp: "8.8.8.8",
                         eventLoopGroup: MultiThreadedEventLoopGroup(numberOfThreads: 1))
 
                     let channelCreator = ChannelCreatorUDP(id: 0, flow:  mockFlow, config: config)
@@ -65,7 +65,7 @@ final class ChannelCreatorUDPTest: QuickSpec {
                     let mockFlow = MockFlowUDP()
                     let config = SessionConfig(
                         // Use an invalid IP - garbage, not even an ip
-                        interface: MockNetworkInterface(ip: "asdfasd"),
+                        bindIp: "asdfasd",
                         eventLoopGroup: MultiThreadedEventLoopGroup(numberOfThreads: 1))
 
                     let channelCreator = ChannelCreatorUDP(id: 0, flow:  mockFlow, config: config)

@@ -1,4 +1,5 @@
 import NIO
+import NetworkExtension
 
 // Create a UDP channel and set up the inbound handler
 final class ChannelCreatorUDP {
@@ -15,9 +16,6 @@ final class ChannelCreatorUDP {
     public func create(_ onBytesReceived: @escaping (UInt64) -> Void) 
         -> EventLoopFuture<Channel> {
 
-       log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) " +
-           "Creating and binding a new UDP socket with bindIp: \(config.bindIp)")
-
         let bootstrap = DatagramBootstrap(group: config.eventLoopGroup)
             .channelInitializer { channel in
                 let inboundHandler = InboundHandlerUDP(flow: self.flow, id: self.id, 
@@ -31,12 +29,29 @@ final class ChannelCreatorUDP {
     private func bindSourceAddress(_ bootstrap: DatagramBootstrap) 
         -> EventLoopFuture<Channel> {
         do {
+
+            var localEndpoint: String
+            // Used by IPv6
+            if let endpoint = flow.localEndpoint as? NWHostEndpoint {
+                localEndpoint = endpoint.hostname
+            } else {
+                log(.warning, "id: \(self.id) Could not convert flow.localEndpoint to NWHostEndpoint, defaulting to :: for ipv6 flows")
+                localEndpoint = "::"
+            }
+
+            // For IPv4 flows we want to bind to the "bind ip" but for IPv6 flows
+            // we want to bind to the IPv6 localEndpoint - we may not need this in practice,
+            // re-evalute it.
+            let bindIpAddress = flow.isIpv4() ? config.bindIp : localEndpoint
+
             // This is the only call that can throw an exception
-            let socketAddress = try SocketAddress(ipAddress: config.bindIp, port: 0)
-            // Not calling connect() on a UDP socket.
-            // Doing that will turn the socket into a "connected datagram socket".
-            // That will prevent the application from exchanging data with multiple endpoints
+            // We don't specify the port so the OS assigns one.
+            let socketAddress = try SocketAddress(ipAddress: bindIpAddress, port: 0)
+
             let channelFuture = bootstrap.bind(to: socketAddress)
+
+            log(.debug, "id: \(self.id) \(flow.sourceAppSigningIdentifier) " +
+                "Creating and binding a new UDP socket with bindIp: \(bindIpAddress) and localEndpoint: \(flow.localEndpoint?.description ?? "N/A")")
 
             return channelFuture
         } catch {

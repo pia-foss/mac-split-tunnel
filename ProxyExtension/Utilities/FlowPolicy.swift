@@ -16,29 +16,54 @@ final class FlowPolicy {
         FlowPolicy(vpnState: vpnState).policyFor(flow: flow)
     }
 
+    public static func modeFor(flow: Flow, vpnState: VpnState) -> AppPolicy.Mode {
+        FlowPolicy(vpnState: vpnState).modeFor(flow: flow)
+    }
+
     // Given a flow, return the app policy to apply (.proxy, .block. ignore)
     public func policyFor(flow: Flow) -> AppPolicy.Policy {
-        // First try to find a policy for the app using the appId
-        let appID = flow.sourceAppSigningIdentifier
-        let appIdPolicy = AppPolicy.policyFor(appID, vpnState: vpnState)
+        // Closure to encapsulate the decision logic based on policy, mode, and IPv6 check
+        let determinePolicy: (String) -> AppPolicy.Policy = { descriptor in
+            let policy = AppPolicy.policyFor(descriptor, vpnState: self.vpnState)
+            let mode = AppPolicy.modeFor(descriptor, vpnState: self.vpnState)
 
-        // If we fail to find a policy from the appId
-        // then try using the path (extracted from the audit token)
-        // Otherwise, if we find a policy from the appID, return that policy
-        guard appIdPolicy == .ignore else {
-            return appIdPolicy
+            // Special-case ALWAYS block vpnOnly ipv6 Flows!
+            if mode == .vpnOnly, flow.isIpv6() {
+                return .block
+            } else {
+                return policy
+            }
         }
 
-        // We failed to find a policy based on appId - let's try the app path
-        // In order to find the app path we first have to extract it from the flow's audit token
-        let auditToken = flow.sourceAppAuditToken
-
-        guard let path = pathFromAuditToken(token: auditToken) else {
-            return .ignore
+        // Attempt to determine the policy using the flow's source app signing identifier
+        let policyUsingAppId = determinePolicy(flow.sourceAppSigningIdentifier)
+        if policyUsingAppId != .ignore {
+            return policyUsingAppId
         }
 
-        // Return the policy for the app (by its path)
-        return AppPolicy.policyFor(path, vpnState: vpnState)
+        // If the policy is .ignore, attempt to determine the policy using the path from the flow's source app audit token
+        if let path = pathFromAuditToken(token: flow.sourceAppAuditToken) {
+            return determinePolicy(path)
+        }
+
+        // If unable to determine a non-ignore policy, return .ignore
+        return .ignore
+    }
+
+    // Returns the mode - i.e vpnOnly, bypass or unspecified for a given flow
+    public func modeFor(flow: Flow) -> AppPolicy.Mode {
+        let modeForAppId = AppPolicy.modeFor(flow.sourceAppSigningIdentifier, vpnState: self.vpnState)
+
+        if modeForAppId != .unspecified {
+            return modeForAppId
+        }
+
+        // If we got .unspecified for the appId - try again using the app path
+        if let path = pathFromAuditToken(token: flow.sourceAppAuditToken) {
+            return AppPolicy.modeFor(path, vpnState: vpnState)
+        }
+
+        return .unspecified
     }
 
     // Given an audit token of an app flow - extract out the executable path for
@@ -73,5 +98,4 @@ final class FlowPolicy {
 
         return path
     }
-
 }

@@ -19,7 +19,7 @@ final class ChannelCreatorTCPTest: QuickSpec {
                         // Use an invalid IP. Even though it's well-formed it is
                         // invalid because it won't match any
                         // Ip assigned to any of the local interfaces
-                        interface: MockNetworkInterface(ip: "1.1.1.1"),
+                        bindIp: "1.1.1.1",
                         eventLoopGroup: MultiThreadedEventLoopGroup(numberOfThreads: 1))
 
                     let channelCreator = ChannelCreatorTCP(id: 0, flow:  mockFlow, config: config)
@@ -45,7 +45,7 @@ final class ChannelCreatorTCPTest: QuickSpec {
                     let mockFlow = MockFlowTCP()
                     let config = SessionConfig(
                         // Garbage ip - not well-formed.
-                        interface: MockNetworkInterface(ip: "asdfasd"),
+                        bindIp: "asdfasd",
                         eventLoopGroup: MultiThreadedEventLoopGroup(numberOfThreads: 1))
 
                     let channelCreator = ChannelCreatorTCP(id: 0, flow:  mockFlow, config: config)

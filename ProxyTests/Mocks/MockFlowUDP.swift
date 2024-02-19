@@ -45,4 +45,6 @@ final class MockFlowUDP: FlowUDP, Equatable, Mock {
         record(args: [datagrams, remoteEndpoints, completionHandler])
         completionHandler(flowError)
     }
+
+    var localEndpoint: NWEndpoint? = NWHostEndpoint(hostname: "0.0.0.0", port: "0")
 }

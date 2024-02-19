@@ -17,6 +17,37 @@ protocol Flow {
     var sourceAppAuditToken: Data? { get }
 }
 
+extension Flow {
+    // This is slightly odd in that we cast the base protocol to a derived protocol
+    // but the convenience outweighs the weirdness
+    func isIpv6() -> Bool {
+        if let flowTCP = self as? FlowTCP {
+            // Check if the address is an IPv6 address. IPv6 addresses always contain a ":"
+            // We can't do the opposite (such as just checking for "." for an IPv4 address) due to IPv4-mapped IPv6 addresses
+            // which are IPv6 addresses but include IPv4 address notation.
+            if let endpoint = flowTCP.remoteEndpoint as? NWHostEndpoint {
+                // We have a valid NWHostEndpoint - let's see if it's IPv6
+                if endpoint.hostname.contains(":") {
+                    return true
+                }
+            }
+        } else if let flowUDP = self as? FlowUDP {
+            // Use localEndpoint for UDP flows as UDP (as a "connectionless protocol")
+            // doesn't have a fixed remoteEndpoint
+            if let endpoint = flowUDP.localEndpoint as? NWHostEndpoint {
+                // We have a valid NWHostEndpoint - let's see if it's IPv6
+                if endpoint.hostname.contains(":") {
+                    return true
+                }
+            }
+        }
+
+        return false
+    }
+
+    func isIpv4() -> Bool { !isIpv6() }
+}
+
 // FlowTCP and FlowUDP protocols abstract the relevant parts of NEAppProxyTCPFlow
 // and NEAppProxyUDPFlow for increased flexibility and improved testability.
 protocol FlowTCP: Flow {
@@ -28,4 +59,5 @@ protocol FlowTCP: Flow {
 protocol FlowUDP: Flow {
     func readDatagrams(completionHandler: @escaping ([Data]?, [NWEndpoint]?, Error?) -> Void)
     func writeDatagrams(_ datagrams: [Data], sentBy remoteEndpoints: [NWEndpoint], completionHandler: @escaping (Error?) -> Void)
+    var localEndpoint: NWEndpoint? { get }
 }

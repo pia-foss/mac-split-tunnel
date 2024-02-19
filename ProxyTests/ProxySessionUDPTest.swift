@@ -17,12 +17,11 @@ import NIO
 class ProxySessionUDPTest: QuickSpec {
     override class func spec() {
         let sessionConfig = SessionConfig(
-            interface: MockNetworkInterface(),
+            bindIp: "", // Not used,
             // We don't need this in tests, and it's not used anyway
             // since we set an explicit channel (using the session.channel setter)
-            eventLoopGroup: nil
-        )
-        
+            eventLoopGroup: nil)
+
         describe("ProxySessionUDP") {
             context("when starting a new UDP flow") {
                 it("performs a read on the flow") {

@@ -24,7 +24,7 @@ struct VpnStateFactory {
             return nil
         }
         vpnState.bindInterface = bindInterface
-        log(.info, "Sending flows to interface \(vpnState.bindInterface)")
+        log(.info, "bindInterface: \(vpnState.bindInterface)")
 
         guard let serverAddress = options!["serverAddress"] as? String else {
             log(.error, "Error: Cannot find serverAddress in options")
@@ -45,13 +45,14 @@ struct VpnStateFactory {
             return nil
         }
         vpnState.isConnected = isConnected
-        log(.info, "connected: \(isConnected)")
+        log(.info, "isConnected: \(isConnected)")
 
         guard let whitelistGroupName = options!["whitelistGroupName"] as? String else {
             log(.error, "Error: Cannot find whitelistGroupName in options")
             return nil
         }
         vpnState.whitelistGroupName = whitelistGroupName
+        log(.info, "whitelistGroupName: \(whitelistGroupName)")
 
         return vpnState
     }

@@ -23,16 +23,11 @@ extension ProxySession {
     // Called by a ProxySession class to kill a session.
     static func terminateProxySession(id: IDGenerator.ID, channel: SessionChannel, flow: Flow) {
         log(.info, "id: \(id) Terminating the session")
-        log(.info, "id: \(id) Trying to shutdown the flow")
         // Kill the flow
         flow.closeReadAndWrite()
         if channel.isActive {
-            log(.info, "id: \(id) Trying to shutdown the channel")
             // Kill the NIO channel
             let closeFuture = channel.close()
-            closeFuture.whenSuccess {
-                log(.info, "id: \(id) Successfully shutdown channel")
-            }
             closeFuture.whenFailure { error in
                 // Not much we can do here other than trace it
                 log(.error, "id: \(id) Failed to close the channel: \(error)")
