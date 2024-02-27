@@ -9,7 +9,7 @@ struct VpnStateFactory {
         // empty strings are handled inside the Logger initializer which cause fallbacks
         // to defaults defined by that class
         let logLevel = options!["logLevel"] as? String ?? ""
-        let logFile = options?["logFile"] as? String ?? ""
+        let logFile = options!["logFile"] as? String ?? ""
         vpnState.logLevel = logLevel
         vpnState.logFile = logFile
 

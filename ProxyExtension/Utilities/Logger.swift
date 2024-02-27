@@ -57,6 +57,10 @@ class Logger: LoggerProtocol {
 
         info("\nLogger initialized. Writing to \(fileURL) with log level: \(logLevel)")
 
+        // Flush buffers for current Puppy instance before we replace it
+        // Use a timeout of 0.25 (quarter of a second) so as not to hang
+        _ = self.pimpl?.flush(0.25)
+
         // Atomic operation to replace the current pimpl logger with a new one, since
         // this is atomic we don't need to worry about a mutex.
         self.pimpl = newPimpl
