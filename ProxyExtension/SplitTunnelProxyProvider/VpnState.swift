@@ -4,6 +4,15 @@ struct VpnStateFactory {
     // and are the expected type
     static func create(options: [String : Any]?) -> VpnState? {
         var vpnState = VpnState()
+
+        // Set logging-related fields - default to empty strings if not defined
+        // empty strings are handled inside the Logger initializer which cause fallbacks
+        // to defaults defined by that class
+        let logLevel = options!["logLevel"] as? String ?? ""
+        let logFile = options?["logFile"] as? String ?? ""
+        vpnState.logLevel = logLevel
+        vpnState.logFile = logFile
+
         guard let bypassApps = options!["bypassApps"] as? [String] else {
             log(.error, "Error: Cannot find bypassApps in options")
             return nil
@@ -16,6 +25,7 @@ struct VpnStateFactory {
             log(.error, "Error: Cannot find vpnOnlyApps in options")
             return nil
         }
+        // Normalize by making all the app descriptors lower case
         vpnState.vpnOnlyApps = vpnOnlyApps.map { $0.lowercased() }
         log(.info, "Managing vpnOnly apps: \(vpnState.vpnOnlyApps)")
 
@@ -60,6 +70,8 @@ struct VpnStateFactory {
 
 // Represents the state received from the daemon
 struct VpnState: Equatable {
+    var logFile: String = ""
+    var logLevel: String = ""
     var bypassApps: [String] = []
     var vpnOnlyApps: [String] = []
     var bindInterface: String = ""
