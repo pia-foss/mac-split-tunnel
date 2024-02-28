@@ -16,12 +16,8 @@ class MockLogger: LoggerProtocol, Mock {
     var argumentsGiven: Dictionary<String, [Any]> = [:]
 
     // Required by Logger
-    public func initializeLogger(logLevel: String, logFile: String) -> Bool {
+    public func updateLogger(logLevel: String, logFile: String) {
         record(args: [logLevel, logFile])
-
-        // Delegate to the original implementation - this is because when mocking this particular class
-        // as part of testing another class, a valid result may be relied on
-        return Logger().initializeLogger(logLevel: logLevel, logFile: logFile)
     }
 
     public func logLevelFromString(_ levelString: String) -> LogLevel {

@@ -31,15 +31,13 @@ final class SplitTunnelProxyProvider : NETransparentProxyProvider {
     public var logger: LoggerProtocol!
 
     override func startProxy(options: [String : Any]?, completionHandler: @escaping (Error?) -> Void) {
-        let logLevel: String = options?["logLevel"] as? String ?? "error"
-        let logFile: String = options?["logFile"] as? String ?? "/tmp/STProxy.log"
+        let logLevel: String = options?["logLevel"] as? String ?? ""
+        let logFile: String = options?["logFile"] as? String ?? ""
 
         self.logger = self.logger ?? Logger.instance
 
         // Ensure the logger is initialized first
-        guard logger.initializeLogger(logLevel: logLevel, logFile: logFile) else {
-            return
-        }
+        logger.updateLogger(logLevel: logLevel, logFile: logFile)
 
         // Contains connection state, routing, interface, and bypass/vpnOnly app information
         guard let vpnState = VpnStateFactory.create(options: options) else {

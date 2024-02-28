@@ -2,7 +2,7 @@ import Puppy
 import Foundation
 
 protocol LoggerProtocol {
-    func initializeLogger(logLevel: String, logFile: String) -> Bool
+    func updateLogger(logLevel: String, logFile: String)
     func logLevelFromString(_ levelString: String) -> LogLevel
     func debug(_ message: String)
     func info(_ message: String)
@@ -13,37 +13,63 @@ protocol LoggerProtocol {
 class Logger: LoggerProtocol {
     static var instance: LoggerProtocol = Logger()
 
-    // Private implementation
-    var pimpl = Puppy()
+    static let fallbackLogLevel = "error"
 
-    func initializeLogger(logLevel: String, logFile: String) -> Bool {
+    // This will be used if logFile is empty - which implies
+    // logging is turned off. We still trace to a temp file however,
+    // but this file will not be uploaded or used by PIA
+    static let fallbackLogFile = "/tmp/STProxy.log"
+
+    // Private implementation
+    var pimpl: Puppy?
+
+    // Make the setters private but getters public
+    public private(set) var logFile: String = ""
+    public private(set) var logLevel: String = ""
+
+    func updateLogger(logLevel: String, logFile: String) {
+        self.logLevel = logLevel.isEmpty ? Logger.fallbackLogLevel : logLevel
+        self.logFile = logFile.isEmpty ? Logger.fallbackLogFile : logFile
+
+        // Create a new Puppy instance to replace the existing one (if one exists)
+        var newPimpl = Puppy()
+
         // Initialize the Console logger first
-        let console = ConsoleLogger(Bundle.main.bundleIdentifier! + ".console", logLevel: logLevelFromString(logLevel))
-        pimpl.add(console)
+        let console = ConsoleLogger(Bundle.main.bundleIdentifier! + ".console", logLevel: logLevelFromString(self.logLevel))
+
+        // Add the console logger
+        newPimpl.add(console)
 
         // Now configure the File logger
-        let fileURL = URL(fileURLWithPath: logFile).absoluteURL
+        let fileURL = URL(fileURLWithPath: self.logFile).absoluteURL
 
         do {
             let file = try FileLogger("com.privateinternetaccess.vpn.splittunnel.systemextension.logfile",
-                                      logLevel: logLevelFromString(logLevel),
+                                      logLevel: logLevelFromString(self.logLevel),
                                       fileURL: fileURL,
                                       filePermission: "777")
-            pimpl.add(file)
+            // Add the file logger
+            newPimpl.add(file)
         }
         catch {
             warning("Could not start File Logger, will log only to console.")
         }
 
-        info("######################################################\n######################################################\nLogger initialized. Writing to \(fileURL)")
+        info("\nLogger initialized. Writing to \(fileURL) with log level: \(logLevel)")
 
-        return true
+        // Flush buffers for current Puppy instance before we replace it
+        // Use a timeout of 0.25 (quarter of a second) so as not to hang
+        _ = self.pimpl?.flush(0.25)
+
+        // Atomic operation to replace the current pimpl logger with a new one, since
+        // this is atomic we don't need to worry about a mutex.
+        self.pimpl = newPimpl
     }
 
-    func debug(_ message: String) { pimpl.debug(message) }
-    func info(_ message: String) { pimpl.info(message) }
-    func warning(_ message: String) { pimpl.warning(message) }
-    func error(_ message: String) { pimpl.error(message) }
+    func debug(_ message: String) { pimpl?.debug(message) }
+    func info(_ message: String) { pimpl?.info(message) }
+    func warning(_ message: String) { pimpl?.warning(message) }
+    func error(_ message: String) { pimpl?.error(message) }
 
     func logLevelFromString(_ levelString: String) -> LogLevel {
         switch levelString.lowercased() {
