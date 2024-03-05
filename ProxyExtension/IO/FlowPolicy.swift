@@ -9,9 +9,11 @@ import Foundation
 // such as whether the flow is ipv6 or ipv4, etc.
 final class FlowPolicy {
     let vpnState: VpnState
+    let utils: ProcessUtilitiesProtocol
 
     init(vpnState: VpnState) {
         self.vpnState = vpnState
+        self.utils = ProcessUtilities()
     }
 
     public static func policyFor(flow: Flow, vpnState: VpnState) -> AppPolicy.Policy {
@@ -93,7 +95,7 @@ final class FlowPolicy {
         }
 
         // Get the executable path from the pid
-        guard let path = getProcessPath(pid: pid) else {
+        guard let path = utils.getProcessPath(pid: pid) else {
             log(.warning, "Found a process with pid \(pid) but could not convert to a path")
             return nil
         }

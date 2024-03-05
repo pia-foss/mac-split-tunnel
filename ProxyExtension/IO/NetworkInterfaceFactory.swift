@@ -8,7 +8,6 @@ protocol NetworkInterfaceFactory {
 
 // Concrete implementation - the one we actually use in production.
 final class DefaultNetworkInterfaceFactory: NetworkInterfaceFactory {
-
     public func create(interfaceName: String) -> NetworkInterfaceProtocol {
         NetworkInterface(interfaceName: interfaceName)
     }
