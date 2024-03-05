@@ -13,6 +13,14 @@ import Nimble
 class LoggerTest: QuickSpec {
     override class func spec() {
         describe("LoggerTest") {
+            context("updateLogger()") {
+                it("falls back to defaults if logLevel and logFile are empty") {
+                    Logger.instance.updateLogger(logLevel: "", logFile: "")
+                    expect(Logger.instance.logLevel).to(equal(Logger.fallbackLogLevel))
+                    expect(Logger.instance.logFile).to(equal(Logger.fallbackLogFile))
+                }
+            }
+
             context("log()") {
                 it("delegates log(.debug, ...) to Logger.instance") {
                     let mockLogger = MockLogger()

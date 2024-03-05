@@ -8,6 +8,8 @@ protocol LoggerProtocol {
     func info(_ message: String)
     func warning(_ message: String)
     func error(_ message: String)
+    var logFile: String { get }
+    var logLevel: String { get }
 }
 
 class Logger: LoggerProtocol {
