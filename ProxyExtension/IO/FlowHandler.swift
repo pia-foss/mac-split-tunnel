@@ -21,12 +21,14 @@ final class FlowHandler: FlowHandlerProtocol {
     let eventLoopGroup: MultiThreadedEventLoopGroup
     var idGenerator: IDGenerator
 
-    // explicitly set this for tests
+    // explicitly set these for tests
     var proxySessionFactory: ProxySessionFactory
+    var networkInterfaceFactory: NetworkInterfaceFactory
 
     init() {
         self.idGenerator = IDGenerator()
         self.proxySessionFactory = DefaultProxySessionFactory()
+        self.networkInterfaceFactory = DefaultNetworkInterfaceFactory()
         self.eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
     }
 
@@ -49,7 +51,7 @@ final class FlowHandler: FlowHandlerProtocol {
     }
 
     private func startProxySession(flow: Flow, vpnState: VpnState) -> Bool {
-        let interface = NetworkInterface(interfaceName: vpnState.bindInterface)
+        let interface = networkInterfaceFactory.create(interfaceName: vpnState.bindInterface)
 
         // Verify we have a valid bindIp - if not, trace it and ignore the flow
         guard let bindIp = interface.ip4() else {

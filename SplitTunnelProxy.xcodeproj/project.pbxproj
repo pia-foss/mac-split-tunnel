@@ -16,6 +16,10 @@
 		5235FB1D2B4FFCEB00F3B772 /* ProxySessionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB1B2B4FFCEB00F3B772 /* ProxySessionFactory.swift */; };
 		5235FB272B511DD700F3B772 /* NEAppProxyFlow+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB262B511DD700F3B772 /* NEAppProxyFlow+Extensions.swift */; };
 		5235FB292B512A5E00F3B772 /* FlowProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5235FB282B512A5E00F3B772 /* FlowProtocols.swift */; };
+		5249B3B42B96C4B90037BDFF /* NetworkInterfaceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5249B3B32B96C4B90037BDFF /* NetworkInterfaceFactory.swift */; };
+		5249B3B72B96CAE90037BDFF /* MockNetworkInterfaceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5249B3B52B96CA550037BDFF /* MockNetworkInterfaceFactory.swift */; };
+		5249B3B92B96F0C90037BDFF /* FirewallWhitelisterTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5249B3B82B96F0C90037BDFF /* FirewallWhitelisterTest.swift */; };
+		5249B3BB2B96F1530037BDFF /* MockProcessUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5249B3BA2B96F1530037BDFF /* MockProcessUtilities.swift */; };
 		52699E622B56BBEE004FBF20 /* ProxyEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52699E612B56BBEE004FBF20 /* ProxyEngine.swift */; };
 		526CFC0B2B3AD15B00F31493 /* NIO in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC0A2B3AD15B00F31493 /* NIO */; };
 		526CFC0D2B3AD15B00F31493 /* NIOConcurrencyHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 526CFC0C2B3AD15B00F31493 /* NIOConcurrencyHelpers */; };
@@ -189,6 +193,10 @@
 		5235FB4D2B51541F00F3B772 /* Mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mock.swift; sourceTree = "<group>"; };
 		5235FB4F2B5157DF00F3B772 /* MockFlowUDP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFlowUDP.swift; sourceTree = "<group>"; };
 		5235FB512B51582C00F3B772 /* MockProxySessionFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProxySessionFactory.swift; sourceTree = "<group>"; };
+		5249B3B32B96C4B90037BDFF /* NetworkInterfaceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkInterfaceFactory.swift; sourceTree = "<group>"; };
+		5249B3B52B96CA550037BDFF /* MockNetworkInterfaceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNetworkInterfaceFactory.swift; sourceTree = "<group>"; };
+		5249B3B82B96F0C90037BDFF /* FirewallWhitelisterTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirewallWhitelisterTest.swift; sourceTree = "<group>"; };
+		5249B3BA2B96F1530037BDFF /* MockProcessUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProcessUtilities.swift; sourceTree = "<group>"; };
 		52699E5F2B56AC22004FBF20 /* SplitTunnelProxyProviderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitTunnelProxyProviderTest.swift; sourceTree = "<group>"; };
 		52699E612B56BBEE004FBF20 /* ProxyEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyEngine.swift; sourceTree = "<group>"; };
 		526CFC352B3ADD0600F31493 /* libproc.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libproc.tbd; path = usr/lib/libproc.tbd; sourceTree = SDKROOT; };
@@ -354,6 +362,8 @@
 				52105C4C2B6652DE00E7D4E0 /* MockFlowHandler.swift */,
 				52105C4E2B6667B000E7D4E0 /* MockMessageHandler.swift */,
 				52105C582B66B50400E7D4E0 /* MockFlowTCP.swift */,
+				5249B3B52B96CA550037BDFF /* MockNetworkInterfaceFactory.swift */,
+				5249B3BA2B96F1530037BDFF /* MockProcessUtilities.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -486,10 +496,8 @@
 				976B8CD62B0B55F60097FE7F /* Logger.swift */,
 				D1E9AEFD2AE31D4F007603BF /* NetworkInterface.swift */,
 				D1D5B6B52B18F7DF0063363E /* ProcessUtilities.swift */,
-				527F56A72B3180D6003E7DF7 /* AppPolicy.swift */,
 				5274A5E82B4AD88100FD0A10 /* IDGenerator.swift */,
 				5235FB182B4FC43900F3B772 /* Formatters.swift */,
-				5278E5992B59582700210466 /* FlowPolicy.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -499,6 +507,7 @@
 			children = (
 				5278E5AE2B5AFB7600210466 /* ProxySession */,
 				52D4C8CD2B52FBEB0059F7DD /* InboundHandler.swift */,
+				527F56A72B3180D6003E7DF7 /* AppPolicy.swift */,
 				5235FB282B512A5E00F3B772 /* FlowProtocols.swift */,
 				5235FB262B511DD700F3B772 /* NEAppProxyFlow+Extensions.swift */,
 				5274A5E62B4AC5C600FD0A10 /* ProxySession.swift */,
@@ -509,6 +518,8 @@
 				52E84CFA2B54F77400B67912 /* ChannelWrapper.swift */,
 				52105C492B640D8100E7D4E0 /* MessageHandler.swift */,
 				52105C3D2B62A44B00E7D4E0 /* FlowHandler.swift */,
+				5278E5992B59582700210466 /* FlowPolicy.swift */,
+				5249B3B32B96C4B90037BDFF /* NetworkInterfaceFactory.swift */,
 			);
 			path = IO;
 			sourceTree = "<group>";
@@ -534,6 +545,7 @@
 				52105C5A2B66BB6F00E7D4E0 /* NetworkInterfaceTest.swift */,
 				52105C5C2B67125D00E7D4E0 /* ChannelWrapperTest.swift */,
 				52B1D9742B715948005D977A /* FlowPolicyTest.swift */,
+				5249B3B82B96F0C90037BDFF /* FirewallWhitelisterTest.swift */,
 			);
 			path = ProxyTests;
 			sourceTree = "<group>";
@@ -802,11 +814,14 @@
 			files = (
 				97199B302B6904330095C516 /* Mock.swift in Sources */,
 				97199B312B6904330095C516 /* MockFlowUDP.swift in Sources */,
+				5249B3BB2B96F1530037BDFF /* MockProcessUtilities.swift in Sources */,
 				97199B322B6904330095C516 /* MockProxySessionFactory.swift in Sources */,
+				5249B3B72B96CAE90037BDFF /* MockNetworkInterfaceFactory.swift in Sources */,
 				97199B332B6904330095C516 /* MockChannel.swift in Sources */,
 				97199B342B6904330095C516 /* MockProxyEngine.swift in Sources */,
 				97199B352B6904330095C516 /* MockLogger.swift in Sources */,
 				97199B362B6904330095C516 /* MockNetworkInterface.swift in Sources */,
+				5249B3B92B96F0C90037BDFF /* FirewallWhitelisterTest.swift in Sources */,
 				97199B372B6904330095C516 /* MockProxySession.swift in Sources */,
 				97199B382B6904330095C516 /* MockFlowHandler.swift in Sources */,
 				97199B392B6904330095C516 /* MockMessageHandler.swift in Sources */,
@@ -857,6 +872,7 @@
 				52105C442B63F3C600E7D4E0 /* SplitTunnelNetworkConfig.swift in Sources */,
 				52105C4A2B640D8100E7D4E0 /* MessageHandler.swift in Sources */,
 				5235FB1A2B4FC43900F3B772 /* Formatters.swift in Sources */,
+				5249B3B42B96C4B90037BDFF /* NetworkInterfaceFactory.swift in Sources */,
 				C40A5C4B229DD6A500627D50 /* main.swift in Sources */,
 				5274A5E52B4AAC4500FD0A10 /* ProxySessionUDP.swift in Sources */,
 				976B8CD72B0B55F60097FE7F /* Logger.swift in Sources */,

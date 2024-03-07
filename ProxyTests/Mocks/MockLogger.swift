@@ -15,6 +15,9 @@ class MockLogger: LoggerProtocol, Mock {
     var methodsCalled: Set<String> = []
     var argumentsGiven: Dictionary<String, [Any]> = [:]
 
+    var logLevel = "foo"
+    var logFile = "bar"
+
     // Required by Logger
     public func updateLogger(logLevel: String, logFile: String) {
         record(args: [logLevel, logFile])

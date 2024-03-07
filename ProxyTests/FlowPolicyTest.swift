@@ -16,7 +16,10 @@ class FlowPolicySpec: QuickSpec {
 
                     let policy = FlowPolicy.policyFor(flow: mockFlow, vpnState: vpnState)
 
+                    let mode = FlowPolicy.modeFor(flow: mockFlow, vpnState: vpnState)
+
                     expect(policy).to(equal(AppPolicy.Policy.ignore))
+                    expect(mode).to(equal(AppPolicy.Mode.bypass))
                 }
 
                 it("ignores Ipv4 bypass flows") {

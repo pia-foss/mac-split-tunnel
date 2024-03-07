@@ -38,6 +38,7 @@ struct AppPolicy {
         AppPolicy(vpnState: vpnState).modeFor(descriptor)
     }
 
+    // Returns the mode - i.e vpnOnly, bypass or unspecified for a given app
     public func modeFor(_ descriptor: Descriptor) -> Mode {
         // Normalize the descriptor
         let normalizedDescriptor = descriptor.lowercased()

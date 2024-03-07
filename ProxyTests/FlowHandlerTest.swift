@@ -16,8 +16,10 @@ final class FlowHandlerTest: QuickSpec {
                         let mockFlow = MockFlowTCP()
                         mockFlow.sourceAppSigningIdentifier = "com.apple.notfound"
                         let mockFactory = MockProxySessionFactory()
+                        let mockNetworkInterfaceFactory = MockNetworkInterfaceFactory()
                         let flowHandler = FlowHandler()
                         flowHandler.proxySessionFactory = mockFactory
+                        flowHandler.networkInterfaceFactory = mockNetworkInterfaceFactory
 
                         let result = flowHandler.handleNewFlow(mockFlow, vpnState: vpnState)
 
@@ -35,13 +37,16 @@ final class FlowHandlerTest: QuickSpec {
                         let mockFlow = MockFlowTCP()
                         mockFlow.sourceAppSigningIdentifier = "com.apple.curl"
                         let mockFactory = MockProxySessionFactory()
+                        let mockNetworkInterfaceFactory = MockNetworkInterfaceFactory()
                         let flowHandler = FlowHandler()
                         flowHandler.proxySessionFactory = mockFactory
+                        flowHandler.networkInterfaceFactory = mockNetworkInterfaceFactory
 
                         let result = flowHandler.handleNewFlow(mockFlow, vpnState: connectedVpnState)
 
                         expect(result).to(beTrue())
                         expect(mockFactory.didCallWithArgAt("createTCP", index: 0, value: mockFlow)).to(beTrue())
+                        expect(mockNetworkInterfaceFactory.didCallWithArgAt("create", index: 0, value: "en0")).to(beTrue())
                         expect(mockFlow.didCall("openFlow")).to(beTrue())
                     }
 
@@ -49,13 +54,16 @@ final class FlowHandlerTest: QuickSpec {
                         let mockFlow = MockFlowUDP()
                         mockFlow.sourceAppSigningIdentifier = "com.apple.curl"
                         let mockFactory = MockProxySessionFactory()
+                        let mockNetworkInterfaceFactory = MockNetworkInterfaceFactory()
                         let flowHandler = FlowHandler()
                         flowHandler.proxySessionFactory = mockFactory
+                        flowHandler.networkInterfaceFactory = mockNetworkInterfaceFactory
 
                         let result = flowHandler.handleNewFlow(mockFlow, vpnState: connectedVpnState)
 
                         expect(result).to(beTrue())
                         expect(mockFactory.didCallWithArgAt("createUDP", index: 0, value: mockFlow)).to(beTrue())
+                        expect(mockNetworkInterfaceFactory.didCallWithArgAt("create", index: 0, value: "en0")).to(beTrue())
                         expect(mockFlow.didCall("openFlow")).to(beTrue())
                     }
                 }
