@@ -46,10 +46,16 @@ class Logger: LoggerProtocol {
         let fileURL = URL(fileURLWithPath: self.logFile).absoluteURL
 
         do {
-            let file = try FileLogger("com.privateinternetaccess.vpn.splittunnel.systemextension.logfile",
+            // Rotate logs after 500KB
+            let rotationConfig = RotationConfig(suffixExtension: .numbering,
+                                                maxFileSize: 500 * 1024,     // 500KB is more than enough to diagnose any issues
+                                                maxArchivedFilesCount: 1)
+
+            let file = try FileRotationLogger("com.privateinternetaccess.vpn.splittunnel.systemextension.logfile",
                                       logLevel: logLevelFromString(self.logLevel),
                                       fileURL: fileURL,
-                                      filePermission: "777")
+                                      filePermission: "644",
+                                      rotationConfig: rotationConfig)
             // Add the file logger
             newPimpl.add(file)
         }
