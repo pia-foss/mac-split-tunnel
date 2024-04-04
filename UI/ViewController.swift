@@ -6,25 +6,27 @@ import os.log
 /**
 This is the viewController of the GUI controlling the
 ProxyApp, frontend for the system extension background process.
-Ideally this will be abandoned and these functions will be called by the PIA client.
-We will probably need some bindings for that.
+This is a viable way of managing the system extension,
+although it was used mainly during development,
+prior to the integration in the PIA desktop client.
+The newer and better supported method is via ProxyCLI
  */
 class ViewController: NSViewController {
-    
+
     var proxyApp = ProxyAppDefault()
-    
+
     enum Status {
         case stopped
         case indeterminate
         case running
     }
-    
+
     // MARK: Properties
     @IBOutlet var statusIndicator: NSImageView!
     @IBOutlet var statusSpinner: NSProgressIndicator!
     @IBOutlet var startButton: NSButton!
     @IBOutlet var stopButton: NSButton!
-    
+
     var status: Status = .stopped {
         didSet {
             // Update the UI to reflect the new status
@@ -42,7 +44,7 @@ class ViewController: NSViewController {
                 statusSpinner.stopAnimation(self)
                 statusSpinner.isHidden = true
             }
-            
+
             if !statusSpinner.isHidden {
                 statusSpinner.startAnimation(self)
             } else {
@@ -50,12 +52,12 @@ class ViewController: NSViewController {
             }
         }
     }
-    
+
     override func viewWillAppear() {
         super.viewWillAppear()
         status = .stopped
     }
-    
+
     // MARK: UI BUTTONS
     @IBAction func activate(_ sender: Any) {
         proxyApp.setBypassApps(apps: ["com.privateinternetaccess.splittunnel.testapp", "net.limechat.LimeChat-AppStore", "org.mozilla.firefox", "/usr/bin/curl", "/usr/bin/nc"])
@@ -65,20 +67,20 @@ class ViewController: NSViewController {
             fatalError("Failed to activate the extension")
         }
     }
-    
+
     @IBAction func deactivate(_ sender: Any) {
         guard proxyApp.deactivateExtension() else {
             fatalError("Failed to deactivate the extension")
         }
         status = .stopped
     }
-    
+
     @IBAction func loadManager(_ sender: Any) {
         guard proxyApp.loadOrInstallProxyManager() else {
             fatalError("Failed to load or install the proxy manager")
         }
     }
-    
+
     @IBAction func startTunnel(_ sender: Any) {
         if status != .running {
             guard proxyApp.startProxy() else {
@@ -87,7 +89,7 @@ class ViewController: NSViewController {
             status = .running
         }
     }
-    
+
     @IBAction func stopTunnel(_ sender: Any) {
         if status != .stopped {
             guard proxyApp.stopProxy() else {
