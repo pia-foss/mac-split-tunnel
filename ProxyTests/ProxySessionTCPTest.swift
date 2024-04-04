@@ -1,11 +1,3 @@
-//
-//  ProxySessionTCPTest.swift
-//  SplitTunnelProxyTests
-//
-//  Created by John Mair on 14/01/2024.
-//  Copyright © 2024 PIA. All rights reserved.
-//
-
 import Quick
 import Nimble
 import NetworkExtension
@@ -53,7 +45,7 @@ class ProxySessionTCPTest: QuickSpec {
                     proxySession.start()
 
                     let expectedBytes = ByteBuffer(bytes: data)
-                    expect(mockChannel.didCallWithArgAt("writeAndFlush", index: 0, 
+                    expect(mockChannel.didCallWithArgAt("writeAndFlush", index: 0,
                                                         value: expectedBytes)).to(equal(true))
                 }
             }
