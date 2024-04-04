@@ -7,6 +7,7 @@ class LoggerTest: QuickSpec {
         describe("LoggerTest") {
             context("updateLogger()") {
                 it("falls back to defaults if logLevel and logFile are empty") {
+                    Logger.instance = Logger()
                     Logger.instance.updateLogger(logLevel: "", logFile: "")
                     expect(Logger.instance.logLevel).to(equal(Logger.fallbackLogLevel))
                     expect(Logger.instance.logFile).to(equal(Logger.fallbackLogFile))
