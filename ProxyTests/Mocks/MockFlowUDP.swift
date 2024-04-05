@@ -1,4 +1,3 @@
-//
 import Foundation
 import NetworkExtension
 
@@ -26,7 +25,7 @@ final class MockFlowUDP: FlowUDP, Equatable, Mock {
 
     // Required by Flow
     func closeReadAndWrite() { record() }
-    func openFlow(completionHandler: @escaping (Error?) -> Void) { 
+    func openFlow(completionHandler: @escaping (Error?) -> Void) {
         record(args: [completionHandler])
         completionHandler(nil)
     }

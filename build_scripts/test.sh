@@ -9,6 +9,8 @@ then
 fi
 
 test_output_file=$(mktemp)
+# We want the piped command to reflect any failure in any of the 3 commands
+set -o pipefail
 xcodebuild -project ${PROJECT}.xcodeproj \
            -scheme ${TEST_TARGET} test 2>&1 | tee "$test_output_file" | grep 'Test '
 

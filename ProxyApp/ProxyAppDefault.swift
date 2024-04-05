@@ -6,8 +6,14 @@ import os.log
 /**
 The ProxyAppDefault class implements the ProxyApp protocol.
 The process using this class will run in the user space, acting as the "frontend"
-for the root network extension process
+for the root network extension process.
+
+This class is used by the GUI managing the system extension.
+The GUI was used mainly during the development phase.
+PIA desktop client manages the extension through ProxyCLI
+and since the integration has been completed this client have not been developed further
  */
+
 class ProxyAppDefault : ProxyApp {
     var proxyManager: NETransparentProxyManager?
     var extensionRequestDelegate = ExtensionRequestDelegate()
@@ -31,13 +37,13 @@ class ProxyAppDefault : ProxyApp {
 
     func activateExtension() -> Bool {
         os_log("activating extension!")
-        
+
         guard let extensionIdentifier = getExtensionBundleID().bundleIdentifier else {
             os_log("cannot find the extension bundle ID!")
             return false
         }
         os_log("found the extension: %s", extensionIdentifier)
-        
+
         let activationRequest = OSSystemExtensionRequest.activationRequest(forExtensionWithIdentifier: extensionIdentifier, queue: .main)
         activationRequest.delegate = extensionRequestDelegate
         OSSystemExtensionManager.shared.submitRequest(activationRequest)
@@ -47,13 +53,13 @@ class ProxyAppDefault : ProxyApp {
 
     func deactivateExtension() -> Bool {
         os_log("deactivating extension!")
-        
+
         guard let extensionIdentifier = getExtensionBundleID().bundleIdentifier else {
             os_log("cannot find the extension to deactivate!")
             return false
         }
         os_log("found the extension: %s", extensionIdentifier)
-        
+
         let deactivationRequest = OSSystemExtensionRequest.deactivationRequest(forExtensionWithIdentifier: extensionIdentifier, queue: .main)
         deactivationRequest.delegate = extensionRequestDelegate
         OSSystemExtensionManager.shared.submitRequest(deactivationRequest)
@@ -72,7 +78,7 @@ class ProxyAppDefault : ProxyApp {
 
     private func tryLoadProxyManager(completion: @escaping () -> Void) {
         os_log("trying to load an existing proxy manager!")
-        
+
         NETransparentProxyManager.loadAllFromPreferences() { loadedManagers, error in
             if error != nil {
                 os_log("error while loading manager!")
@@ -90,10 +96,10 @@ class ProxyAppDefault : ProxyApp {
 
     private func createManager() {
         os_log("creating manager!")
-        
+
         self.proxyManager = NETransparentProxyManager()
         self.proxyManager!.localizedDescription = ProxyAppDefault.proxyManagerName
-        
+
         let tunnelProtocol = NETunnelProviderProtocol()
         // This must match the app extension bundle identifier
         tunnelProtocol.providerBundleIdentifier = getExtensionBundleID().bundleIdentifier
@@ -104,15 +110,15 @@ class ProxyAppDefault : ProxyApp {
         // Setting it to localhost for now, until a 'proper' solution is found
         tunnelProtocol.serverAddress = ProxyAppDefault.serverAddress
         self.proxyManager!.protocolConfiguration = tunnelProtocol
-        
+
         self.proxyManager!.isEnabled = true
-        
+
         os_log("manager created!")
     }
 
     func startProxy() -> Bool {
         os_log("starting proxy extension!")
-        
+
         if self.proxyManager == nil {
             os_log("no manager is found!")
             return false
@@ -126,7 +132,7 @@ class ProxyAppDefault : ProxyApp {
                     os_log("error while loading preferences!")
                     return
                 }
-                
+
                 // The NETunnelProviderSession API is used to control network tunnel
                 // services provided by NETunnelProvider implementations.
                 if let session = self.proxyManager!.connection as? NETunnelProviderSession {
@@ -155,25 +161,25 @@ class ProxyAppDefault : ProxyApp {
                 }
             }
         }
-        
+
         return true
     }
 
     func stopProxy() -> Bool {
         os_log("stopping proxy extension!")
-        
+
         if self.proxyManager == nil {
             os_log("no manager is found!")
             return false
         }
-        
+
         if let session = self.proxyManager!.connection as? NETunnelProviderSession {
             session.stopTunnel()
         } else {
             os_log("error getting the proxy manager connection")
             return false
         }
-        
+
         return true
     }
 }

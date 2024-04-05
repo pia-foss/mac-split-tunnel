@@ -4,12 +4,12 @@
 <img width="643" alt="image" src="https://github.com/xvpn/pia_mac_split_tunnel/assets/109503634/1ad39ce3-aefa-4496-b791-1d3814a52ea4">
 
 
-- A SplitTunnel using the Apple Network Extension Transparent Proxy APIs
-- Check out PIA macOS Split Tunnelling document on Confluence: https://polymoon.atlassian.net/l/cp/0vALekXM
+- A SplitTunnel solution using the Apple Network Extension Transparent Proxy APIs
+- Check out PIA macOS Split Tunnelling integration document: https://github.com/pia-foss/desktop/blob/master/docs/MacOS%20Split%20Tunnel.md
 
 ## Building
 
-- Open pia_mac_split_tunnel/SplitTunnelProxy.xcodeproj using XCode.
+- Open mac_split_tunnel/SplitTunnelProxy.xcodeproj using XCode.
 - Check both targets Signing & Capabilities settings, making sure that:
 	1. for both targets team is "Private Internet Access, Inc." (check Apple account certificates)
 	2. target SplitTunnelProxy bundle identifier is "com.privateinternetaccess.vpn.splittunnel"

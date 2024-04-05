@@ -1,11 +1,3 @@
-//
-//  MockChannel.swift
-//  SplitTunnelProxyTests
-//
-//  Created by John Mair on 14/01/2024.
-//  Copyright © 2024 PIA. All rights reserved.
-//
-
 import Foundation
 import NIO
 
@@ -22,7 +14,7 @@ final class MockChannel: SessionChannel, Mock {
     var isActive: Bool
     let eventLoop: EventLoop = EmbeddedEventLoop()
 
-    // A configurable option - determines whether the writeAndFlush() call succeeds. 
+    // A configurable option - determines whether the writeAndFlush() call succeeds.
     // This allows us to change mock behaviour in tests to verify success/failure code paths.
     let successfulWrite: Bool
 
@@ -44,7 +36,7 @@ final class MockChannel: SessionChannel, Mock {
             return eventLoop.makeFailedFuture(NSError(domain: "com.pia.vpn.error", code: 0, userInfo: nil))
         }
     }
-    
+
     func close() -> NIOCore.EventLoopFuture<Void> {
         record()
         return eventLoop.makeSucceededVoidFuture()

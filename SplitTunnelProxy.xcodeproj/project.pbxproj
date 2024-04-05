@@ -67,7 +67,6 @@
 		97199B3D2B6904330095C516 /* ProxySessionTCPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E84CF22B5406B200B67912 /* ProxySessionTCPTest.swift */; };
 		97199B3E2B6904330095C516 /* ProxySessionUDPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A5F9DF2B5524560095095D /* ProxySessionUDPTest.swift */; };
 		97199B402B6904330095C516 /* ProxyEngineTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5942B5954BA00210466 /* ProxyEngineTest.swift */; };
-		97199B412B6904330095C516 /* LoggerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E59E2B598FBB00210466 /* LoggerTest.swift */; };
 		97199B422B6904330095C516 /* InboundHandlerTCPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5A82B5A7E3D00210466 /* InboundHandlerTCPTest.swift */; };
 		97199B432B6904330095C516 /* InboundHandlerUDPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5AA2B5A963600210466 /* InboundHandlerUDPTest.swift */; };
 		97199B442B6904330095C516 /* DefaultProxySessionFactoryTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5278E5AC2B5A9EBA00210466 /* DefaultProxySessionFactoryTest.swift */; };
@@ -116,6 +115,7 @@
 		D19C05F22B50A67500E804DE /* VpnState.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19C05F12B50A67500E804DE /* VpnState.swift */; };
 		D1D447042ABCE52400A69316 /* ExtensionRequestDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D447032ABCE52400A69316 /* ExtensionRequestDelegate.swift */; };
 		D1D5B6B62B18F7DF0063363E /* ProcessUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6B52B18F7DF0063363E /* ProcessUtilities.swift */; };
+		D1E2637B2BBF4B06007EC69E /* LoggerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E2637A2BBF4B06007EC69E /* LoggerTest.swift */; };
 		D1E9AEFE2AE31D4F007603BF /* NetworkInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E9AEFD2AE31D4F007603BF /* NetworkInterface.swift */; };
 /* End PBXBuildFile section */
 
@@ -197,7 +197,6 @@
 		5249B3B52B96CA550037BDFF /* MockNetworkInterfaceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNetworkInterfaceFactory.swift; sourceTree = "<group>"; };
 		5249B3B82B96F0C90037BDFF /* FirewallWhitelisterTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirewallWhitelisterTest.swift; sourceTree = "<group>"; };
 		5249B3BA2B96F1530037BDFF /* MockProcessUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProcessUtilities.swift; sourceTree = "<group>"; };
-		52699E5F2B56AC22004FBF20 /* SplitTunnelProxyProviderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitTunnelProxyProviderTest.swift; sourceTree = "<group>"; };
 		52699E612B56BBEE004FBF20 /* ProxyEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyEngine.swift; sourceTree = "<group>"; };
 		526CFC352B3ADD0600F31493 /* libproc.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libproc.tbd; path = usr/lib/libproc.tbd; sourceTree = SDKROOT; };
 		5274A5E22B4AA5C600FD0A10 /* ProxySessionTCP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxySessionTCP.swift; sourceTree = "<group>"; };
@@ -208,7 +207,6 @@
 		5274B64E2B2AE8DF0007250C /* libbsm.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbsm.tbd; path = usr/lib/libbsm.tbd; sourceTree = SDKROOT; };
 		5278E5942B5954BA00210466 /* ProxyEngineTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyEngineTest.swift; sourceTree = "<group>"; };
 		5278E5992B59582700210466 /* FlowPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowPolicy.swift; sourceTree = "<group>"; };
-		5278E59E2B598FBB00210466 /* LoggerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerTest.swift; sourceTree = "<group>"; };
 		5278E5A82B5A7E3D00210466 /* InboundHandlerTCPTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboundHandlerTCPTest.swift; sourceTree = "<group>"; };
 		5278E5AA2B5A963600210466 /* InboundHandlerUDPTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboundHandlerUDPTest.swift; sourceTree = "<group>"; };
 		5278E5AC2B5A9EBA00210466 /* DefaultProxySessionFactoryTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultProxySessionFactoryTest.swift; sourceTree = "<group>"; };
@@ -264,6 +262,7 @@
 		D19C05F52B50A8CB00E804DE /* VpnStateTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VpnStateTest.swift; sourceTree = "<group>"; };
 		D1D447032ABCE52400A69316 /* ExtensionRequestDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionRequestDelegate.swift; sourceTree = "<group>"; };
 		D1D5B6B52B18F7DF0063363E /* ProcessUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessUtilities.swift; sourceTree = "<group>"; };
+		D1E2637A2BBF4B06007EC69E /* LoggerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerTest.swift; sourceTree = "<group>"; };
 		D1E9AEFD2AE31D4F007603BF /* NetworkInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkInterface.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -528,13 +527,12 @@
 			isa = PBXGroup;
 			children = (
 				52E84CF42B54397700B67912 /* Mocks */,
+				D1E2637A2BBF4B06007EC69E /* LoggerTest.swift */,
 				527F56A92B31A098003E7DF7 /* AppPolicyTest.swift */,
 				D19C05F52B50A8CB00E804DE /* VpnStateTest.swift */,
 				52E84CF22B5406B200B67912 /* ProxySessionTCPTest.swift */,
 				52A5F9DF2B5524560095095D /* ProxySessionUDPTest.swift */,
-				52699E5F2B56AC22004FBF20 /* SplitTunnelProxyProviderTest.swift */,
 				5278E5942B5954BA00210466 /* ProxyEngineTest.swift */,
-				5278E59E2B598FBB00210466 /* LoggerTest.swift */,
 				5278E5A82B5A7E3D00210466 /* InboundHandlerTCPTest.swift */,
 				5278E5AA2B5A963600210466 /* InboundHandlerUDPTest.swift */,
 				5278E5AC2B5A9EBA00210466 /* DefaultProxySessionFactoryTest.swift */,
@@ -831,7 +829,6 @@
 				97199B3D2B6904330095C516 /* ProxySessionTCPTest.swift in Sources */,
 				97199B3E2B6904330095C516 /* ProxySessionUDPTest.swift in Sources */,
 				97199B402B6904330095C516 /* ProxyEngineTest.swift in Sources */,
-				97199B412B6904330095C516 /* LoggerTest.swift in Sources */,
 				97199B422B6904330095C516 /* InboundHandlerTCPTest.swift in Sources */,
 				97199B432B6904330095C516 /* InboundHandlerUDPTest.swift in Sources */,
 				97199B442B6904330095C516 /* DefaultProxySessionFactoryTest.swift in Sources */,
@@ -841,6 +838,7 @@
 				97199B482B6904330095C516 /* ChannelCreatorTCPTest.swift in Sources */,
 				52B1D9752B715948005D977A /* FlowPolicyTest.swift in Sources */,
 				97199B492B6904330095C516 /* NetworkInterfaceTest.swift in Sources */,
+				D1E2637B2BBF4B06007EC69E /* LoggerTest.swift in Sources */,
 				97199B4A2B6904330095C516 /* ChannelWrapperTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

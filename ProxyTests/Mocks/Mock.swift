@@ -1,11 +1,3 @@
-//
-//  Mock.swift
-//  SplitTunnelProxyTests
-//
-//  Created by John Mair on 12/01/2024.
-//  Copyright © 2024 PIA. All rights reserved.
-//
-
 import Foundation
 
 // Mock protocol - implemented by all our mocks.
@@ -24,7 +16,7 @@ extension Mock {
     func didCall(_ name: String) -> Bool {
         methodsCalled.contains(name)
     }
-    
+
     // Determines if an argument at a specified index matches a given value.
     //
     // This function compares an argument, identified by its position in the

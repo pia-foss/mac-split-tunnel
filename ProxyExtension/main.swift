@@ -4,9 +4,6 @@ import Foundation
 import NetworkExtension
 import os.log
 
-// TODO: Ensure that logs from ProxyExtension are accessible and
-//       printed to stdout during debug
-
 // https://betterprogramming.pub/what-is-autorelease-pool-in-swift-c652784f329e
 autoreleasepool {
     // Start the Network Extension machinery in a system extension (.system bundle).

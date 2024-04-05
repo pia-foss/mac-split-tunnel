@@ -1,4 +1,3 @@
-
 import Foundation
 
 import Quick
@@ -27,4 +26,3 @@ final class NetworkInterfaceTest: QuickSpec {
         }
     }
 }
-

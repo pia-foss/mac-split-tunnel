@@ -1,11 +1,3 @@
-//
-//  LoggerTest.swift
-//  SplitTunnelProxyTests
-//
-//  Created by John Mair on 19/01/2024.
-//  Copyright © 2024 PIA. All rights reserved.
-//
-
 import Quick
 import Nimble
 
@@ -15,6 +7,7 @@ class LoggerTest: QuickSpec {
         describe("LoggerTest") {
             context("updateLogger()") {
                 it("falls back to defaults if logLevel and logFile are empty") {
+                    Logger.instance = Logger()
                     Logger.instance.updateLogger(logLevel: "", logFile: "")
                     expect(Logger.instance.logLevel).to(equal(Logger.fallbackLogLevel))
                     expect(Logger.instance.logFile).to(equal(Logger.fallbackLogFile))
