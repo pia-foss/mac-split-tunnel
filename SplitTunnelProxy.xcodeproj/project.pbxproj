@@ -1441,32 +1441,32 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-nio.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.62.0;
+				kind = exactVersion;
+				version = 2.62.0;
 			};
 		};
 		527F56AF2B31B358003E7DF7 /* XCRemoteSwiftPackageReference "Quick" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Quick/Quick.git";
 			requirement = {
-				branch = main;
-				kind = branch;
+				kind = exactVersion;
+				version = 7.4.1;
 			};
 		};
 		527F56B02B31B37E003E7DF7 /* XCRemoteSwiftPackageReference "Nimble" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Quick/Nimble.git";
 			requirement = {
-				branch = main;
-				kind = branch;
+				kind = exactVersion;
+				version = 13.2.1;
 			};
 		};
 		9785C0E02B59228F002A982D /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-argument-parser.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.3.0;
+				kind = exactVersion;
+				version = 1.3.0;
 			};
 		};
 		97E7B8AB2AFB565700138C6A /* XCRemoteSwiftPackageReference "Puppy" */ = {
