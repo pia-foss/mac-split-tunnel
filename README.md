@@ -14,7 +14,7 @@
 	1. for both targets team is "Private Internet Access, Inc." (check Apple account certificates)
 	2. target SplitTunnelProxy bundle identifier is "com.privateinternetaccess.vpn.splittunnel"
 	3. target SplitTunnelProxyExtension bundle identifier is "com.privateinternetaccess.vpn.splittunnel"
-- (optional) To change the debugging scheme settings click on the top center bar on SplitTunnelProxy, "Edit Scheme..."
+- Ignore ProxyExtension/build.xcconfig file changes by running: `git update-index --assume-unchanged ProxyExtension/build.xcconfig`
 
 ### CI Building
 To achieve runnable builds in GHA, we use the `build.sh` script.
