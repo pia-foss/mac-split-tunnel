@@ -104,10 +104,8 @@
 		C40A5C46229DD6A500627D50 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4B45DDD2273A3450050C59B /* NetworkExtension.framework */; };
 		C40A5C4B229DD6A500627D50 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40A5C4A229DD6A500627D50 /* main.swift */; };
 		C40A5C56229DD92E00627D50 /* IPCConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B1415A227A396500B26560 /* IPCConnection.swift */; };
-		C4B45DB922739FFF0050C59B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B45DB822739FFF0050C59B /* AppDelegate.swift */; };
-		C4B45DBB22739FFF0050C59B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B45DBA22739FFF0050C59B /* ViewController.swift */; };
-		C4B45DBD2273A0020050C59B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C4B45DBC2273A0020050C59B /* Assets.xcassets */; };
-		C4B45DC02273A0020050C59B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C4B45DBE2273A0020050C59B /* Main.storyboard */; };
+		C4B45DB922739FFF0050C59B /* ProxyAppGUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B45DB822739FFF0050C59B /* ProxyAppGUI.swift */; };
+		C4B45DBB22739FFF0050C59B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B45DBA22739FFF0050C59B /* ContentView.swift */; };
 		C4B45DDE2273A3450050C59B /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4B45DDD2273A3450050C59B /* NetworkExtension.framework */; };
 		D12A9EA02AE98D880009BA23 /* ProxyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D12A9E9F2AE98D870009BA23 /* ProxyApp.swift */; };
 		D17F5D1A293E1DC300FB8DAF /* ProxyAppDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D19293E1DC300FB8DAF /* ProxyAppDefault.swift */; };
@@ -247,10 +245,8 @@
 		C40A5C4C229DD6A500627D50 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C40A5C4D229DD6A500627D50 /* ProxyExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ProxyExtension.entitlements; sourceTree = "<group>"; };
 		C4B1415A227A396500B26560 /* IPCConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPCConnection.swift; sourceTree = "<group>"; };
-		C4B45DB822739FFF0050C59B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		C4B45DBA22739FFF0050C59B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		C4B45DBC2273A0020050C59B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		C4B45DBF2273A0020050C59B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		C4B45DB822739FFF0050C59B /* ProxyAppGUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyAppGUI.swift; sourceTree = "<group>"; };
+		C4B45DBA22739FFF0050C59B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		C4B45DC12273A0020050C59B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C4B45DC22273A0020050C59B /* ProxyApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ProxyApp.entitlements; sourceTree = "<group>"; };
 		C4B45DDD2273A3450050C59B /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
@@ -443,7 +439,7 @@
 			isa = PBXGroup;
 			children = (
 				D16DF7772AEAC7340082B58C /* UI */,
-				C4B45DB822739FFF0050C59B /* AppDelegate.swift */,
+				C4B45DB822739FFF0050C59B /* ProxyAppGUI.swift */,
 				C4B45DC12273A0020050C59B /* Info.plist */,
 				C4B45DC22273A0020050C59B /* ProxyApp.entitlements */,
 				D17F5D19293E1DC300FB8DAF /* ProxyAppDefault.swift */,
@@ -467,9 +463,7 @@
 		D16DF7772AEAC7340082B58C /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				C4B45DBA22739FFF0050C59B /* ViewController.swift */,
-				C4B45DBC2273A0020050C59B /* Assets.xcassets */,
-				C4B45DBE2273A0020050C59B /* Main.storyboard */,
+				C4B45DBA22739FFF0050C59B /* ContentView.swift */,
 			);
 			name = UI;
 			path = ../UI;
@@ -776,8 +770,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C4B45DBD2273A0020050C59B /* Assets.xcassets in Resources */,
-				C4B45DC02273A0020050C59B /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -903,8 +895,8 @@
 				5235FB192B4FC43900F3B772 /* Formatters.swift in Sources */,
 				5274A5E92B4AD88100FD0A10 /* IDGenerator.swift in Sources */,
 				D1D447042ABCE52400A69316 /* ExtensionRequestDelegate.swift in Sources */,
-				C4B45DBB22739FFF0050C59B /* ViewController.swift in Sources */,
-				C4B45DB922739FFF0050C59B /* AppDelegate.swift in Sources */,
+				C4B45DBB22739FFF0050C59B /* ContentView.swift in Sources */,
+				C4B45DB922739FFF0050C59B /* ProxyAppGUI.swift in Sources */,
 				97F84ECA2B5EA87E008DF390 /* ExtensionBundle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -928,17 +920,6 @@
 			targetProxy = 971DE3592B591722008CE5C2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		C4B45DBE2273A0020050C59B /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				C4B45DBF2273A0020050C59B /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		97199B2B2B6904240095C516 /* Debug */ = {

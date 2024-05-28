@@ -1,15 +1,15 @@
 # PIA Mac Split Tunnel
+
 ## Overview
 
 <img width="643" alt="image" src="https://github.com/xvpn/pia_mac_split_tunnel/assets/109503634/1ad39ce3-aefa-4496-b791-1d3814a52ea4">
-
 
 - A SplitTunnel solution using the Apple Network Extension Transparent Proxy APIs
 - Check out PIA macOS Split Tunnelling integration document: https://github.com/pia-foss/desktop/blob/master/docs/MacOS%20Split%20Tunnel.md
 
 ## Building
 
-- Open mac_split_tunnel/SplitTunnelProxy.xcodeproj using XCode.
+- Open mac_split_tunnel/SplitTunnelProxy.xcodeproj using Xcode.
 - Check both targets Signing & Capabilities settings, making sure that:
 	1. for both targets team is "Private Internet Access, Inc." (check Apple account certificates)
 	2. target SplitTunnelProxy bundle identifier is "com.privateinternetaccess.vpn.splittunnel"
@@ -17,6 +17,7 @@
 - Ignore ProxyExtension/build.xcconfig file changes by running: `git update-index --assume-unchanged ProxyExtension/build.xcconfig`
 
 ### CI Building
+
 To achieve runnable builds in GHA, we use the `build.sh` script.
 `build.sh` is written to be generic for any app+extension use-case, so we pass our specific values from environment variables.
 To work on that script, modify `sample.env` and set the variables there for your specific development environment.
@@ -37,20 +38,18 @@ The aim is for `build.sh` to be as self-explanatory as possible, so prefer to do
   The debugger will attach to the extension as soon as it starts.
   Repeat this step for every debug session.
 - You can also attach the debugger to the extension using its PID.
-  Open the activity monitor, a process named
-  "com.privateinternetaccess.vpn.splittunnel" owned by root
-  should be present.
-  Check its PID, in XCode select "Debug" and "Attach to process
-  by PID or name...".
+  Get the PID of the process named "com.privateinternetaccess.vpn.splittunnel".
+  In Xcode select "Debug" and "Attach to process by PID or name...".
 
 ## Starting the proxy
 
 Click the buttons in this sequence:
-"Activate", "loadOrInstallManager", "startProxy".
+"Activate", "LoadOrInstallManager", "StartProxy".
 
 ## Commands explanation
 
-### activate
+### Activate
+
 This will activate the network extension.
 A system popup will appear saying "System Extension Blocked".
 Open system settings/Security & Privacy and allow.
@@ -64,10 +63,17 @@ the SplitTunnelProxyExtension should be present with the status:
 This needs to run if the extension code has been modified
 since the last execution
 
-### loadOrInstallManager
+### Deactivate
+This will uninstall the proxy configuration from the system.
+This is required only if the proxy configuration name has changed,
+otherwise calling activate again will be enough.
+
+### LoadOrInstallManager
+
 This will either load any existing configuration or create a new one.
 
-### startProxy
+### StartProxy
+
 When the configuration has been created for the first time and the
 proxy is started, a system popup will be triggered with the message
 "“SplitTunnelProxy” Would Like to Add Proxy Configurations".
@@ -79,11 +85,7 @@ using Activity monitor.
 Clicking this before activating the extension or loading the manager
 will result in an error.
 
-### stopProxy
+### StopProxy
+
 Stops the proxy extension, the root extension process will be killed.
 Bear in mind that this takes ~5 seconds.
-
-### deactivate
-This will uninstall the proxy configuration from the system.
-This is required only if the proxy configuration name has changed,
-otherwise calling activate again will be enough.
