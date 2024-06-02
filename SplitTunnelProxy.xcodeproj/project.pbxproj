@@ -111,6 +111,7 @@
 		D17F5D1A293E1DC300FB8DAF /* ProxyAppDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D19293E1DC300FB8DAF /* ProxyAppDefault.swift */; };
 		D17F5D1C293E701D00FB8DAF /* SplitTunnelProxyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17F5D1B293E701D00FB8DAF /* SplitTunnelProxyProvider.swift */; };
 		D19C05F22B50A67500E804DE /* VpnState.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19C05F12B50A67500E804DE /* VpnState.swift */; };
+		D19DF2782C0D274A00CE0FB3 /* SplitTunnelDNSProxyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19DF2772C0D274A00CE0FB3 /* SplitTunnelDNSProxyProvider.swift */; };
 		D1D447042ABCE52400A69316 /* ExtensionRequestDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D447032ABCE52400A69316 /* ExtensionRequestDelegate.swift */; };
 		D1D5B6B62B18F7DF0063363E /* ProcessUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6B52B18F7DF0063363E /* ProcessUtilities.swift */; };
 		D1E2637B2BBF4B06007EC69E /* LoggerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E2637A2BBF4B06007EC69E /* LoggerTest.swift */; };
@@ -256,6 +257,7 @@
 		D17F5D1B293E701D00FB8DAF /* SplitTunnelProxyProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitTunnelProxyProvider.swift; sourceTree = "<group>"; };
 		D19C05F12B50A67500E804DE /* VpnState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VpnState.swift; sourceTree = "<group>"; };
 		D19C05F52B50A8CB00E804DE /* VpnStateTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VpnStateTest.swift; sourceTree = "<group>"; };
+		D19DF2772C0D274A00CE0FB3 /* SplitTunnelDNSProxyProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitTunnelDNSProxyProvider.swift; sourceTree = "<group>"; };
 		D1D447032ABCE52400A69316 /* ExtensionRequestDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionRequestDelegate.swift; sourceTree = "<group>"; };
 		D1D5B6B52B18F7DF0063363E /* ProcessUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessUtilities.swift; sourceTree = "<group>"; };
 		D1E2637A2BBF4B06007EC69E /* LoggerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerTest.swift; sourceTree = "<group>"; };
@@ -403,6 +405,7 @@
 		C40A5C47229DD6A500627D50 /* ProxyExtension */ = {
 			isa = PBXGroup;
 			children = (
+				D19DF2762C0D26FD00CE0FB3 /* SplitTunnelDNSProxyProvider */,
 				D1D5B6B42B18F7200063363E /* IO */,
 				D1D5B6B22B18F67B0063363E /* Utilities */,
 				D1D5B6B12B18F64E0063363E /* SplitTunnelProxyProvider */,
@@ -467,6 +470,14 @@
 			);
 			name = UI;
 			path = ../UI;
+			sourceTree = "<group>";
+		};
+		D19DF2762C0D26FD00CE0FB3 /* SplitTunnelDNSProxyProvider */ = {
+			isa = PBXGroup;
+			children = (
+				D19DF2772C0D274A00CE0FB3 /* SplitTunnelDNSProxyProvider.swift */,
+			);
+			path = SplitTunnelDNSProxyProvider;
 			sourceTree = "<group>";
 		};
 		D1D5B6B12B18F64E0063363E /* SplitTunnelProxyProvider */ = {
@@ -880,6 +891,7 @@
 				5278E5B32B5B006000210466 /* FlowForwarderUDP.swift in Sources */,
 				5278E5BC2B5B89AA00210466 /* FlowForwarderTCP.swift in Sources */,
 				5274A5E32B4AA5C600FD0A10 /* ProxySessionTCP.swift in Sources */,
+				D19DF2782C0D274A00CE0FB3 /* SplitTunnelDNSProxyProvider.swift in Sources */,
 				52E84CF82B54F22200B67912 /* SessionChannelProtocol.swift in Sources */,
 				5235FB292B512A5E00F3B772 /* FlowProtocols.swift in Sources */,
 				52105C3E2B62A44B00E7D4E0 /* FlowHandler.swift in Sources */,

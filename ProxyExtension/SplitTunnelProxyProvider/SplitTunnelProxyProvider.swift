@@ -1,10 +1,6 @@
 import Foundation
 import NetworkExtension
 
-// TODO: Handle DNS requests of managed flows
-//  Be aware that returning false in NEDNSProxyProvider handleNewFlow(),
-//  the flow is discarded and the connection is closed
-
 // NETransparentProxyProvider is a subclass of NEAppProxyProvider.
 // The behaviour is different compared to its super class:
 // - Returning NO from handleNewFlow: and handleNewUDPFlow:initialRemoteEndpoint:
@@ -72,7 +68,7 @@ final class SplitTunnelProxyProvider : NETransparentProxyProvider {
     override func handleNewFlow(_ flow: NEAppProxyFlow) -> Bool {
         return engine.handleNewFlow(flow)
     }
-    
+
     override func handleAppMessage(_ messageData: Data, completionHandler: ((Data?) -> Void)?) {
         engine.handleAppMessage(messageData, completionHandler: completionHandler)
     }
