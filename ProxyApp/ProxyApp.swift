@@ -16,7 +16,7 @@ protocol ProxyApp {
     // This means everytime during development and in production if a new version
     // of the proxy has been shipped
     func activateExtension() -> Bool
-    
+
     // Send a request (OSSystemExtensionRequest) to deactivate the system extension.
     //
     // The user will be prompted to enter the password.
@@ -32,7 +32,7 @@ protocol ProxyApp {
     // calling `activateExtension()` replaces the old extension with the new one
     // (as long as they have the same name)
     func deactivateExtension() -> Bool
-    
+
     // Load the existing Proxy, if it is present in
     // system settings/Network/VPN & Filters/Filters & Proxies.
     //
@@ -40,13 +40,13 @@ protocol ProxyApp {
     // or if it has been deactivated with `deactivateExtension()`,
     // a new Proxy configuration will be installed
     func loadOrInstallProxyManager() -> Bool
-    
+
     // Send a request to start the ProxyExtension process
     //
     // This will trigger the `startProxy()` function in the
     // NETransparentProxyProvider subclass
     func startProxy() -> Bool
-    
+
     // Send a request to stop the ProxyExtension process
     //
     // This will trigger the `stopProxy()` function in the
@@ -57,11 +57,14 @@ protocol ProxyApp {
     // While disconnecting, the proxy is still working as if it was active.
     // After the stop procedure is completed, the extension process is killed
     func stopProxy() -> Bool
-    
+
     // Pass an array of strings, containing all the bundle ID names of the apps
     // that will be managed by the Proxy.
     //
     // To get the bundle ID of an app, knowing its name use this command:
     // `osascript -e 'id of app "Google Chrome"'`
     func setBypassApps(apps: [String]) -> Void
+
+    func startDNSProxy() -> Bool
+    func stopDNSProxy() -> Bool
 }

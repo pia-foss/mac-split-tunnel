@@ -4,23 +4,23 @@ import SystemExtensions
 import os.log
 
 /**
-The ProxyAppDefault class implements the ProxyApp protocol.
-The process using this class will run in the user space, acting as the "frontend"
+The process using this class will run in user space, acting as a client
 for the root network extension process.
 
 This class is used by the GUI managing the system extension.
-The GUI was used mainly during the development phase.
-PIA desktop client manages the extension through ProxyCLI
-and since the integration has been completed this client have not been developed further
+The GUI is used mainly for development work.
+PIA desktop client manages the extension through the cli client ProxyCLI.
  */
 
 class ProxyAppDefault : ProxyApp {
     var proxyManager: NETransparentProxyManager?
+    var proxyDNSManager: NEDNSProxyManager?
     var extensionRequestDelegate = ExtensionRequestDelegate()
     var bypassApps: [String] = []
     var vpnOnlyApps: [String] = []
     var networkInterface: String = ""
     static let proxyManagerName = "PIA Split Tunnel Proxy"
+    static let proxyDNSManagerName = "PIA DNS Split Tunnel Proxy"
     static let serverAddress = "127.0.0.1"
 
     func setBypassApps(apps: [String]) -> Void {
@@ -35,6 +35,7 @@ class ProxyAppDefault : ProxyApp {
         self.networkInterface = interface
     }
 
+   // MARK: TRANSPARENT PROXY MANAGER FUNCTIONS
     func activateExtension() -> Bool {
         os_log("activating extension!")
 
@@ -180,6 +181,43 @@ class ProxyAppDefault : ProxyApp {
             return false
         }
 
+        return true
+    }
+
+    // MARK: DNS PROXY MANAGER FUNCTIONS
+    private func update(completion: @escaping () -> Void) {
+        self.proxyDNSManager!.loadFromPreferences { (error) in
+            guard error == nil else {
+                return
+            }
+            completion()
+            self.proxyDNSManager!.saveToPreferences { (error) in
+                guard error == nil else {
+                    return
+                }
+            }
+        }
+    }
+
+    func startDNSProxy() -> Bool {
+        os_log("starting DNS proxy extension!")
+        self.proxyDNSManager = NEDNSProxyManager.shared()
+        self.update {
+            self.proxyDNSManager!.localizedDescription = ProxyAppDefault.proxyDNSManagerName
+            let proto = NEDNSProxyProviderProtocol()
+            proto.providerBundleIdentifier = getExtensionBundleID().bundleIdentifier
+            self.proxyDNSManager!.providerProtocol = proto
+            self.proxyDNSManager!.isEnabled = true
+        }
+        return true
+    }
+
+    func stopDNSProxy() -> Bool {
+        os_log("stopping DNS proxy extension!")
+        self.proxyDNSManager = NEDNSProxyManager.shared()
+        self.update {
+            self.proxyDNSManager!.isEnabled = false
+        }
         return true
     }
 }

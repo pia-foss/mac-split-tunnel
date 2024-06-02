@@ -1,9 +1,9 @@
 import SwiftUI
 
 struct ContentView: View {
-    
+
     var proxyApp = ProxyAppDefault()
-    
+
     var body: some View {
         VStack {
             Image(systemName: "globe")
@@ -12,8 +12,9 @@ struct ContentView: View {
             Group {
                 Text("PIA Split Tunnel proxy GUI")
                 Button("Activate") {
-                    proxyApp.setBypassApps(apps: ["com.privateinternetaccess.splittunnel.testapp", "net.limechat.LimeChat-AppStore", "org.mozilla.firefox", "/usr/bin/curl", "/usr/bin/nc"])
-                    proxyApp.setVpnOnlyApps(apps: ["/opt/homebrew/bin/wget"])
+                    proxyApp.setBypassApps(apps: ["/usr/bin/curl"])
+
+                    proxyApp.setVpnOnlyApps(apps: [])
                     proxyApp.setNetworkInterface(interface: "en0")
                     guard proxyApp.activateExtension() else {
                         fatalError("Failed to activate the extension")
@@ -37,6 +38,19 @@ struct ContentView: View {
                 Button("StopProxy") {
                     guard proxyApp.stopProxy() else {
                         fatalError("Failed to stop the proxy")
+                    }
+                }
+            }
+            Group {
+                Text("DNS Proxy commands")
+                Button("startDNSProxy") {
+                    guard proxyApp.startDNSProxy() else {
+                        fatalError("Failed to start the DNS proxy")
+                    }
+                }
+                Button("stopDNSProxy") {
+                    guard proxyApp.stopDNSProxy() else {
+                        fatalError("Failed to stop the DNS proxy")
                     }
                 }
             }
