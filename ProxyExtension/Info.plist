@@ -32,6 +32,8 @@
 		<dict>
 			<key>com.apple.networkextension.app-proxy</key>
 			<string>$(PRODUCT_MODULE_NAME).SplitTunnelProxyProvider</string>
+			<key>com.apple.networkextension.dns-proxy</key>
+			<string>$(PRODUCT_MODULE_NAME).SplitTunnelDNSProxyProvider</string>
 		</dict>
 	</dict>
 </dict>
