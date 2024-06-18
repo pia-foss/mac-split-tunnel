@@ -56,6 +56,13 @@ struct VpnStateFactory {
         }
         vpnState.isConnected = isConnected
         log(.info, "isConnected: \(isConnected)")
+        
+        guard let dnsFollowAppRules = options!["dnsFollowAppRules"] as? Bool else {
+            log(.error, "Error: Cannot find dnsFollowAppRules in options")
+            return nil
+        }
+        vpnState.dnsFollowAppRules = dnsFollowAppRules
+        log(.info, "dnsFollowAppRules: \(dnsFollowAppRules)")
 
         guard let whitelistGroupName = options!["whitelistGroupName"] as? String else {
             log(.error, "Error: Cannot find whitelistGroupName in options")
@@ -78,5 +85,6 @@ struct VpnState: Equatable {
     var serverAddress: String = ""
     var routeVpn: Bool = false
     var isConnected: Bool = false
+    var dnsFollowAppRules: Bool = false
     var whitelistGroupName: String = ""
 }

@@ -16,6 +16,7 @@ class VpnStateSpec: QuickSpec {
                         "logLevel" : "debug",
                         "routeVpn" : true,
                         "isConnected" : true,
+                        "dnsFollowAppRules": true,
                         "whitelistGroupName" : "group1"]
                     expect(VpnStateFactory.create(options: correctOptions)).toNot(beNil())
                 }
@@ -38,6 +39,7 @@ class VpnStateSpec: QuickSpec {
                     "logLevel" : "debug",
                     "routeVpn" : true,
                     "isConnected" : true,
+                    "dnsFollowAppRules": true,
                     "whitelistGroupName" : "group1"]
                     expect(VpnStateFactory.create(options: wrongTypeOptions)).to(beNil())
                 }
