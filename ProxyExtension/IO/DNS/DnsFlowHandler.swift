@@ -2,22 +2,8 @@ import Foundation
 import NetworkExtension
 import NIO
 
-// Core config required to start a new proxy session
-// * The bindIp - which we use to bind ipv4 sockets to change default routing behaviour
-// * The eventLoopGroup - required to setup the NIO Inbound Handlers
-struct SessionConfig {
-    let bindIp: String
-    // We need to make this optional so that we can
-    // leave it nil in tests - tests do not use an EventLoopGroup
-    let eventLoopGroup: MultiThreadedEventLoopGroup!
-}
-
-protocol FlowHandlerProtocol {
-    func handleNewFlow(_ flow: Flow, vpnState: VpnState) -> Bool
-}
-
-// Responsible for handling flows, both new flows and pre-existing
-final class FlowHandler: FlowHandlerProtocol {
+// Responsible for handling DNS flows, both new flows and pre-existing
+final class DnsFlowHandler: FlowHandlerProtocol {
     let eventLoopGroup: MultiThreadedEventLoopGroup
     var idGenerator: IDGenerator
 
@@ -37,17 +23,19 @@ final class FlowHandler: FlowHandlerProtocol {
     }
 
     public func handleNewFlow(_ flow: Flow, vpnState: VpnState) -> Bool {
-        switch FlowPolicy.policyFor(flow: flow, vpnState: vpnState) {
-        case .proxy:
-            return startProxySession(flow: flow, vpnState: vpnState)
-        case .block:
-            log(.info, "blocking a vpnOnly flow from \(flow.sourceAppSigningIdentifier)")
-            flow.closeReadAndWrite()
-            // We return true to indicate to the OS we want to handle the flow, so the app is blocked.
-            return true
-        case .ignore:
-            return false
-        }
+        // We need to handle two modes here:
+        // - Follow App Rules
+        // - VPN DNS Only
+        // assume for now that Name Servers is set to Follow App Rules
+        // if(name server is follow app rules)
+        //     if(app is bypass app)
+        //         proxy to physical
+        //     else
+        //         if(vpn is disconnected)
+        //             block
+        //         else
+        //             proxy to vpn //using current DNS settings
+        return startProxySession(flow: flow, vpnState: vpnState)
     }
 
     private func startProxySession(flow: Flow, vpnState: VpnState) -> Bool {
