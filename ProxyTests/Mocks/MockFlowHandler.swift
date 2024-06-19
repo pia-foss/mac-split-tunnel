@@ -11,4 +11,9 @@ final class MockFlowHandler: FlowHandlerProtocol, Mock {
         record(args: [flow, vpnState])
         return true
     }
+    
+    func startProxySession(flow: Flow, vpnState: VpnState) -> Bool {
+        record(args: [flow, vpnState])
+        return true
+    }
 }

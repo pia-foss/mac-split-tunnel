@@ -149,8 +149,7 @@ class ProxyAppDefault : ProxyApp {
                             "logLevel" : "debug",
                             "routeVpn" : true,
                             "isConnected" : true,
-                            // The name of the unix group pia whitelists in the firewall
-                            // This may be different when PIA is white-labeled
+                            // The name of the unix group PIA whitelists in the firewall
                             "whitelistGroupName" : "piavpn"
                         ] as [String : Any])
                     } catch {
