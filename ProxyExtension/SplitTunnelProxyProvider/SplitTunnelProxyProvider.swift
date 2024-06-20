@@ -41,7 +41,7 @@ final class SplitTunnelProxyProvider : NETransparentProxyProvider {
             return
         }
 
-        self.engine = self.engine ?? ProxyEngine(vpnState: vpnState)
+        self.engine = self.engine ?? ProxyEngine(vpnState: vpnState, flowHandler: FlowHandler())
 
         // Whitelist this process in the firewall - error logging happens in function
         guard FirewallWhitelister(groupName: vpnState.whitelistGroupName).whitelist() else {
@@ -53,7 +53,7 @@ final class SplitTunnelProxyProvider : NETransparentProxyProvider {
         SplitTunnelNetworkConfig(serverAddress: vpnState.serverAddress,
                                  provider: self).apply(completionHandler)
 
-        log(.info, "Proxy started!")
+        log(.info, "Transparent Proxy started!")
     }
 
     // MARK: Managing flows
@@ -74,6 +74,6 @@ final class SplitTunnelProxyProvider : NETransparentProxyProvider {
     }
 
     override func stopProxy(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
-        log(.info, "Proxy stopped!")
+        log(.info, "Transparent Proxy stopped!")
     }
 }

@@ -58,13 +58,6 @@ protocol ProxyApp {
     // After the stop procedure is completed, the extension process is killed
     func stopProxy() -> Bool
 
-    // Pass an array of strings, containing all the bundle ID names of the apps
-    // that will be managed by the Proxy.
-    //
-    // To get the bundle ID of an app, knowing its name use this command:
-    // `osascript -e 'id of app "Google Chrome"'`
-    func setBypassApps(apps: [String]) -> Void
-
     func startDNSProxy() -> Bool
     func stopDNSProxy() -> Bool
 }

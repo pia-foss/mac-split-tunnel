@@ -114,6 +114,7 @@
 		D19DF2782C0D274A00CE0FB3 /* SplitTunnelDNSProxyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19DF2772C0D274A00CE0FB3 /* SplitTunnelDNSProxyProvider.swift */; };
 		D1D447042ABCE52400A69316 /* ExtensionRequestDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D447032ABCE52400A69316 /* ExtensionRequestDelegate.swift */; };
 		D1D5B6B62B18F7DF0063363E /* ProcessUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D5B6B52B18F7DF0063363E /* ProcessUtilities.swift */; };
+		D1D77BB62C21D8300065420C /* DnsFlowHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D77BB52C21D8300065420C /* DnsFlowHandler.swift */; };
 		D1E2637B2BBF4B06007EC69E /* LoggerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E2637A2BBF4B06007EC69E /* LoggerTest.swift */; };
 		D1E9AEFE2AE31D4F007603BF /* NetworkInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E9AEFD2AE31D4F007603BF /* NetworkInterface.swift */; };
 /* End PBXBuildFile section */
@@ -260,6 +261,7 @@
 		D19DF2772C0D274A00CE0FB3 /* SplitTunnelDNSProxyProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitTunnelDNSProxyProvider.swift; sourceTree = "<group>"; };
 		D1D447032ABCE52400A69316 /* ExtensionRequestDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionRequestDelegate.swift; sourceTree = "<group>"; };
 		D1D5B6B52B18F7DF0063363E /* ProcessUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessUtilities.swift; sourceTree = "<group>"; };
+		D1D77BB52C21D8300065420C /* DnsFlowHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DnsFlowHandler.swift; sourceTree = "<group>"; };
 		D1E2637A2BBF4B06007EC69E /* LoggerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerTest.swift; sourceTree = "<group>"; };
 		D1E9AEFD2AE31D4F007603BF /* NetworkInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkInterface.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -509,6 +511,7 @@
 		D1D5B6B42B18F7200063363E /* IO */ = {
 			isa = PBXGroup;
 			children = (
+				D1D77BB42C21D8060065420C /* DNS */,
 				5278E5AE2B5AFB7600210466 /* ProxySession */,
 				52D4C8CD2B52FBEB0059F7DD /* InboundHandler.swift */,
 				527F56A72B3180D6003E7DF7 /* AppPolicy.swift */,
@@ -526,6 +529,14 @@
 				5249B3B32B96C4B90037BDFF /* NetworkInterfaceFactory.swift */,
 			);
 			path = IO;
+			sourceTree = "<group>";
+		};
+		D1D77BB42C21D8060065420C /* DNS */ = {
+			isa = PBXGroup;
+			children = (
+				D1D77BB52C21D8300065420C /* DnsFlowHandler.swift */,
+			);
+			path = DNS;
 			sourceTree = "<group>";
 		};
 		D1FE4FB7295A1EA3002BBA20 /* ProxyTests */ = {
@@ -878,6 +889,7 @@
 				5274A5E52B4AAC4500FD0A10 /* ProxySessionUDP.swift in Sources */,
 				976B8CD72B0B55F60097FE7F /* Logger.swift in Sources */,
 				5235FB272B511DD700F3B772 /* NEAppProxyFlow+Extensions.swift in Sources */,
+				D1D77BB62C21D8300065420C /* DnsFlowHandler.swift in Sources */,
 				D1D5B6B62B18F7DF0063363E /* ProcessUtilities.swift in Sources */,
 				D19C05F22B50A67500E804DE /* VpnState.swift in Sources */,
 				5278E5B62B5B859600210466 /* InboundHandlerUDP.swift in Sources */,

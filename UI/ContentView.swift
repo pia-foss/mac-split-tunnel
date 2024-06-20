@@ -12,10 +12,6 @@ struct ContentView: View {
             Group {
                 Text("PIA Split Tunnel proxy GUI")
                 Button("Activate") {
-                    proxyApp.setBypassApps(apps: ["/usr/bin/curl"])
-
-                    proxyApp.setVpnOnlyApps(apps: [])
-                    proxyApp.setNetworkInterface(interface: "en0")
                     guard proxyApp.activateExtension() else {
                         fatalError("Failed to activate the extension")
                     }

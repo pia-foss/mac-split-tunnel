@@ -33,6 +33,7 @@ final class MessageHandlerTest: QuickSpec {
                     "serverAddress": "1.1.1.1",
                     "routeVpn": true,
                     "isConnected": true,
+                    "dnsFollowAppRules": true,
                     "whitelistGroupName": "acmevpn"
                 ]
 
@@ -54,6 +55,7 @@ final class MessageHandlerTest: QuickSpec {
                     expect(vpnState.serverAddress).to(equal("1.1.1.1"))
                     expect(vpnState.routeVpn).to(equal(true))
                     expect(vpnState.isConnected).to(equal(true))
+                    expect(vpnState.dnsFollowAppRules).to(equal(true))
                     expect(vpnState.whitelistGroupName).to(equal("acmevpn"))
                 }
                 

@@ -14,8 +14,7 @@ final class ProxyEngineTest: QuickSpec {
                 it("delegates the call") {
                     let mockFlow = MockFlowTCP()
                     let mockFlowHandler = MockFlowHandler()
-                    let proxyEngine = ProxyEngine(vpnState: vpnState)
-                    proxyEngine.flowHandler = mockFlowHandler
+                    let proxyEngine = ProxyEngine(vpnState: vpnState, flowHandler: mockFlowHandler)
 
                     _ = proxyEngine.handleNewFlow(mockFlow)
 
@@ -29,7 +28,7 @@ final class ProxyEngineTest: QuickSpec {
                                            bindInterface: "en8", serverAddress: "127.0.01",
                                            routeVpn: false, isConnected: true, whitelistGroupName: "acmevpn")
                 it("delegates the call") {
-                    let proxyEngine = ProxyEngine(vpnState: vpnState)
+                    let proxyEngine = ProxyEngine(vpnState: vpnState, flowHandler: FlowHandler())
                     let mockMessageHandler = MockMessageHandler(newVpnState: newVpnState)
 
                     let data = "message".data(using: .utf8)
@@ -40,7 +39,7 @@ final class ProxyEngineTest: QuickSpec {
                 }
 
                 it("updates VpnState") {
-                    let proxyEngine = ProxyEngine(vpnState: vpnState)
+                    let proxyEngine = ProxyEngine(vpnState: vpnState, flowHandler: FlowHandler())
                     // Simulate a state update as a result of handleAppMessage
                     let mockMessageHandler = MockMessageHandler(newVpnState: newVpnState)
 

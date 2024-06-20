@@ -18,9 +18,9 @@ final class ProxyEngine: ProxyEngineProtocol {
     public var flowHandler: FlowHandlerProtocol
     public var messageHandler: MessageHandlerProtocol
 
-    init(vpnState: VpnState) {
+    init(vpnState: VpnState, flowHandler: FlowHandlerProtocol) {
         self.vpnState = vpnState
-        self.flowHandler = FlowHandler()
+        self.flowHandler = flowHandler
         self.messageHandler = MessageHandler()
     }
 

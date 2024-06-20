@@ -16,23 +16,28 @@ class ProxyAppDefault : ProxyApp {
     var proxyManager: NETransparentProxyManager?
     var proxyDNSManager: NEDNSProxyManager?
     var extensionRequestDelegate = ExtensionRequestDelegate()
-    var bypassApps: [String] = []
-    var vpnOnlyApps: [String] = []
-    var networkInterface: String = ""
+    var options: [String : Any]
     static let proxyManagerName = "PIA Split Tunnel Proxy"
     static let proxyDNSManagerName = "PIA DNS Split Tunnel Proxy"
     static let serverAddress = "127.0.0.1"
-
-    func setBypassApps(apps: [String]) -> Void {
-        self.bypassApps = apps
-    }
-
-    func setVpnOnlyApps(apps: [String]) -> Void {
-        self.vpnOnlyApps = apps
-    }
-
-    func setNetworkInterface(interface: String) -> Void {
-        self.networkInterface = interface
+    
+    init() {
+        options = [
+            // To get the bundle ID of an app, knowing its name use this command:
+            // `osascript -e 'id of app "Google Chrome"'`
+            "bypassApps" : ["com.apple.nslookup", "com.apple.curl", "com.apple.ping"],
+            "vpnOnlyApps" : [],
+            "bindInterface" : "en0",
+            "serverAddress" : ProxyAppDefault.serverAddress,
+            "logFile" : "/tmp/STProxy.log",
+            "logLevel" : "debug",
+            // split tunnel is in normal mode, vpn device is the default route
+            "routeVpn" : true,
+            // vpn is connected
+            "isConnected" : true,
+            // The name of the unix group PIA whitelists in the firewall
+            "whitelistGroupName" : "piavpn"
+        ]
     }
 
    // MARK: TRANSPARENT PROXY MANAGER FUNCTIONS
@@ -140,18 +145,7 @@ class ProxyAppDefault : ProxyApp {
                     do {
                         // This function is used to start the tunnel (the proxy)
                         // passing it the following settings
-                        try session.startTunnel(options: [
-                            "bypassApps" : self.bypassApps,
-                            "vpnOnlyApps" : self.vpnOnlyApps,
-                            "bindInterface" : self.networkInterface,
-                            "serverAddress" : ProxyAppDefault.serverAddress,
-                            "logFile" : "/tmp/STProxy.log",
-                            "logLevel" : "debug",
-                            "routeVpn" : true,
-                            "isConnected" : true,
-                            // The name of the unix group PIA whitelists in the firewall
-                            "whitelistGroupName" : "piavpn"
-                        ] as [String : Any])
+                        try session.startTunnel(options: self.options as [String : Any])
                     } catch {
                         os_log("startProxy error!")
                         print(error)

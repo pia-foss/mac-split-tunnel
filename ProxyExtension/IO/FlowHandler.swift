@@ -14,7 +14,6 @@ struct SessionConfig {
 
 protocol FlowHandlerProtocol {
     func handleNewFlow(_ flow: Flow, vpnState: VpnState) -> Bool
-    func startProxySession(flow: Flow, vpnState: VpnState) -> Bool
 }
 
 // Responsible for handling flows, both new flows and pre-existing
@@ -51,8 +50,7 @@ final class FlowHandler: FlowHandlerProtocol {
         }
     }
 
-    // temporarly public
-    public func startProxySession(flow: Flow, vpnState: VpnState) -> Bool {
+    private func startProxySession(flow: Flow, vpnState: VpnState) -> Bool {
         let interface = networkInterfaceFactory.create(interfaceName: vpnState.bindInterface)
 
         // Verify we have a valid bindIp - if not, trace it and ignore the flow
