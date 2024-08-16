@@ -14,7 +14,11 @@ extension NEAppProxyFlow: Flow {
 
     // Open a flow
     func openFlow(completionHandler: @escaping (Error?) -> Void) {
-        open(withLocalEndpoint: nil, completionHandler: completionHandler)
+        if #available(macOS 15.0, *) {
+            open(withLocalFlowEndpoint: nil, completionHandler: completionHandler)
+        } else {
+            open(withLocalEndpoint: nil, completionHandler: completionHandler)
+        }
     }
 
     // Flow metadata
