@@ -25,7 +25,7 @@ extension Flow {
             // Check if the address is an IPv6 address. IPv6 addresses always contain a ":"
             // We can't do the opposite (such as just checking for "." for an IPv4 address) due to IPv4-mapped IPv6 addresses
             // which are IPv6 addresses but include IPv4 address notation.
-            if let endpoint = flowTCP.remoteEndpoint as? NWHostEndpoint {
+            if let endpoint = flowTCP.flowEndpoint as? NWHostEndpoint {
                 // We have a valid NWHostEndpoint - let's see if it's IPv6
                 if endpoint.hostname.contains(":") {
                     return true
@@ -33,7 +33,7 @@ extension Flow {
             }
         } else if let flowUDP = self as? FlowUDP {
             // Use localEndpoint for UDP flows as UDP (as a "connectionless protocol")
-            // doesn't have a fixed remoteEndpoint
+            // doesn't have a fixed flowEndpoint
             if let endpoint = flowUDP.localEndpoint as? NWHostEndpoint {
                 // We have a valid NWHostEndpoint - let's see if it's IPv6
                 if endpoint.hostname.contains(":") {
@@ -51,7 +51,7 @@ extension Flow {
 // FlowTCP and FlowUDP protocols abstract the relevant parts of NEAppProxyTCPFlow
 // and NEAppProxyUDPFlow for increased flexibility and improved testability.
 protocol FlowTCP: Flow {
-    var remoteEndpoint: NWEndpoint { get }
+    var flowEndpoint: NWEndpoint { get }
     func readData(completionHandler: @escaping (Data?, Error?) -> Void)
     func write(_ data: Data, withCompletionHandler completionHandler: @escaping (Error?) -> Void)
 }

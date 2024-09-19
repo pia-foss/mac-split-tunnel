@@ -29,5 +29,13 @@ extension NEAppProxyFlow: Flow {
 // Enforce Flow protocol conformance for NEAppProxyTCPFlow and NEAppProxyUDPFlow subclasses.
 // This approach allows using Flow protocols universally instead of specific NEAppProxyFlow classes,
 // facilitating easier stubbing/mocking in tests as Flow protocols are simpler to satisfy.
-extension NEAppProxyTCPFlow: FlowTCP {}
+extension NEAppProxyTCPFlow: FlowTCP {
+    var flowEndpoint: NWEndpoint {
+        if #available(macOS 15.0, *) {
+            self.remoteFlowEndpoint
+        } else {
+            self.remoteEndpoint
+        }
+    }
+}
 extension NEAppProxyUDPFlow: FlowUDP {}
