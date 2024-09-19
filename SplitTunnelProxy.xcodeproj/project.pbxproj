@@ -97,7 +97,6 @@
 		9785C0CE2B5921A7002A982D /* ProxyCLIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9785C0C92B5921A6002A982D /* ProxyCLIApp.swift */; };
 		9785C0CF2B5921A7002A982D /* SysExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9785C0CA2B5921A7002A982D /* SysExt.swift */; };
 		9785C0E22B592299002A982D /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 9785C0E12B592299002A982D /* ArgumentParser */; };
-		97B1169C2B0CEF910028B01E /* build.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 97B1169B2B0CEF910028B01E /* build.xcconfig */; };
 		97E7B8AD2AFB565700138C6A /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = 97E7B8AC2AFB565700138C6A /* Puppy */; };
 		97F84ECA2B5EA87E008DF390 /* ExtensionBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1795F722AE9CC50003B0DAE /* ExtensionBundle.swift */; };
 		97F84ECB2B5EA8A0008DF390 /* ExtensionBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1795F722AE9CC50003B0DAE /* ExtensionBundle.swift */; };
@@ -692,7 +691,7 @@
 				BuildIndependentTargetsInParallel = YES;
 				DefaultBuildSystemTypeForWorkspace = Latest;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 1600;
 				ORGANIZATIONNAME = PIA;
 				TargetAttributes = {
 					97199B142B6904230095C516 = {
@@ -768,7 +767,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				97B1169C2B0CEF910028B01E /* build.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -946,7 +944,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -987,7 +985,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1025,7 +1023,6 @@
 		97199B2E2B6904240095C516 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_STYLE = Manual;
@@ -1048,7 +1045,6 @@
 		97199B2F2B6904240095C516 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_STYLE = Manual;
@@ -1095,7 +1091,6 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.privateinternetaccess.vpn.splittunnel.cli;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRIP_STYLE = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -1130,7 +1125,6 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.privateinternetaccess.vpn.splittunnel.cli;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRIP_STYLE = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -1140,6 +1134,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 97B1169B2B0CEF910028B01E /* build.xcconfig */;
 			buildSettings = {
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ProxyExtension/ProxyExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -1168,6 +1163,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 97B1169B2B0CEF910028B01E /* build.xcconfig */;
 			buildSettings = {
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ProxyExtension/ProxyExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -1254,9 +1250,6 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
-				STRIP_INSTALLED_PRODUCT = NO;
-				STRIP_STYLE = debugging;
-				STRIP_SWIFT_SYMBOLS = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -1317,9 +1310,6 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
-				STRIP_INSTALLED_PRODUCT = NO;
-				STRIP_STYLE = debugging;
-				STRIP_SWIFT_SYMBOLS = NO;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
@@ -1328,7 +1318,6 @@
 		C4B45DC62273A0020050C59B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ProxyApp/ProxyApp.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
@@ -1354,7 +1343,6 @@
 		C4B45DC72273A0020050C59B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ProxyApp/ProxyApp.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
