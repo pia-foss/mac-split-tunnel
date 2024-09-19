@@ -11,7 +11,7 @@ class FlowPolicySpec: QuickSpec {
 
                 it("ignores Ipv6 bypass flows") {
                     let mockFlow = MockFlowTCP()
-                    mockFlow.flowEndpoint = NWHostEndpoint(hostname: "2b17:fb8c:8b61:8f15:28b7:d783:0448:81a3", port: "1337")
+                    mockFlow.flowEndpoint = NWEndpoint.hostPort(host: "2b17:fb8c:8b61:8f15:28b7:d783:0448:81a3", port: "1337")
                     mockFlow.sourceAppSigningIdentifier = "com.apple.curl"
 
                     let policy = FlowPolicy.policyFor(flow: mockFlow, vpnState: vpnState)
@@ -24,7 +24,7 @@ class FlowPolicySpec: QuickSpec {
 
                 it("ignores Ipv4 bypass flows") {
                     let mockFlow = MockFlowTCP()
-                    mockFlow.flowEndpoint = NWHostEndpoint(hostname: "1.1.1.1", port: "1337")
+                    mockFlow.flowEndpoint = NWEndpoint.hostPort(host: "1.1.1.1", port: "1337")
                     mockFlow.sourceAppSigningIdentifier = "com.apple.curl"
 
                     let policy = FlowPolicy.policyFor(flow: mockFlow, vpnState: vpnState)
@@ -38,7 +38,7 @@ class FlowPolicySpec: QuickSpec {
 
                 it("proxies Ipv6 bypass flows") {
                     let mockFlow = MockFlowTCP()
-                    mockFlow.flowEndpoint = NWHostEndpoint(hostname: "2b17:fb8c:8b61:8f15:28b7:d783:0448:81a3", port: "1337")
+                    mockFlow.flowEndpoint = NWEndpoint.hostPort(host: "2b17:fb8c:8b61:8f15:28b7:d783:0448:81a3", port: "1337")
                     mockFlow.sourceAppSigningIdentifier = "com.apple.curl"
 
                     let policy = FlowPolicy.policyFor(flow: mockFlow, vpnState: vpnState)
@@ -48,7 +48,7 @@ class FlowPolicySpec: QuickSpec {
 
                 it("proxies Ipv4 bypass flows") {
                     let mockFlow = MockFlowTCP()
-                    mockFlow.flowEndpoint = NWHostEndpoint(hostname: "1.1.1.1", port: "1337")
+                    mockFlow.flowEndpoint = NWEndpoint.hostPort(host: "1.1.1.1", port: "1337")
                     mockFlow.sourceAppSigningIdentifier = "com.apple.curl"
 
                     let policy = FlowPolicy.policyFor(flow: mockFlow, vpnState: vpnState)
@@ -62,7 +62,7 @@ class FlowPolicySpec: QuickSpec {
 
                 it("blocks Ipv4 vpnOnly flows") {
                     let mockFlow = MockFlowTCP()
-                    mockFlow.flowEndpoint = NWHostEndpoint(hostname: "1.1.1.1", port: "1337")
+                    mockFlow.flowEndpoint = NWEndpoint.hostPort(host: "1.1.1.1", port: "1337")
                     mockFlow.sourceAppSigningIdentifier = "com.apple.safari"
 
                     let policy = FlowPolicy.policyFor(flow: mockFlow, vpnState: vpnState)
@@ -72,7 +72,7 @@ class FlowPolicySpec: QuickSpec {
 
                 it("blocks Ipv6 vpnOnly flows") {
                     let mockFlow = MockFlowTCP()
-                    mockFlow.flowEndpoint = NWHostEndpoint(hostname: "2b17:fb8c:8b61:8f15:28b7:d783:0448:81a3", port: "1337")
+                    mockFlow.flowEndpoint = NWEndpoint.hostPort(host: "2b17:fb8c:8b61:8f15:28b7:d783:0448:81a3", port: "1337")
                     mockFlow.sourceAppSigningIdentifier = "com.apple.safari"
 
                     let policy = FlowPolicy.policyFor(flow: mockFlow, vpnState: vpnState)
@@ -86,7 +86,7 @@ class FlowPolicySpec: QuickSpec {
 
                 it("proxies Ipv4 vpnOnly flows") {
                     let mockFlow = MockFlowTCP()
-                    mockFlow.flowEndpoint = NWHostEndpoint(hostname: "1.1.1.1", port: "1337")
+                    mockFlow.flowEndpoint = NWEndpoint.hostPort(host: "1.1.1.1", port: "1337")
                     mockFlow.sourceAppSigningIdentifier = "com.apple.safari"
 
                     let policy = FlowPolicy.policyFor(flow: mockFlow, vpnState: vpnState)
@@ -96,7 +96,7 @@ class FlowPolicySpec: QuickSpec {
 
                 it("blocks Ipv6 vpnOnly flows") {
                     let mockFlow = MockFlowTCP()
-                    mockFlow.flowEndpoint = NWHostEndpoint(hostname: "2b17:fb8c:8b61:8f15:28b7:d783:0448:81a3", port: "1337")
+                    mockFlow.flowEndpoint = NWEndpoint.hostPort(host: "2b17:fb8c:8b61:8f15:28b7:d783:0448:81a3", port: "1337")
                     mockFlow.sourceAppSigningIdentifier = "com.apple.safari"
 
                     let policy = FlowPolicy.policyFor(flow: mockFlow, vpnState: vpnState)

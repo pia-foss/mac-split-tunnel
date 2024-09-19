@@ -45,5 +45,5 @@ final class MockFlowUDP: FlowUDP, Equatable, Mock {
         completionHandler(flowError)
     }
 
-    var localEndpoint: NWEndpoint? = NWHostEndpoint(hostname: "0.0.0.0", port: "0")
+    var localEndpoint: NWEndpoint? = NWEndpoint.hostPort(host: "0.0.0.0", port: "0")
 }

@@ -36,7 +36,7 @@ class ProxySessionUDPTest: QuickSpec {
                 // The proxy works by reading from the flow and then writing to the channel
                 // so a successful read from the flow should result in a corresponding write to the channel
                 it("should write to the channel") {
-                    let endpoint = NWHostEndpoint(hostname: "8.8.8.8", port: "1337")
+                    let endpoint = NWEndpoint.hostPort(host: "8.8.8.8", port: "1337")
 
                     // A flow read will succeed when there's data available (so this one should succeed)
                     let mockFlow = MockFlowUDP(data: [Data([0x1])], endpoints: [endpoint] )

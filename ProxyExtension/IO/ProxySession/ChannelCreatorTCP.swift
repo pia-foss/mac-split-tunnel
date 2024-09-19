@@ -16,9 +16,9 @@ final class ChannelCreatorTCP {
 
     public func create(_ onBytesReceived: @escaping (UInt64) -> Void)
         -> EventLoopFuture<Channel> {
-        guard let endpoint = flow.flowEndpoint as? NWHostEndpoint else {
+        guard let endpoint = flow.flowEndpoint as? NWEndpoint else {
             return makeFailedFuture(
-                ProxySessionError.BadEndpoint("flow.flowEndpoint is not an NWHostEndpoint"))
+                ProxySessionError.BadEndpoint("flow.flowEndpoint is not an NWEndpoint"))
         }
 
         let bootstrap = ClientBootstrap(group: config.eventLoopGroup)
@@ -32,7 +32,7 @@ final class ChannelCreatorTCP {
         return bindSourceAddressAndConnect(bootstrap, endpoint: endpoint)
     }
 
-    private func bindSourceAddressAndConnect(_ bootstrap: ClientBootstrap, endpoint: NWHostEndpoint)
+    private func bindSourceAddressAndConnect(_ bootstrap: ClientBootstrap, endpoint: NWEndpoint)
         -> EventLoopFuture<Channel> {
         do {
 

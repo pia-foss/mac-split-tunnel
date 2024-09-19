@@ -13,12 +13,12 @@ final class ChannelCreatorUDP {
         self.config = config
     }
 
-    public func create(_ onBytesReceived: @escaping (UInt64) -> Void) 
+    public func create(_ onBytesReceived: @escaping (UInt64) -> Void)
         -> EventLoopFuture<Channel> {
 
         let bootstrap = DatagramBootstrap(group: config.eventLoopGroup)
             .channelInitializer { channel in
-                let inboundHandler = InboundHandlerUDP(flow: self.flow, id: self.id, 
+                let inboundHandler = InboundHandlerUDP(flow: self.flow, id: self.id,
                                                        onBytesReceived: onBytesReceived)
                 return channel.pipeline.addHandler(inboundHandler)
             }
@@ -26,16 +26,16 @@ final class ChannelCreatorUDP {
         return bindSourceAddress(bootstrap)
     }
 
-    private func bindSourceAddress(_ bootstrap: DatagramBootstrap) 
+    private func bindSourceAddress(_ bootstrap: DatagramBootstrap)
         -> EventLoopFuture<Channel> {
         do {
 
             var localEndpoint: String
             // Used by IPv6
-            if let endpoint = flow.localEndpoint as? NWHostEndpoint {
+            if let endpoint = flow.localEndpoint as? NWEndpoint {
                 localEndpoint = endpoint.hostname
             } else {
-                log(.warning, "id: \(self.id) Could not convert flow.localEndpoint to NWHostEndpoint, defaulting to :: for ipv6 flows")
+                log(.warning, "id: \(self.id) Could not convert flow.localEndpoint to NWEndpoint, defaulting to :: for ipv6 flows")
                 localEndpoint = "::"
             }
 
