@@ -15,11 +15,11 @@ jobs:
       PACKAGE_FOR_RELEASE: 1
       CODESIGN_IDENTITY: ${{ vars.PIA_CODESIGN_IDENTITY }}
       TEAM_ID: ${{ vars.PIA_APPLE_TEAM_ID }}
-    runs-on: macos-13
+    runs-on: macos-14
     steps:
     - uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: 15
+        xcode-version: '16.0'
     - uses: actions/checkout@v3
     - name: Install PIA's signing certificate
       run: |
