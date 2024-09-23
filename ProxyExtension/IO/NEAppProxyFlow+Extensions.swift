@@ -14,7 +14,11 @@ extension NEAppProxyFlow: Flow {
 
     // Open a flow
     func openFlow(completionHandler: @escaping (Error?) -> Void) {
-        open(withLocalEndpoint: nil, completionHandler: completionHandler)
+        if #available(macOS 15.0, *) {
+            open(withLocalFlowEndpoint: nil, completionHandler: completionHandler)
+        } else {
+            open(withLocalEndpoint: nil, completionHandler: completionHandler)
+        }
     }
 
     // Flow metadata
@@ -25,5 +29,13 @@ extension NEAppProxyFlow: Flow {
 // Enforce Flow protocol conformance for NEAppProxyTCPFlow and NEAppProxyUDPFlow subclasses.
 // This approach allows using Flow protocols universally instead of specific NEAppProxyFlow classes,
 // facilitating easier stubbing/mocking in tests as Flow protocols are simpler to satisfy.
-extension NEAppProxyTCPFlow: FlowTCP {}
+extension NEAppProxyTCPFlow: FlowTCP {
+    var flowEndpoint: NWEndpoint {
+        if #available(macOS 15.0, *) {
+            self.remoteFlowEndpoint
+        } else {
+            self.remoteEndpoint
+        }
+    }
+}
 extension NEAppProxyUDPFlow: FlowUDP {}

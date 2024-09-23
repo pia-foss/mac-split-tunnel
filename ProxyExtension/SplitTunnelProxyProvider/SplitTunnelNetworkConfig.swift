@@ -34,7 +34,7 @@ struct SplitTunnelNetworkConfig {
     private func subnetRule(subnet: String?, prefix: Int) -> NENetworkRule {
         return NENetworkRule(
             // port "0" means any port
-            remoteNetwork: subnet != nil ? NWHostEndpoint(hostname: subnet!, port: "0") : nil,
+            remoteNetwork: subnet != nil ? NWEndpoint.hostPort(host: subnet!, port: "0") : nil,
             remotePrefix: prefix,
             localNetwork: nil,
             localPrefix: 0,

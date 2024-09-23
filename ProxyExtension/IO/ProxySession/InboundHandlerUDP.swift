@@ -31,10 +31,10 @@ final class InboundHandlerUDP: InboundHandler {
             return
         }
 
-        let endpoint = NWHostEndpoint(hostname: input.remoteAddress.ipAddress!, 
+        let endpoint = NWEndpoint.hostPort(host: input.remoteAddress.ipAddress!,
                                       port: String(input.remoteAddress.port!))
 
-        forwardToFlow(context: context, data: Data(bytes), endpoint: endpoint, 
+        forwardToFlow(context: context, data: Data(bytes), endpoint: endpoint,
                       onBytesReceived: onBytesReceived)
     }
 
@@ -46,8 +46,8 @@ final class InboundHandlerUDP: InboundHandler {
         }
     }
 
-    private func forwardToFlow(context: ChannelHandlerContext, data: Data, 
-                               endpoint: NWHostEndpoint, onBytesReceived: @escaping ByteCountFunc) {
+    private func forwardToFlow(context: ChannelHandlerContext, data: Data,
+                               endpoint: NWEndpoint, onBytesReceived: @escaping ByteCountFunc) {
         // new traffic is ready to be read on the socket
         // we want to write that data to the flow
         flow.writeDatagrams([data], sentBy: [endpoint]) { flowError in

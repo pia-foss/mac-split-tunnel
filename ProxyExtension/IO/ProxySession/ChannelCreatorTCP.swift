@@ -14,17 +14,17 @@ final class ChannelCreatorTCP {
         self.config = config
     }
 
-    public func create(_ onBytesReceived: @escaping (UInt64) -> Void) 
+    public func create(_ onBytesReceived: @escaping (UInt64) -> Void)
         -> EventLoopFuture<Channel> {
-        guard let endpoint = flow.remoteEndpoint as? NWHostEndpoint else {
+        guard let endpoint = flow.flowEndpoint as? NWEndpoint else {
             return makeFailedFuture(
-                ProxySessionError.BadEndpoint("flow.remoteEndpoint is not an NWHostEndpoint"))
+                ProxySessionError.BadEndpoint("flow.flowEndpoint is not an NWEndpoint"))
         }
 
         let bootstrap = ClientBootstrap(group: config.eventLoopGroup)
             .channelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)
             .channelInitializer { channel in
-                let inboundHandler = InboundHandlerTCP(flow: self.flow, id: self.id, 
+                let inboundHandler = InboundHandlerTCP(flow: self.flow, id: self.id,
                                                        onBytesReceived: onBytesReceived)
                 return channel.pipeline.addHandler(inboundHandler)
             }
@@ -32,11 +32,11 @@ final class ChannelCreatorTCP {
         return bindSourceAddressAndConnect(bootstrap, endpoint: endpoint)
     }
 
-    private func bindSourceAddressAndConnect(_ bootstrap: ClientBootstrap, endpoint: NWHostEndpoint) 
+    private func bindSourceAddressAndConnect(_ bootstrap: ClientBootstrap, endpoint: NWEndpoint)
         -> EventLoopFuture<Channel> {
         do {
 
-            // Determine the appropriate IP address based on 
+            // Determine the appropriate IP address based on
             // whether the flow is IPv4 or IPv6
             // For IPv4 flows we want to bind to the "bind ip" but for IPv6 flows
             // we want to bind to the IPv6 wildcard address "::" (just out of paranoia, probably do not need to do this).

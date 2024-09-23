@@ -20,9 +20,9 @@ final class FlowForwarderUDP {
 
     public func scheduleFlowRead(_ onBytesTransmitted: @escaping ByteCountFunc) {
         flow.readDatagrams { outboundData, outboundEndpoints, flowError in
-            if flowError == nil, let datas = outboundData, 
+            if flowError == nil, let datas = outboundData,
                 !datas.isEmpty, let endpoints = outboundEndpoints, !endpoints.isEmpty {
-                self.forwardToChannel(datas: datas, endpoints: endpoints, 
+                self.forwardToChannel(datas: datas, endpoints: endpoints,
                                       onBytesTransmitted: onBytesTransmitted)
             } else {
                 self.handleReadError(error: flowError)
@@ -47,8 +47,8 @@ final class FlowForwarderUDP {
 
     private func createDatagram(data: Data, endpoint: NWEndpoint)
         -> AddressedEnvelope<ByteBuffer>? {
-        guard let endpoint = endpoint as? NWHostEndpoint else {
-            log(.error, "id: \(self.id) datagram creation failed - NWEndpoint is not an NWHostEndpoint")
+        guard let endpoint = endpoint as? NWEndpoint else {
+            log(.error, "id: \(self.id) datagram creation failed - NWEndpoint is not an NWEndpoint")
             return nil
         }
         let buffer = channel.allocator.buffer(bytes: data)
@@ -61,7 +61,7 @@ final class FlowForwarderUDP {
         }
     }
 
-    private func forwardToChannel(datas: [Data], endpoints: [NWEndpoint], 
+    private func forwardToChannel(datas: [Data], endpoints: [NWEndpoint],
                                   onBytesTransmitted: @escaping ByteCountFunc) {
         var readIsScheduled = false
         for (data, endpoint) in zip(datas, endpoints) {

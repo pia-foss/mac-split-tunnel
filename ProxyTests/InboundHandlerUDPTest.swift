@@ -28,7 +28,7 @@ class InboundHandlerUDPTest: QuickSpec {
 
                     // Note these are arrays for UDP
                     let expectedData = [Data(buffer.readableBytesView)]
-                    let expectedEndpoints = [NWHostEndpoint(hostname: host, port: String(port))]
+                    let expectedEndpoints = [NWEndpoint.hostPort(host: host, port: String(port))]
                     // UDP also requires an endpoint
                     let endpoint = try SocketAddress(ipAddress: host, port: port)
                     let envelope = AddressedEnvelope<ByteBuffer>(remoteAddress: endpoint, data: buffer)

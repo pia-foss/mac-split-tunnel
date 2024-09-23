@@ -7,7 +7,7 @@ import NetworkExtension
 
 // NETransparentProxyProvider is a subclass of NEAppProxyProvider.
 // The behaviour is different compared to its super class:
-// - Returning NO from handleNewFlow: and handleNewUDPFlow:initialRemoteEndpoint:
+// - Returning NO from handleNewFlow:
 //   causes the flow to go to through the default system routing,
 //   instead of being closed with a "Connection Refused" error.
 // - NEDNSSettings and NEProxySettings specified in NETransparentProxyNetworkSettings are ignored.
@@ -72,7 +72,7 @@ final class SplitTunnelProxyProvider : NETransparentProxyProvider {
     override func handleNewFlow(_ flow: NEAppProxyFlow) -> Bool {
         return engine.handleNewFlow(flow)
     }
-    
+
     override func handleAppMessage(_ messageData: Data, completionHandler: ((Data?) -> Void)?) {
         engine.handleAppMessage(messageData, completionHandler: completionHandler)
     }
